@@ -14,29 +14,18 @@ services:
       - "7777:7777"
     environment:
       - OPENAI_API_KEY
-      - MCPGATEWAY_ENDPOINT=agents_gateway:8811
-    depends_on:
-      - agents_gateway
-      - gemma
-
-  # Agents Gateway - connects to a MCP Gateway and adds services on top (secrets scan, logging, etc.)
-  agents_gateway:
-    image: demo/agents_gateway
-    build:
-      context: gateway
-      target: agents_gateway
-    command:
-      - --tools
-      - get_me,create-table,fetch_content,search
-      - --logCalls
-      - --scanSecrets
     depends_on:
       - mcpgateway
+      - gemma
 
-  # Enable the MCP Gateway (local to Docker Desktop for now)
+  # Connects to the MCP Gateway and adds services on top (secrets scan, logging, etc.)
   mcpgateway:
     provider:
       type: mcpgateway
+      options:
+        tools: get_me,create-table,fetch_content,search
+        logCalls: yes
+        scanSecrets: yes
 
   # Local model
   gemma:

@@ -33,7 +33,7 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 				infoMessage("started the gateway")
 			}
 
-			setenv("HOST", containerID+":8811")
+			setenv("ENDPOINT", containerID+":8811")
 			return nil
 		},
 	}

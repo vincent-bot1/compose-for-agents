@@ -23,7 +23,8 @@ tasks:
   build-compose-provider:
     desc: Build the compose provider
     cmds:
-      - go build -o docker-mcpgateway ./cmd/gateway_light_provider
+      # - go build -o docker-mcpgateway ./cmd/gateway_light_provider
+      - go build -o docker-mcpgateway ./cmd/gateway_provider
       - /bin/ln -sf "{{.TASKFILE_DIR}}/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
 
   build:
