@@ -38,6 +38,14 @@ async def run_server() -> None:
             model=OpenAIChat("gpt-4o"),
         )
 
+        # Create individual specialized agents
+        github = Agent(
+            name="Github agent",
+            description="A specialized agent for GitHub tasks",
+            tools=[mcp_tools],
+            model=OpenAIChat("gpt-4o"),
+        )
+
         writer = Agent(
             name="Writer",
             role="Expert at writing clear, engaging content",
@@ -54,7 +62,7 @@ async def run_server() -> None:
             markdown=True,
         )
 
-        playground = Playground(agents=[researcher], teams=[content_team])
+        playground = Playground(agents=[github], teams=[content_team])
         app = playground.get_app()
         app.add_middleware(
             CORSMiddleware,
