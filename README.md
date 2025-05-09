@@ -3,7 +3,7 @@
 Requirements:
 
 - A recent compose version (build from main)
-- Yhe gateway (https://github.com/docker/dgagateway)
+- The gateway (./dgagateway)
 - A recent Docker Desktop
 
 Then you can run:
