@@ -1,0 +1,32 @@
+services:
+  ui:
+    build:
+      context: agent-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  agent:
+    build:
+      context: agent
+      dockerfile: Dockerfile
+    ports:
+      - "7777:7777"
+    environment:
+      - OPENAI_API_KEY
+    depends_on:
+      - mcpgateway
+
+  mcpgateway:
+    provider:
+      type: mcpgateway
+      options:
+        tools: get_me
+        logCalls: 1
+        scanSecrets: 1
+
+  gemma:
+    provider:
+      type: model
+      options:
+        model: ai/gemma3
