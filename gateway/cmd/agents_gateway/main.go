@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -48,76 +47,84 @@ func run(ctx context.Context, tools string, logCalls, scanSecrets bool) error {
 	}
 	defer c.Close()
 
-	srv := &http.Server{
-		Addr: ":8811",
-		Handler: server.NewSSEServer(server.NewMCPServer(
-			"Docker AI MCP Gateway",
-			"1.0.1",
-			server.WithToolCapabilities(true),
-			server.WithListToolsHandler(func(ctx context.Context, request mcp.ListToolsRequest) (*mcp.ListToolsResult, error) {
-				list, err := c.ListTools(ctx, request)
-				if err != nil {
-					return nil, err
+	mcpServer := server.NewStdioServer(server.NewMCPServer(
+		"Docker AI MCP Gateway",
+		"1.0.1",
+		server.WithToolCapabilities(true),
+		server.WithListToolsHandler(func(ctx context.Context, request mcp.ListToolsRequest) (*mcp.ListToolsResult, error) {
+			list, err := c.ListTools(ctx, request)
+			if err != nil {
+				return nil, err
+			}
+
+			var filtered []mcp.Tool
+			for _, tool := range list.Tools {
+				if len(toolNeeded) == 0 || toolNeeded[tool.Name] {
+					filtered = append(filtered, tool)
 				}
+			}
 
-				var filtered []mcp.Tool
-				for _, tool := range list.Tools {
-					if len(toolNeeded) == 0 || toolNeeded[tool.Name] {
-						filtered = append(filtered, tool)
-					}
+			return &mcp.ListToolsResult{
+				Tools: filtered,
+			}, nil
+		}),
+		server.WithToolCallHandler(func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			toolName := request.Params.Name
+			if _, ok := toolNeeded[toolName]; !ok {
+				return nil, fmt.Errorf("tool %s is not available", toolName)
+			}
+
+			// Print arguments into a string
+			var arguments string
+			buf, err := json.Marshal(request.Params.Arguments)
+			if err != nil {
+				arguments = fmt.Sprintf("%v", request.Params.Arguments)
+			} else {
+				arguments = string(buf)
+			}
+
+			// Callbacks
+			if scanSecrets {
+				fmt.Printf("Scanning tool call arguments for secrets...\n")
+
+				if secrets.ContainsSecrets(arguments) {
+					return nil, fmt.Errorf("a secret is being passed to tool %s", toolName)
 				}
+			}
+			if logCalls {
+				fmt.Printf("Calling tool %s with arguments: %s\n", toolName, arguments)
+			}
 
-				return &mcp.ListToolsResult{
-					Tools: filtered,
-				}, nil
-			}),
-			server.WithToolCallHandler(func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-				toolName := request.Params.Name
-				if _, ok := toolNeeded[toolName]; !ok {
-					return nil, fmt.Errorf("tool %s is not available", toolName)
-				}
-
-				// Print arguments into a string
-				var arguments string
-				buf, err := json.Marshal(request.Params.Arguments)
-				if err != nil {
-					arguments = fmt.Sprintf("%v", request.Params.Arguments)
-				} else {
-					arguments = string(buf)
-				}
-
-				// Callbacks
-				if scanSecrets {
-					fmt.Printf("Scanning tool call arguments for secrets...\n")
-
-					if secrets.ContainsSecrets(arguments) {
-						return nil, fmt.Errorf("a secret is being passed to tool %s", toolName)
-					}
-				}
-				if logCalls {
-					fmt.Printf("Calling tool %s with arguments: %s\n", toolName, arguments)
-				}
-
-				// Actual call
-				return c.CallTool(ctx, request)
-			}),
-		)),
-	}
-
-	go func() {
-		<-ctx.Done()
-		fmt.Println("Shutting down")
-		srv.Shutdown(context.Background())
-	}()
+			// Actual call
+			return c.CallTool(ctx, request)
+		}),
+	))
 
 	var lc net.ListenConfig
-	ln, err := lc.Listen(ctx, "tcp", srv.Addr)
+	ln, err := lc.Listen(ctx, "tcp", ":8811")
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Starting Agents Gateway on", srv.Addr)
-	return srv.Serve(ln)
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+			conn, err := ln.Accept()
+			if err != nil {
+				fmt.Printf("Error accepting to connection: %v\n", err)
+				continue
+			}
+
+			go func() {
+				defer conn.Close()
+				if err := mcpServer.Listen(ctx, conn, conn); err != nil {
+					fmt.Printf("Error listening to connection: %v\n", err)
+				}
+			}()
+		}
+	}
 }
 
 func startClient(ctx context.Context) (*client.Client, error) {

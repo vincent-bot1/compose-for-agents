@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mark3labs/mcp-go/client"
+	"github.com/mark3labs/mcp-go/client/transport"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -123,11 +125,12 @@ func call(ctx context.Context, args []string) error {
 
 func start(ctx context.Context) (*client.Client, error) {
 	host := os.Getenv("MCPGATEWAY_ENDPOINT")
-	c, err := client.NewSSEMCPClient("http://" + host + "/sse")
+	conn, err := net.Dial("tcp", host)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("dialing: %w", err)
 	}
 
+	c := client.NewClient(transport.NewIO(conn, conn, conn))
 	if err := c.Start(ctx); err != nil {
 		return nil, err
 	}
