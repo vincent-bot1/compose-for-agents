@@ -2,19 +2,22 @@
 
 Requirements:
 
-- A recent Docker Desktop with the Docker MCP Toolkit extension
-- In the MCP Toolkit, configure and enable GitHub Official, DuckDuckGo and SQLite.
-
-Build `docker compose` from `main`:
+Build and install `docker compose` from `main`:
 
 ```console
 $ task build-compose
 ```
 
-Build a gateway compose provider:
+Build the MCP gateway container:
 
 ```console
 $ task -d gateway build-compose-provider
+```
+
+Make sure you have a GitHub token in your env:
+
+```console
+export GITHUB_TOKEN=<TOKEN>
 ```
 
 Then you can run:
