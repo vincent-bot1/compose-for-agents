@@ -17,5 +17,5 @@ services:
       type: mcpgateway
       options:
         tools: get_me,create-table,fetch_content,search
-        logCalls: yes
-        scanSecrets: yes
+        log_calls: yes
+        scan_secrets: yes

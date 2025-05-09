@@ -26,8 +26,8 @@ func main() {
 	defer cancel()
 
 	tools := flag.String("tools", "", "Comma-separated list of tools to enable")
-	logCalls := flag.Bool("logCalls", false, "Log the tool calls")
-	scanSecrets := flag.Bool("scanSecrets", false, "Verify that secrets are not passed to tools")
+	logCalls := flag.Bool("log_calls", false, "Log the tool calls")
+	scanSecrets := flag.Bool("scan_secrets", false, "Verify that secrets are not passed to tools")
 	flag.Parse()
 
 	if err := run(ctx, *tools, *logCalls, *scanSecrets); err != nil {

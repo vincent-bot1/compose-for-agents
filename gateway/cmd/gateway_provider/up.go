@@ -43,8 +43,8 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 
 	cmd := []string{
 		"--tools=" + tools,
-		"--logCalls=" + boolToString(logCalls),
-		"--scanSecrets=" + boolToString(scanSecrets),
+		"--log_calls=" + boolToString(logCalls),
+		"--scan_secrets=" + boolToString(scanSecrets),
 	}
 
 	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(cmd, ", "))))
