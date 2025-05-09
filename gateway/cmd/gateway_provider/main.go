@@ -27,11 +27,11 @@ func (f *Flags) NetworkName() string {
 
 func main() {
 	plugin.Run(func(command.Cli) *cobra.Command {
-		var flags Flags
-
 		cmd := &cobra.Command{
 			Use: "compose",
 		}
+
+		var flags Flags
 		cmd.PersistentFlags().StringVar(&flags.Project, "project-name", "", "the project name to use for the compose project")
 		cmd.PersistentFlags().StringVar(&flags.Image, "image", "docker/agents_gateway", "Which docker image to use for the gateway")
 		cmd.PersistentFlags().StringVar(&flags.Network, "network", "default", "Which docker network to use")
