@@ -42,7 +42,7 @@ func main() {
 		cmd.AddCommand(NewDownCmd(&flags))
 
 		// Don't return an error. Instead, send an error message to compose.
-		cmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+		cmd.SetFlagErrorFunc(func(_ *cobra.Command, err error) error {
 			errorMessage("Error parsing flags", err)
 			return nil
 		})
