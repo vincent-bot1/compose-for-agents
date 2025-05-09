@@ -10,6 +10,7 @@ FROM scratch AS agent
 ENTRYPOINT ["/agent"]
 COPY --from=build /agent /
 
-FROM scratch AS agents_gateway
+FROM alpine:3.21@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS agents_gateway
+RUN apk add --no-cache docker-cli
 ENTRYPOINT ["/agents_gateway"]
 COPY --from=build /agents_gateway /

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -33,19 +34,15 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 }
 
 func startGateway(ctx context.Context, serviceName string, flags Flags) error {
-	project := flags.Project
-	containerID := flags.ContainerName(serviceName)
-	network := flags.NetworkName()
-	tools := flags.Tools
-	logCalls := flags.LogCallsEnabled()
-	scanSecrets := flags.ScanSecretsEnabled()
-
 	cmd := []string{
-		"--tools=" + tools,
-		"--log_calls=" + boolToString(logCalls),
-		"--scan_secrets=" + boolToString(scanSecrets),
+		"--servers=" + flags.Servers,
+		"--config=" + flags.Config,
+		"--tools=" + flags.Tools,
+		"--log_calls=" + boolToString(flags.LogCallsEnabled()),
+		"--scan_secrets=" + boolToString(flags.ScanSecretsEnabled()),
 	}
 
+	containerID := flags.ContainerName(serviceName)
 	exists, inspect, err := Exists(ctx, containerID)
 	if err != nil {
 		return err
@@ -64,15 +61,20 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	return StartContainer(ctx, containerID, container.Config{
 		Image: flags.Image,
 		Cmd:   cmd,
+		Env: []string{
+			// TEMP for github MCP server
+			"GITHUB_TOKEN=" + os.Getenv("GITHUB_TOKEN"),
+		},
 		Labels: map[string]string{
-			labelNames.Project:         project,
+			labelNames.Project:         flags.Project,
 			labelNames.Service:         serviceName,
 			labelNames.OneOff:          "False",
 			labelNames.ContainerNumber: "1",
 			labelNames.ConfigHash:      configHash,
 		},
 	}, container.HostConfig{
-		NetworkMode: container.NetworkMode(network),
+		NetworkMode: container.NetworkMode(flags.NetworkName()),
+		Init:        &trueValue,
 		Mounts: []mount.Mount{
 			{
 				Type:   mount.TypeBind,
@@ -82,6 +84,8 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		},
 	})
 }
+
+var trueValue = true
 
 func boolToString(b bool) string {
 	if b {

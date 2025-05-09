@@ -12,14 +12,11 @@ import (
 	"strings"
 	"syscall"
 
+	mcpclient "github.com/docker/gateway/cmd/agents_gateway/mcp"
 	"github.com/docker/gateway/cmd/agents_gateway/secrets"
-	"github.com/mark3labs/mcp-go/client"
-	"github.com/mark3labs/mcp-go/client/transport"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
-
-const defaultMCPGatewayHost = "host.docker.internal:8811"
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
@@ -38,45 +35,21 @@ func main() {
 }
 
 func run(ctx context.Context, servers, config, tools string, logCalls, scanSecrets bool) error {
-	toolNeeded := map[string]bool{}
+	// List as early as possible to not lose client connections
+	var lc net.ListenConfig
+	ln, err := lc.Listen(ctx, "tcp", ":8811")
+	if err != nil {
+		return err
+	}
 
+	// Filter out tools
+	toolNeeded := map[string]bool{}
 	for tool := range strings.SplitSeq(tools, ",") {
 		toolNeeded[strings.TrimSpace(tool)] = true
 	}
 
-	c, err := startClient(ctx)
-	if err != nil {
-		return fmt.Errorf("starting client: %w", err)
-	}
-	defer c.Close()
-
-	mcpServer := server.NewStdioServer(server.NewMCPServer(
-		"Docker AI MCP Gateway",
-		"1.0.1",
-		server.WithToolCapabilities(true),
-		server.WithListToolsHandler(func(ctx context.Context, request mcp.ListToolsRequest) (*mcp.ListToolsResult, error) {
-			list, err := c.ListTools(ctx, request)
-			if err != nil {
-				return nil, err
-			}
-
-			var filtered []mcp.Tool
-			for _, tool := range list.Tools {
-				if len(toolNeeded) == 0 || toolNeeded[tool.Name] {
-					filtered = append(filtered, tool)
-				}
-			}
-
-			return &mcp.ListToolsResult{
-				Tools: filtered,
-			}, nil
-		}),
-		server.WithToolCallHandler(func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			toolName := request.Params.Name
-			if _, ok := toolNeeded[toolName]; !ok {
-				return nil, fmt.Errorf("tool %s is not available", toolName)
-			}
-
+	mcpServer := server.NewMCPServer("Docker AI MCP Gateway", "1.0.1", server.WithToolHandlerMiddleware(func(next server.ToolHandlerFunc) server.ToolHandlerFunc {
+		return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			// Print arguments into a string
 			var arguments string
 			buf, err := json.Marshal(request.Params.Arguments)
@@ -86,29 +59,46 @@ func run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 				arguments = string(buf)
 			}
 
-			// Callbacks
 			if scanSecrets {
 				fmt.Printf("Scanning tool call arguments for secrets...\n")
-
 				if secrets.ContainsSecrets(arguments) {
-					return nil, fmt.Errorf("a secret is being passed to tool %s", toolName)
+					return nil, fmt.Errorf("a secret is being passed to tool %s", request.Params.Name)
 				}
 			}
+
 			if logCalls {
-				fmt.Printf("Calling tool %s with arguments: %s\n", toolName, arguments)
+				fmt.Printf("Calling tool %s with arguments: %s\n", request.Params.Name, arguments)
 			}
 
-			// Actual call
-			return c.CallTool(ctx, request)
-		}),
-	))
+			return next(ctx, request)
+		}
+	}))
 
-	var lc net.ListenConfig
-	ln, err := lc.Listen(ctx, "tcp", ":8811")
-	if err != nil {
-		return err
+	for mcpImage := range strings.SplitSeq(servers, ",") {
+		mcpImage := strings.TrimSpace(mcpImage)
+
+		pull := true
+		client, err := startMCPClient(ctx, mcpImage, pull, config)
+		if err != nil {
+			return err
+		}
+
+		tools, err := client.ListTools(ctx)
+		client.Close()
+		if err != nil {
+			return fmt.Errorf("listing tools: %w", err)
+		}
+
+		for _, tool := range tools {
+			if _, ok := toolNeeded[tool.Name]; !ok {
+				continue
+			}
+
+			mcpServer.AddTool(tool, mcpServerHandler(mcpImage, tool, config))
+		}
 	}
 
+	stdioServer := server.NewStdioServer(mcpServer)
 	for {
 		select {
 		case <-ctx.Done():
@@ -116,46 +106,59 @@ func run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		default:
 			conn, err := ln.Accept()
 			if err != nil {
-				fmt.Printf("Error accepting to connection: %v\n", err)
+				fmt.Printf("Error accepting the connection: %v\n", err)
 				continue
 			}
 
 			go func() {
 				defer conn.Close()
-				if err := mcpServer.Listen(ctx, conn, conn); err != nil {
-					fmt.Printf("Error listening to connection: %v\n", err)
+				if err := stdioServer.Listen(ctx, conn, conn); err != nil {
+					fmt.Printf("Error listening: %v\n", err)
 				}
 			}()
 		}
 	}
 }
 
-func startClient(ctx context.Context) (*client.Client, error) {
-	host := os.Getenv("MCPGATEWAY_ENDPOINT")
-	if host == "" {
-		host = defaultMCPGatewayHost
+func mcpServerHandler(mcpImage string, tool mcp.Tool, config string) server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		client, err := startMCPClient(ctx, mcpImage, false, config)
+		if err != nil {
+			return nil, err
+		}
+		defer client.Close()
+
+		return client.CallTool(ctx, tool.Name, request.Params.Arguments)
+	}
+}
+
+// config: mcp/github-mcp-server.GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_TOKEN
+func startMCPClient(ctx context.Context, mcpImage string, pull bool, config string) (*mcpclient.Client, error) {
+	args := []string{}
+	for cfg := range strings.SplitSeq(config, ",") {
+		prefix := mcpImage + "."
+		if !strings.HasPrefix(cfg, prefix) {
+			continue
+		}
+
+		mapping := strings.TrimPrefix(cfg, prefix)
+		parts := strings.SplitN(mapping, "=", 2)
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("invalid config format: %s", cfg)
+		}
+
+		if strings.HasPrefix(parts[1], "$") {
+			// TODO: find a better way to pass this secret
+			args = append(args, "-e", parts[0]+"="+os.Getenv(parts[1][1:]))
+		} else {
+			args = append(args, "-e", parts[0]+"="+parts[1])
+		}
 	}
 
-	conn, err := net.Dial("tcp", host)
-	if err != nil {
-		return nil, fmt.Errorf("dialing: %w", err)
+	client := mcpclient.NewClientArgs(mcpImage, pull, args, nil)
+	if err := client.Start(ctx); err != nil {
+		return nil, fmt.Errorf("failed to start server %s: %w", mcpImage, err)
 	}
 
-	c := client.NewClient(transport.NewIO(conn, conn, conn))
-	if err := c.Start(ctx); err != nil {
-		return nil, fmt.Errorf("starting client: %w", err)
-	}
-
-	initRequest := mcp.InitializeRequest{}
-	initRequest.Params.ProtocolVersion = mcp.LATEST_PROTOCOL_VERSION
-	initRequest.Params.ClientInfo = mcp.Implementation{
-		Name:    "docker",
-		Version: "1.0.0",
-	}
-
-	if _, err := c.Initialize(ctx, initRequest); err != nil {
-		return nil, fmt.Errorf("initializing: %w", err)
-	}
-
-	return c, nil
+	return client, nil
 }

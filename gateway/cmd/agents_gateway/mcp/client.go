@@ -1,0 +1,111 @@
+package mcp
+
+import (
+	"context"
+	"fmt"
+	"os/exec"
+	"time"
+
+	"github.com/mark3labs/mcp-go/mcp"
+)
+
+type Client struct {
+	image   string
+	pull    bool
+	workDir string
+	args    []string
+	command []string
+
+	c *StdioMCPClient
+}
+
+func NewClientArgs(image string, pull bool, args []string, command []string) *Client {
+	return &Client{
+		image:   image,
+		pull:    pull,
+		args:    args,
+		command: command,
+	}
+}
+
+func (cl *Client) Start(ctx context.Context) error {
+	if cl.c != nil {
+		return fmt.Errorf("already started %s", cl.image)
+	}
+
+	if cl.pull {
+		output, err := exec.CommandContext(ctx, "docker", "pull", cl.image).CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("pulling image %s: %w (%s)", cl.image, err, string(output))
+		}
+	}
+
+	args := []string{"run", "--rm", "-i", "--init"}
+	args = append(args, cl.args...)
+	if cl.workDir != "" {
+		args = append(args, "-w", cl.workDir)
+	}
+	args = append(args, cl.image)
+	c := NewMCPClient("docker", nil, args...)
+	cl.c = c
+
+	initRequest := mcp.InitializeRequest{}
+	initRequest.Params.ProtocolVersion = mcp.LATEST_PROTOCOL_VERSION
+	initRequest.Params.ClientInfo = mcp.Implementation{
+		Name:    "docker",
+		Version: "1.0.0",
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	defer cancel()
+
+	if _, err := c.Initialize(ctx, initRequest); err != nil {
+		return fmt.Errorf("initializing %s: %w", cl.image, err)
+	}
+	return nil
+}
+
+func (cl *Client) ListTools(ctx context.Context) ([]mcp.Tool, error) {
+	if cl.c == nil {
+		return nil, fmt.Errorf("listing tools %s: not started", cl.image)
+	}
+
+	response, err := cl.c.ListTools(ctx, mcp.ListToolsRequest{})
+	if err != nil {
+		return nil, fmt.Errorf("listing tools %s: %w", cl.image, err)
+	}
+
+	return response.Tools, nil
+}
+
+func (cl *Client) CallTool(ctx context.Context, name string, args map[string]any) (*mcp.CallToolResult, error) {
+	if cl.c == nil {
+		return nil, fmt.Errorf("calling tool %s: not started", name)
+	}
+
+	request := mcp.CallToolRequest{}
+	request.Params.Name = name
+	request.Params.Arguments = args
+	if request.Params.Arguments == nil {
+		request.Params.Arguments = map[string]any{}
+	}
+	// MCP servers return an error if the args are empty so we make sure
+	// there is at least one argument
+	if len(request.Params.Arguments) == 0 {
+		request.Params.Arguments["args"] = "..."
+	}
+
+	result, err := cl.c.CallTool(ctx, request)
+	if err != nil {
+		return nil, fmt.Errorf("calling tool %s on %s: %w", name, cl.image, err)
+	}
+
+	return result, nil
+}
+
+func (cl *Client) Close() error {
+	if cl.c == nil {
+		return fmt.Errorf("closing %s: not started", cl.image)
+	}
+	return cl.c.Close()
+}
