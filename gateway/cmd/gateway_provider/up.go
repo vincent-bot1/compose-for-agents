@@ -11,8 +11,6 @@ import (
 	"github.com/docker/docker/api/types/container"
 )
 
-const defaultGatewayImage = "docker/agents_gateway"
-
 func NewUpCmd(flags *Flags) *cobra.Command {
 	return &cobra.Command{
 		Use:   "up",
@@ -65,7 +63,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	return StartContainer(ctx, containerID, container.Config{
-		Image: defaultGatewayImage,
+		Image: flags.Image,
 		Cmd:   cmd,
 		Labels: map[string]string{
 			labelNames.Project:         project,

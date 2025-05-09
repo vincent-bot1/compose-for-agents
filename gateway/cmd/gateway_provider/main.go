@@ -10,8 +10,9 @@ import (
 
 type Flags struct {
 	Project     string
-	Tools       string
+	Image       string
 	Network     string
+	Tools       string
 	LogCalls    string // Should be a bool but compose provider mechanism doesn't like that
 	ScanSecrets string // Should be a bool but compose provider mechanism doesn't like that
 }
@@ -32,6 +33,7 @@ func main() {
 			Use: "compose",
 		}
 		cmd.PersistentFlags().StringVar(&flags.Project, "project-name", "", "the project name to use for the compose project")
+		cmd.PersistentFlags().StringVar(&flags.Image, "image", "docker/agents_gateway", "Which docker image to use for the gateway")
 		cmd.PersistentFlags().StringVar(&flags.Network, "network", "default", "Which docker network to use")
 		cmd.PersistentFlags().StringVar(&flags.Tools, "tools", "", "Which tools to expose, comma separated list of tools")
 		cmd.PersistentFlags().StringVar(&flags.LogCalls, "log_calls", "", "Log the tool calls?")
