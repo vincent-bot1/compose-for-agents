@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/mount"
 )
 
 func NewUpCmd(flags *Flags) *cobra.Command {
@@ -72,6 +73,13 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		},
 	}, container.HostConfig{
 		NetworkMode: container.NetworkMode(network),
+		Mounts: []mount.Mount{
+			{
+				Type:   mount.TypeBind,
+				Source: "/var/run/docker.sock",
+				Target: "/var/run/docker.sock",
+			},
+		},
 	})
 }
 
