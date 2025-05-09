@@ -18,7 +18,6 @@ services:
       - mcpgateway
       - gemma
 
-  # Connects to the MCP Gateway and adds services on top (secrets scan, logging, etc.)
   mcpgateway:
     provider:
       type: mcpgateway
@@ -27,7 +26,6 @@ services:
         logCalls: yes
         scanSecrets: yes
 
-  # Local model
   gemma:
     provider:
       type: model
