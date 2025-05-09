@@ -11,7 +11,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 )
 
-const gatewayImage = "docker/agents_gateway"
+const defaultGatewayImage = "docker/agents_gateway"
 
 func NewUpCmd(flags *Flags) *cobra.Command {
 	return &cobra.Command{
@@ -54,7 +54,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		return err
 	}
 
-	if exists && inspect.State.Running && inspect.Config.Labels["com.docker.compose.config-hash"] == configHash {
+	if exists && inspect.State.Running && inspect.Config.Labels[labelNames.ConfigHash] == configHash {
 		return nil
 	}
 
@@ -65,14 +65,14 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	return StartContainer(ctx, containerID, container.Config{
-		Image: gatewayImage,
+		Image: defaultGatewayImage,
 		Cmd:   cmd,
 		Labels: map[string]string{
-			"com.docker.compose.project":          project,
-			"com.docker.compose.service":          serviceName,
-			"com.docker.compose.oneoff":           "False",
-			"com.docker.compose.container-number": "1",
-			"com.docker.compose.config-hash":      configHash,
+			labelNames.Project:         project,
+			labelNames.Service:         serviceName,
+			labelNames.OneOff:          "False",
+			labelNames.ContainerNumber: "1",
+			labelNames.ConfigHash:      configHash,
 		},
 	}, container.HostConfig{
 		NetworkMode: container.NetworkMode(network),
