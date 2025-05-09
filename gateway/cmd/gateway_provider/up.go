@@ -19,27 +19,28 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 		Short: "called during compose up",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			service := args[0]
-			project := flags.Project
-			containerID := flags.ContainerName(service)
-			network := flags.NetworkName()
-			tools := flags.Tools
-			logCalls := strings.EqualFold(flags.LogCalls, "yes")
-			scanSecrets := strings.EqualFold(flags.ScanSecrets, "yes")
+			serviceName := args[0]
 
-			if err := startGateway(cmd.Context(), containerID, project, service, network, tools, logCalls, scanSecrets); err != nil {
+			if err := startGateway(cmd.Context(), serviceName, *flags); err != nil {
 				errorMessage("could not start the gateway", err)
 			} else {
 				infoMessage("started the gateway")
 			}
 
-			setenv("ENDPOINT", containerID+":8811")
+			setenv("ENDPOINT", flags.ContainerName(serviceName)+":8811")
 			return nil
 		},
 	}
 }
 
-func startGateway(ctx context.Context, containerID, project, service, network, tools string, logCalls, scanSecrets bool) error {
+func startGateway(ctx context.Context, serviceName string, flags Flags) error {
+	project := flags.Project
+	containerID := flags.ContainerName(serviceName)
+	network := flags.NetworkName()
+	tools := flags.Tools
+	logCalls := strings.EqualFold(flags.LogCalls, "yes")
+	scanSecrets := strings.EqualFold(flags.ScanSecrets, "yes")
+
 	cmd := []string{
 		"--tools=" + tools,
 		"--logCalls=" + boolToString(logCalls),
@@ -68,7 +69,7 @@ func startGateway(ctx context.Context, containerID, project, service, network, t
 		Cmd:   cmd,
 		Labels: map[string]string{
 			"com.docker.compose.project":          project,
-			"com.docker.compose.service":          service,
+			"com.docker.compose.service":          serviceName,
 			"com.docker.compose.oneoff":           "False",
 			"com.docker.compose.container-number": "1",
 			"com.docker.compose.config-hash":      configHash,
