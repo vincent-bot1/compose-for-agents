@@ -10,8 +10,6 @@ services:
     image: demo/agents
     build:
       context: agent
-    ports:
-      - "7777:7777"
     environment:
       - OPENAI_API_KEY
     depends_on:
