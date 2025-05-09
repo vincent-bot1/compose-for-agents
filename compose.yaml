@@ -19,7 +19,7 @@ services:
       - agents_gateway
       - gemma
 
-  # Agents Gateway that connects to a downstream MCP Gateway and adds services on top, such as filtering, logging, etc.
+  # Agents Gateway - connects to a MCP Gateway and adds services on top (secrets scan, logging, etc.)
   agents_gateway:
     image: demo/agents_gateway
     build:
@@ -33,12 +33,12 @@ services:
     depends_on:
       - mcpgateway
 
-  # This gives access to the MCP Gateway, either local to Docker Desktop (or running in the cloud).
+  # Enable the MCP Gateway (local to Docker Desktop for now)
   mcpgateway:
     provider:
       type: mcpgateway
 
-  # This is a local model.
+  # Local model
   gemma:
     provider:
       type: model

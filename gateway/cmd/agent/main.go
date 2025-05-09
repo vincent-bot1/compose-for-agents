@@ -106,6 +106,7 @@ func call(ctx context.Context, args []string) error {
 	if err != nil {
 		return fmt.Errorf("calling tool: %w", err)
 	}
+	c.Close()
 	fmt.Println("Tool call took:", time.Since(start))
 
 	if response.IsError {

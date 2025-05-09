@@ -20,8 +20,8 @@ services:
     command:
       - --tools
       - get_me
-      - --logCalls
-      - --scanSecrets
+      # - --logCalls
+      # - --scanSecrets
     depends_on:
       - mcpgateway
 

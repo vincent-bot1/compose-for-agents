@@ -3,14 +3,15 @@ import os
 
 import nest_asyncio
 from agno.agent import Agent
-from agno.team import Team
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
+from agno.team import Team
 from agno.tools.mcp import MCPTools
 from fastapi.middleware.cors import CORSMiddleware
 
 # Allow nested event loops
 nest_asyncio.apply()
+
 
 async def run_server() -> None:
     """Run the GitHub agent server."""
@@ -19,9 +20,9 @@ async def run_server() -> None:
         command=f"/usr/bin/socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}"
     ) as mcp_tools:
         gemma_model = OpenAIChat(
-                id="ai/gemma3",
-                base_url="http://model-runner.docker.internal/engines/llama.cpp/v1",
-            )
+            id="ai/gemma3",
+            base_url="http://model-runner.docker.internal/engines/llama.cpp/v1",
+        )
         gemma_model.role_map = {
             "system": "system",
             "user": "user",
@@ -57,7 +58,7 @@ async def run_server() -> None:
             name="Content Team",
             mode="coordinate",
             members=[researcher, writer],
-            instructions="You are a team of researchers and writers that work together to create high-quality content.",
+            instructions="You are a team of researchers and writers that work together to create high-quality content. Use your tools to find information before writing content.",
             model=OpenAIChat("gpt-4o"),
             markdown=True,
         )
