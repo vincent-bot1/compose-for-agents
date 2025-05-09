@@ -12,3 +12,9 @@ tasks:
   down:
     desc: Stop the demo Compose Stack
     cmd: docker compose down --remove-orphans
+
+  build-compose:
+    desc: Build docker-compose from the source
+    cmds:
+      - docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./out https://github.com/docker/compose.git
+      - /bin/ln -sf "{{.TASKFILE_DIR}}/out/docker-compose" "{{.HOME}}/.docker/cli-plugins/docker-compose"
