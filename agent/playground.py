@@ -5,6 +5,7 @@ from textwrap import dedent
 
 import nest_asyncio
 from agno.agent import Agent
+from agno.team import Team
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
 from agno.storage.agent.sqlite import SqliteAgentStorage
@@ -22,27 +23,6 @@ async def run_server() -> None:
     async with MCPTools(
         transport="sse", url=f"http://{os.environ['MCPGATEWAY_HOST']}/sse"
     ) as mcp_tools:
-        agent = Agent(
-            name="MCP GitHub Agent",
-            tools=[mcp_tools],
-            instructions=dedent("""\
-                You are a GitHub assistant. Help users explore repositories and their activity.
-
-                - Use headings to organize your responses
-                - Be concise and focus on relevant information\
-            """),
-            model=OpenAIChat(id="gpt-4o"),
-            storage=SqliteAgentStorage(
-                table_name="basic_agent",
-                db_file=agent_storage_file,
-                auto_upgrade_schema=True,
-            ),
-            add_history_to_messages=True,
-            num_history_responses=3,
-            add_datetime_to_instructions=True,
-            markdown=True,
-        )
-
         gemma_model = OpenAIChat(
                 id="ai/gemma3",
                 base_url="http://model-runner.docker.internal/engines/llama.cpp/v1",
@@ -55,19 +35,31 @@ async def run_server() -> None:
             "model": "assistant",
         }
 
-        gemma = Agent(
-            name="Gemma",
-            instructions=dedent("""\
-                You are a GitHub assistant. Help users explore repositories and their activity.
-
-                - Use headings to organize your responses
-                - Be concise and focus on relevant information\
-            """),
-            model=gemma_model,
-            add_history_to_messages=False,
+        # Create individual specialized agents
+        researcher = Agent(
+            name="Researcher",
+            role="Expert at finding information",
+            tools=[mcp_tools],
+            model=OpenAIChat("gpt-4o"),
         )
 
-        playground = Playground(agents=[agent, gemma])
+        writer = Agent(
+            name="Writer",
+            role="Expert at writing clear, engaging content",
+            model=gemma_model,
+        )
+
+        # Create a team with these agents
+        content_team = Team(
+            name="Content Team",
+            mode="coordinate",
+            members=[researcher, writer],
+            instructions="You are a team of researchers and writers that work together to create high-quality content.",
+            model=OpenAIChat("gpt-4o"),
+            markdown=True,
+        )
+
+        playground = Playground(teams=[content_team])
         app = playground.get_app()
         app.add_middleware(
             CORSMiddleware,

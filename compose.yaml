@@ -21,7 +21,7 @@ services:
     provider:
       type: mcpgateway
       options:
-        tools: get_me
+        tools: get_me,create-table,fetch_content,search
         logCalls: 1
         scanSecrets: 1
 
