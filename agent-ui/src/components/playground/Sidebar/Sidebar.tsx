@@ -287,15 +287,8 @@ const Sidebar = () => {
                     </div>
                   ) : (
                     <>
-                      {teams.length > 0 ? (
-                        <TeamSelector />
-                      ) : agents.length > 0 ? (
-                        <AgentSelector />
-                      ) : (
-                        <div className="border-primary/15 bg-accent text-muted flex h-9 w-full items-center justify-center rounded-xl border p-3 text-xs font-medium uppercase">
-                          No Agents or Teams
-                        </div>
-                      )}
+                      {teams.length > 0 && <TeamSelector />}
+                      {agents.length > 0 && <AgentSelector />}
                       {selectedModel && (agentId || teamId) && (
                         <ModelDisplay model={selectedModel} />
                       )}

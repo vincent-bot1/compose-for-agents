@@ -54,7 +54,7 @@ async def run_server() -> None:
             markdown=True,
         )
 
-        playground = Playground(teams=[content_team])
+        playground = Playground(agents=[researcher], teams=[content_team])
         app = playground.get_app()
         app.add_middleware(
             CORSMiddleware,
