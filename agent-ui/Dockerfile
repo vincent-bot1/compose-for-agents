@@ -2,13 +2,12 @@ FROM node
 
 WORKDIR /app
 
-COPY . .
-
 RUN npm install --global corepack@latest
-
 RUN corepack enable pnpm 
 
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
+COPY . .
 
 EXPOSE 3000
 
