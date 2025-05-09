@@ -8,10 +8,10 @@ Build and install `docker compose` from `main`:
 $ task build-compose
 ```
 
-Build the MCP gateway container:
+Build the MCP gateway provider and container:
 
 ```console
-$ task -d gateway build-compose-provider
+$ task -d gateway build
 ```
 
 Make sure you have a GitHub token in your env:
