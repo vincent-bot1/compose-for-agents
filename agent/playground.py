@@ -16,7 +16,7 @@ async def run_server() -> None:
     """Run the GitHub agent server."""
     # Create a client session to connect to the MCP server
     async with MCPTools(
-        transport="sse", url=f"http://{os.environ['MCPGATEWAY_HOST']}/sse"
+        transport="sse", url=f"http://{os.environ['MCPGATEWAY_ENDPOINT']}/sse"
     ) as mcp_tools:
         gemma_model = OpenAIChat(
                 id="ai/gemma3",
