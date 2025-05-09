@@ -36,8 +36,8 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	containerID := flags.ContainerName(serviceName)
 	network := flags.NetworkName()
 	tools := flags.Tools
-	logCalls := strings.EqualFold(flags.LogCalls, "yes")
-	scanSecrets := strings.EqualFold(flags.ScanSecrets, "yes")
+	logCalls := flags.LogCallsEnabled()
+	scanSecrets := flags.ScanSecretsEnabled()
 
 	cmd := []string{
 		"--tools=" + tools,
@@ -45,18 +45,16 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		"--scan_secrets=" + boolToString(scanSecrets),
 	}
 
-	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(cmd, ", "))))
-
 	exists, inspect, err := Exists(ctx, containerID)
 	if err != nil {
 		return err
 	}
 
-	if exists && inspect.State.Running && inspect.Config.Labels[labelNames.ConfigHash] == configHash {
-		return nil
-	}
-
+	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(cmd, ", "))))
 	if exists {
+		if inspect.State.Running && inspect.Config.Labels[labelNames.ConfigHash] == configHash {
+			return nil
+		}
 		if err := RemoveContainer(ctx, containerID, true); err != nil {
 			return err
 		}

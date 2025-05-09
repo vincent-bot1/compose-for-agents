@@ -8,23 +8,6 @@ import (
 	"github.com/docker/cli/cli/command"
 )
 
-type Flags struct {
-	Project     string
-	Image       string
-	Network     string
-	Tools       string
-	LogCalls    string // Should be a bool but compose provider mechanism doesn't like that
-	ScanSecrets string // Should be a bool but compose provider mechanism doesn't like that
-}
-
-func (f *Flags) ContainerName(providerName string) string {
-	return f.Project + "-" + providerName + "-" + f.Network
-}
-
-func (f *Flags) NetworkName() string {
-	return f.Project + "_" + f.Network
-}
-
 func main() {
 	plugin.Run(func(command.Cli) *cobra.Command {
 		cmd := &cobra.Command{
