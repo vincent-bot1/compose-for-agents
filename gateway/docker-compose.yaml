@@ -1,0 +1,32 @@
+services:
+  # This is an agent interacting with tools, through the Agents Gateway
+  agent:
+    image: demo/agent
+    build:
+      target: agent
+    command:
+      - call
+      - get_me
+      # - ghp_cxLeRrvbJfmYdUtr70xnNE3Q7Gvli43s19PD
+    environment:
+      MCPGATEWAY_ENDPOINT: agents_gateway:8811
+    depends_on:
+      - agents_gateway
+
+  # This is an Agents Gateway that connects to a downstream MCP Gateway
+  # And adds services on top, such as filtering, logging, etc.
+  agents_gateway:
+    image: docker/agents_gateway
+    command:
+      - --tools
+      - get_me
+      - --logCalls
+      - --scanSecrets
+    depends_on:
+      - mcpgateway
+
+  # This gives access to the MCP Gateway, either local to Docker Desktop
+  # (or running in the cloud).
+  mcpgateway:
+    provider:
+      type: mcpgateway

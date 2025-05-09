@@ -1,0 +1,33 @@
+version: "3"
+
+tasks:
+  default:
+    desc: Build and run the Docker image
+    cmds:
+      - task: build
+      - task: down
+      - task: up
+
+  up:
+    desc: Start the demo Compose Stack
+    cmd: docker compose up --build
+
+  down:
+    desc: Stop the demo Compose Stack
+    cmd: docker compose down --remove-orphans
+
+  build-gateway-image:
+    desc: Build the gateway docker image
+    cmd: docker build -t docker/agents_gateway --target=agents_gateway .
+
+  build-compose-provider:
+    desc: Build the compose provider
+    cmds:
+      - go build -o docker-mcpgateway ./cmd/gateway_light_provider
+      - /bin/ln -sf "{{.TASKFILE_DIR}}/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+
+  build:
+    desc: Build everything
+    cmds:
+      - task: build-gateway-image
+      - task: build-compose-provider
