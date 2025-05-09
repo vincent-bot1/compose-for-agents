@@ -20,7 +20,9 @@ services:
     provider:
       type: mcpgateway
       options:
-        tools: get_me,create-table,fetch_content,search
+        servers: mcp/duckduckgo, mcp/github-mcp-server, mcp/sqlite
+        config: github.personal_access_token=$GITHUB_TOKEN
+        tools: get_me, create-table, fetch_content, search
         log_calls: yes
         scan_secrets: yes
 

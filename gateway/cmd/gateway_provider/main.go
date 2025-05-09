@@ -18,6 +18,8 @@ func main() {
 		cmd.PersistentFlags().StringVar(&flags.Project, "project-name", "", "the project name to use for the compose project")
 		cmd.PersistentFlags().StringVar(&flags.Image, "image", "docker/agents_gateway", "Which docker image to use for the gateway")
 		cmd.PersistentFlags().StringVar(&flags.Network, "network", "default", "Which docker network to use")
+		cmd.PersistentFlags().StringVar(&flags.Servers, "servers", "", "Which servers servers to expose")
+		cmd.PersistentFlags().StringVar(&flags.Config, "config", "", "Configuration for the servers")
 		cmd.PersistentFlags().StringVar(&flags.Tools, "tools", "", "Which tools to expose, comma separated list of tools")
 		cmd.PersistentFlags().StringVar(&flags.LogCalls, "log_calls", "", "Log the tool calls?")
 		cmd.PersistentFlags().StringVar(&flags.ScanSecrets, "scan_secrets", "", "Verify that secrets are not passed to tools")

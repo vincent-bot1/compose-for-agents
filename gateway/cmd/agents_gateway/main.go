@@ -25,20 +25,23 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
+	servers := flag.String("servers", "", "Comma-separated list of servers to enable")
+	config := flag.String("config", "", "Comma-separated list of config for the servers")
 	tools := flag.String("tools", "", "Comma-separated list of tools to enable")
 	logCalls := flag.Bool("log_calls", false, "Log the tool calls")
 	scanSecrets := flag.Bool("scan_secrets", false, "Verify that secrets are not passed to tools")
 	flag.Parse()
 
-	if err := run(ctx, *tools, *logCalls, *scanSecrets); err != nil {
+	if err := run(ctx, *servers, *config, *tools, *logCalls, *scanSecrets); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func run(ctx context.Context, tools string, logCalls, scanSecrets bool) error {
+func run(ctx context.Context, servers, config, tools string, logCalls, scanSecrets bool) error {
 	toolNeeded := map[string]bool{}
+
 	for tool := range strings.SplitSeq(tools, ",") {
-		toolNeeded[tool] = true
+		toolNeeded[strings.TrimSpace(tool)] = true
 	}
 
 	c, err := startClient(ctx)
