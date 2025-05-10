@@ -4,11 +4,11 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 
+	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/compose"
 	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/docker/docker/api/types/container"
@@ -41,14 +41,35 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		return err
 	}
 
-	servers, err := enabledMCPServers(ctx)
+	serverNames, err := enabledMCPServers(ctx)
 	if err != nil {
 		compose.ErrorMessage("could not read the MCP config", err)
 	}
 
+	serversByName, err := catalog.Get()
+	if err != nil {
+		return fmt.Errorf("listing servers: %w", err)
+	}
+
+	var env []string
+	for _, serverName := range serverNames {
+		server, ok := serversByName[serverName]
+		if !ok {
+			continue
+		}
+
+		for _, secret := range server.Config.Secrets {
+			value, err := secretValue(ctx, secret.Id)
+			if err != nil {
+				return fmt.Errorf("getting secret %s: %w", secret.Name, err)
+			}
+
+			env = append(env, fmt.Sprintf("%s=%s", secret.Name, value))
+		}
+	}
+
 	cmd := []string{
-		"--servers=" + strings.Join(servers, ","),
-		"--config=" + flags.Config,
+		"--servers=" + strings.Join(serverNames, ","),
 		"--tools=" + flags.Tools,
 		"--log_calls=" + boolToString(flags.LogCallsEnabled()),
 		"--scan_secrets=" + boolToString(flags.ScanSecretsEnabled()),
@@ -60,7 +81,9 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		return err
 	}
 
-	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(cmd, ", "))))
+	// Make sure to restart the gateway if the config changes.
+	configStr := string(catalog.McpServersYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ")
+	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(configStr)))
 	if exists {
 		if inspect.State.Running && inspect.Config.Labels[compose.LabelNames.ConfigHash] == configHash {
 			return nil
@@ -73,10 +96,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	return client.StartContainer(ctx, containerID, container.Config{
 		Image: flags.Image,
 		Cmd:   cmd,
-		Env: []string{
-			// TEMP for github MCP server
-			"GITHUB_TOKEN=" + os.Getenv("GITHUB_TOKEN"),
-		},
+		Env:   env,
 		Labels: map[string]string{
 			compose.LabelNames.Project:         flags.Project,
 			compose.LabelNames.Service:         serviceName,

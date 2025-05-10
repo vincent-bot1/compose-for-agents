@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecrets bool) error {
+func Run(ctx context.Context, serverNames, tools string, logCalls, scanSecrets bool) error {
 	// List as early as possible to not lose client connections
 	var lc net.ListenConfig
 	ln, err := lc.Listen(ctx, "tcp", ":8811")
@@ -17,7 +18,13 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		return err
 	}
 
-	serverTools, err := listTools(ctx, servers, tools, config)
+	// Read the MCP catalog
+	serversByName, err := catalog.Get()
+	if err != nil {
+		return fmt.Errorf("listing catalog: %w", err)
+	}
+
+	serverTools, err := listTools(ctx, serverNames, serversByName, tools)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
@@ -54,9 +61,9 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 	}
 }
 
-func mcpServerHandler(mcpServer string, tool mcp.Tool, config string) server.ToolHandlerFunc {
+func mcpServerHandler(server catalog.Server, tool mcp.Tool) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		client, err := startMCPClient(ctx, mcpServer, false, config)
+		client, err := startMCPClient(ctx, server, false)
 		if err != nil {
 			return nil, err
 		}

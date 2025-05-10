@@ -1,4 +1,4 @@
-package servers
+package catalog
 
 import (
 	"gopkg.in/yaml.v3"

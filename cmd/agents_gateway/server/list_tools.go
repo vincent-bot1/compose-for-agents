@@ -6,11 +6,12 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/mark3labs/mcp-go/server"
 	"golang.org/x/sync/errgroup"
 )
 
-func listTools(ctx context.Context, servers, tools, config string) ([]server.ServerTool, error) {
+func listTools(ctx context.Context, serverNames string, serversByName map[string]catalog.Server, tools string) ([]server.ServerTool, error) {
 	// Filter out tools
 	toolNeeded := map[string]bool{}
 	for tool := range strings.SplitSeq(tools, ",") {
@@ -21,11 +22,15 @@ func listTools(ctx context.Context, servers, tools, config string) ([]server.Ser
 	var serverToolsLock sync.Mutex
 
 	errs, ctx := errgroup.WithContext(ctx)
-	for _, mcpServer := range parseServers(servers) {
-		mcpServer := mcpServer
+	for _, serverName := range parseServers(serverNames) {
+		serverConfig, ok := serversByName[serverName]
+		if !ok {
+			fmt.Println("MCP server not found:", serverName)
+			continue
+		}
 
 		errs.Go(func() error {
-			client, err := startMCPClient(ctx, mcpServer, true, config)
+			client, err := startMCPClient(ctx, serverConfig, true)
 			if err != nil {
 				return err
 			}
@@ -43,7 +48,7 @@ func listTools(ctx context.Context, servers, tools, config string) ([]server.Ser
 
 				serverTool := server.ServerTool{
 					Tool:    tool,
-					Handler: mcpServerHandler(mcpServer, tool, config),
+					Handler: mcpServerHandler(serverConfig, tool),
 				}
 
 				serverToolsLock.Lock()

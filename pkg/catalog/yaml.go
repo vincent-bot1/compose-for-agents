@@ -1,4 +1,4 @@
-package servers
+package catalog
 
 import (
 	_ "embed"
@@ -8,11 +8,11 @@ import (
 )
 
 //go:embed mcp-servers.yaml
-var mcpServersYAML []byte
+var McpServersYAML []byte
 
-func List() (map[string]Server, error) {
+func Get() (map[string]Server, error) {
 	var servers []Server
-	if err := yaml.Unmarshal(mcpServersYAML, &servers); err != nil {
+	if err := yaml.Unmarshal(McpServersYAML, &servers); err != nil {
 		return nil, fmt.Errorf("reading catalog: %w", err)
 	}
 
