@@ -68,7 +68,7 @@ func mcpServerHandler(mcpImage string, tool mcp.Tool, config string) server.Tool
 
 // config: mcp/github-mcp-server.GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_TOKEN
 func startMCPClient(ctx context.Context, mcpImage string, pull bool, config string) (*mcpclient.Client, error) {
-	args := []string{}
+	var args []string
 	for _, cfg := range parseConfig(config) {
 		prefix := mcpImage + "."
 		if !strings.HasPrefix(cfg, prefix) {
