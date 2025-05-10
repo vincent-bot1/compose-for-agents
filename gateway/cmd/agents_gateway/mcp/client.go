@@ -12,16 +12,18 @@ import (
 type Client struct {
 	image   string
 	pull    bool
+	env     []string
 	args    []string
 	command []string
 
 	c *StdioMCPClient
 }
 
-func NewClientArgs(image string, pull bool, args []string, command []string) *Client {
+func NewClientArgs(image string, pull bool, env []string, args []string, command []string) *Client {
 	return &Client{
 		image:   image,
 		pull:    pull,
+		env:     env,
 		args:    args,
 		command: command,
 	}
@@ -42,7 +44,7 @@ func (cl *Client) Start(ctx context.Context) error {
 	args := []string{"run", "--rm", "-i", "--init"}
 	args = append(args, cl.args...)
 	args = append(args, cl.image)
-	c := NewMCPClient("docker", nil, args...)
+	c := NewMCPClient("docker", cl.env, args...)
 	cl.c = c
 
 	initRequest := mcp.InitializeRequest{}

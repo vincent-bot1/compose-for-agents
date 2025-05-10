@@ -69,6 +69,8 @@ func mcpServerHandler(mcpImage string, tool mcp.Tool, config string) server.Tool
 // config: mcp/github-mcp-server.GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_TOKEN
 func startMCPClient(ctx context.Context, mcpImage string, pull bool, config string) (*mcpclient.Client, error) {
 	var args []string
+	var env []string
+
 	for _, cfg := range parseConfig(config) {
 		prefix := mcpImage + "."
 		if !strings.HasPrefix(cfg, prefix) {
@@ -82,14 +84,14 @@ func startMCPClient(ctx context.Context, mcpImage string, pull bool, config stri
 		}
 
 		if strings.HasPrefix(parts[1], "$") {
-			// TODO: find a better way to pass this secret
-			args = append(args, "-e", parts[0]+"="+os.Getenv(parts[1][1:]))
+			env = append(args, parts[0]+"="+os.Getenv(parts[1][1:]))
 		} else {
-			args = append(args, "-e", parts[0]+"="+parts[1])
+			env = append(args, parts[0]+"="+parts[1])
 		}
+		args = append(args, "-e", parts[0])
 	}
 
-	client := mcpclient.NewClientArgs(mcpImage, pull, args, nil)
+	client := mcpclient.NewClientArgs(mcpImage, pull, env, args, nil)
 	if err := client.Start(ctx); err != nil {
 		return nil, fmt.Errorf("failed to start server %s: %w", mcpImage, err)
 	}
