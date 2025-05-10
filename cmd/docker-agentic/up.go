@@ -27,8 +27,6 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serviceName := args[0]
 
-			fmt.Fprintln(os.Stderr, "my environ", os.Environ())
-
 			if err := startGateway(cmd.Context(), serviceName, *flags); err != nil {
 				compose.ErrorMessage("could not start the gateway", err)
 			} else {
@@ -78,10 +76,8 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 
 	var portBindings nat.PortMap
 
-	fmt.Fprintln(os.Stderr, "GOT APIPORT", flags.APIPort)
 	if flags.APIPort != "" {
 		host, port, err := net.SplitHostPort(flags.APIPort)
-		fmt.Fprintln(os.Stderr, "APIPORT", flags.APIPort, "@", host, "@", port)
 		if err != nil {
 			host = "127.0.0.1"
 			port = flags.APIPort
