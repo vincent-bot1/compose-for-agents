@@ -1,0 +1,149 @@
+package servers
+
+import (
+	"gopkg.in/yaml.v3"
+)
+
+type Server struct {
+	Name        string `yaml:"name" json:"name"`
+	Image       string `yaml:"image" json:"image"`
+	Meta        Meta   `yaml:"meta,omitempty" json:"meta,omitempty"`
+	About       About  `yaml:"about,omitempty" json:"about,omitempty"`
+	Source      Source `yaml:"source" json:"source"`
+	Run         Run    `yaml:"run,omitempty" json:"run,omitempty"`
+	Config      Config `yaml:"config,omitempty" json:"config,omitempty"`
+	Tests       []Test `yaml:"tests,omitempty" json:"tests,omitempty"`
+	Requirement string `yaml:"requirement,omitempty" json:"requirement,omitempty"`
+}
+
+type Test struct {
+	Tool string         `yaml:"tool" json:"tool"`
+	Args map[string]any `yaml:"args,omitempty" json:"args,omitempty"`
+}
+
+type Secret struct {
+	Id       string `yaml:"id" json:"id"`
+	Name     string `yaml:"name" json:"name"`
+	Value    string `yaml:"value" json:"value"`
+	Required *bool  `yaml:"required,omitempty" json:"required,omitempty"`
+}
+
+type Env struct {
+	Name       string `yaml:"name" json:"name"`
+	Default    any    `yaml:"default" json:"default"`
+	Expression string `yaml:"expression" json:"expression"`
+}
+
+type AnyOf struct {
+	Required []string `yaml:"required,omitempty" json:"required,omitempty"`
+}
+
+type Schema struct {
+	Type        string     `yaml:"type" json:"type"`
+	Description string     `yaml:"description,omitempty" json:"description,omitempty"`
+	Properties  SchemaList `yaml:"properties,omitempty" json:"properties,omitempty"`
+	Required    []string   `yaml:"required,omitempty" json:"required,omitempty"`
+	Items       Items      `yaml:"items,omitempty" json:"items,omitempty"`
+	AnyOf       []AnyOf    `yaml:"anyOf,omitempty" json:"anyOf,omitempty"`
+	Default     any        `yaml:"default,omitempty" json:"default,omitempty"`
+}
+
+type Items struct {
+	Type string `yaml:"type" json:"type"`
+}
+
+type About struct {
+	Title       string `yaml:"title,omitempty" json:"title,omitempty"`
+	Reference   bool   `yaml:"reference,omitempty" json:"reference,omitempty"`
+	Readme      string `yaml:"readme,omitempty" json:"readme,omitempty"`
+	Description string `yaml:"description,omitempty" json:"description,omitempty"`
+	Icon        string `yaml:"icon,omitempty" json:"icon,omitempty"`
+	Details     string `yaml:"details,omitempty" json:"details,omitempty"`
+	Highlight   bool   `yaml:"highlight,omitempty" json:"highlight,omitempty"`
+}
+
+type Source struct {
+	Project    string `yaml:"project" json:"project"`
+	Upstream   string `yaml:"upstream,omitempty" json:"upstream,omitempty"`
+	Branch     string `yaml:"branch,omitempty" json:"branch,omitempty"`
+	Directory  string `yaml:"directory,omitempty" json:"directory,omitempty"`
+	Dockerfile string `yaml:"dockerfile,omitempty" json:"dockerfile,omitempty"`
+}
+
+type Run struct {
+	Workdir string            `yaml:"workdir,omitempty" json:"workdir,omitempty"`
+	Command []string          `yaml:"command,omitempty" json:"command,omitempty"`
+	Volumes []string          `yaml:"volumes,omitempty" json:"volumes,omitempty"`
+	Env     map[string]string `yaml:"env,omitempty" json:"env,omitempty"`
+}
+
+type Config struct {
+	Description string   `yaml:"description,omitempty" json:"description,omitempty"`
+	Secrets     []Secret `yaml:"secrets,omitempty" json:"secrets,omitempty"`
+	Env         []Env    `yaml:"env,omitempty" json:"env,omitempty"`
+	Parameters  Schema   `yaml:"parameters,omitempty" json:"parameters,omitempty"`
+	AnyOf       []AnyOf  `yaml:"anyOf,omitempty" json:"anyOf,omitempty"`
+}
+
+type Meta struct {
+	Builds           bool `yaml:"builds,omitempty" json:"builds,omitempty"`
+	BuiltByDocker    bool `yaml:"builtByDocker,omitempty" json:"builtByDocker,omitempty"`
+	Starts           bool `yaml:"starts,omitempty" json:"starts,omitempty"`
+	IncludeInCatalog bool `yaml:"includeInCatalog,omitempty" json:"includeInCatalog,omitempty"`
+	Order            int  `yaml:"order,omitempty" json:"order,omitempty"`
+}
+
+type SchemaEntry struct {
+	Schema Schema `yaml:",inline"`
+	Name   string `yaml:"name"`
+}
+
+type SchemaList []SchemaEntry
+
+func (tl *SchemaList) UnmarshalYAML(value *yaml.Node) error {
+	for i := 0; i < len(value.Content); i += 2 {
+		keyNode := value.Content[i]
+		valNode := value.Content[i+1]
+
+		var name string
+		if err := keyNode.Decode(&name); err != nil {
+			return err
+		}
+
+		var schema Schema
+		if err := valNode.Decode(&schema); err != nil {
+			return err
+		}
+
+		*tl = append(*tl, SchemaEntry{
+			Name:   name,
+			Schema: schema,
+		})
+	}
+	return nil
+}
+
+func (tl SchemaList) MarshalYAML() (interface{}, error) {
+	mapNode := &yaml.Node{
+		Kind:    yaml.MappingNode,
+		Content: []*yaml.Node{},
+	}
+
+	for _, entry := range tl {
+		// Key node: the tile name
+		keyNode := &yaml.Node{
+			Kind:  yaml.ScalarNode,
+			Value: entry.Name,
+		}
+
+		// Value node: marshal the Schema
+		valNode := &yaml.Node{}
+		if err := valNode.Encode(entry.Schema); err != nil {
+			return nil, err
+		}
+
+		mapNode.Content = append(mapNode.Content, keyNode, valNode)
+	}
+
+	return mapNode, nil
+}
