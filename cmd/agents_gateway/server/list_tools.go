@@ -21,11 +21,11 @@ func listTools(ctx context.Context, servers, tools, config string) ([]server.Ser
 	var serverToolsLock sync.Mutex
 
 	errs, ctx := errgroup.WithContext(ctx)
-	for _, mcpImage := range parseServers(servers) {
-		mcpImage := mcpImage
+	for _, mcpServer := range parseServers(servers) {
+		mcpServer := mcpServer
 
 		errs.Go(func() error {
-			client, err := startMCPClient(ctx, mcpImage, true, config)
+			client, err := startMCPClient(ctx, mcpServer, true, config)
 			if err != nil {
 				return err
 			}
@@ -43,7 +43,7 @@ func listTools(ctx context.Context, servers, tools, config string) ([]server.Ser
 
 				serverTool := server.ServerTool{
 					Tool:    tool,
-					Handler: mcpServerHandler(mcpImage, tool, config),
+					Handler: mcpServerHandler(mcpServer, tool, config),
 				}
 
 				serverToolsLock.Lock()

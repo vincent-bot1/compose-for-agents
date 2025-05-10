@@ -41,8 +41,13 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		return err
 	}
 
+	servers, err := enabledMCPServers(ctx)
+	if err != nil {
+		compose.ErrorMessage("could not read the MCP config", err)
+	}
+
 	cmd := []string{
-		"--servers=" + flags.Servers,
+		"--servers=" + strings.Join(servers, ","),
 		"--config=" + flags.Config,
 		"--tools=" + flags.Tools,
 		"--log_calls=" + boolToString(flags.LogCallsEnabled()),

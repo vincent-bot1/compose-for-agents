@@ -11,20 +11,20 @@ import (
 )
 
 // config: mcp/github-mcp-server.GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_TOKEN
-func startMCPClient(ctx context.Context, mcpImage string, pull bool, config string) (*mcpclient.Client, error) {
+func startMCPClient(ctx context.Context, mcpServer string, pull bool, config string) (*mcpclient.Client, error) {
 	serversByName, err := servers.List()
 	if err != nil {
 		return nil, fmt.Errorf("listing servers: %w", err)
 	}
 
-	var runConfig servers.Run
-	if server, ok := serversByName[mcpImage]; ok {
-		runConfig = server.Run
+	server, ok := serversByName[mcpServer]
+	if !ok {
+		return nil, fmt.Errorf("server not found: %s", mcpServer)
 	}
 
 	args := []string{"--security-opt", "no-new-privileges"}
-	if runConfig.Workdir != "" {
-		args = append(args, "--workdir", runConfig.Workdir)
+	if server.Run.Workdir != "" {
+		args = append(args, "--workdir", server.Run.Workdir)
 	}
 	// TODO: runConfig.Env
 	// TODO: runConfig.Volumes
@@ -32,7 +32,7 @@ func startMCPClient(ctx context.Context, mcpImage string, pull bool, config stri
 
 	var env []string
 	for _, cfg := range parseConfig(config) {
-		prefix := mcpImage + "."
+		prefix := server.Image + "."
 		if !strings.HasPrefix(cfg, prefix) {
 			continue
 		}
@@ -51,9 +51,9 @@ func startMCPClient(ctx context.Context, mcpImage string, pull bool, config stri
 		args = append(args, "-e", parts[0])
 	}
 
-	client := mcpclient.NewClientArgs(mcpImage, pull, env, args, runConfig.Command)
+	client := mcpclient.NewClientArgs(server.Image, pull, env, args, server.Run.Command)
 	if err := client.Start(ctx); err != nil {
-		return nil, fmt.Errorf("failed to start server %s: %w", mcpImage, err)
+		return nil, fmt.Errorf("failed to start server %s: %w", mcpServer, err)
 	}
 
 	return client, nil

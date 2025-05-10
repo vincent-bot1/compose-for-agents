@@ -54,9 +54,9 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 	}
 }
 
-func mcpServerHandler(mcpImage string, tool mcp.Tool, config string) server.ToolHandlerFunc {
+func mcpServerHandler(mcpServer string, tool mcp.Tool, config string) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		client, err := startMCPClient(ctx, mcpImage, false, config)
+		client, err := startMCPClient(ctx, mcpServer, false, config)
 		if err != nil {
 			return nil, err
 		}
