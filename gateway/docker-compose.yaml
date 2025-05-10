@@ -1,9 +1,8 @@
 services:
-  # This is an agent interacting with tools, through the Agents Gateway
-  agent:
-    image: demo/agent
+  client:
+    image: demo/client
     build:
-      target: agent
+      target: client
     command:
       - call
       - get_me
@@ -11,7 +10,6 @@ services:
     depends_on:
       - mcpgateway
 
-  # Connects to the MCP Gateway and adds services on top (secrets scan, logging, etc.)
   mcpgateway:
     provider:
       type: mcpgateway
