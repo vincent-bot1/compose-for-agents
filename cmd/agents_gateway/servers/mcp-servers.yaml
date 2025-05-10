@@ -1,41 +1,5 @@
-- name: 1yhy-figma-context-mcp
-  image: mcpcommunity/1yhy-figma-context-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/1yhy/Figma-Context-MCP
-  config:
-    secrets:
-      - id: 1yhy-figma-context-mcp.api_key
-        name: FIGMA_API_KEY
-        value: YOUR_FIGMA_API_KEY
-
-- name: 21st-dev-magic-mcp
-  image: mcpcommunity/21st-dev-magic-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/21st-dev/magic-mcp
-
 - name: 302_sandbox
   image: mcp/302_sandbox
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 91
-  about:
-    title: 302 Sandbox
-    icon: https://avatars.githubusercontent.com/u/179190197?s=200&v=4
-  source:
-    project: https://github.com/302ai/302_sandbox_mcp
   run:
     workdir: /app
   config:
@@ -46,18 +10,6 @@
 
 - name: 3d-printer
   image: mcp/3d-printer
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 86
-  about:
-    title: 3D Printer
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/DMontgomery40/mcp-3D-printer-server
-    branch: refs/pull/3/merge
   run:
     workdir: /app
   config:
@@ -89,194 +41,8 @@
         - host
         - type
 
-- name: 66julienmartin-mcp-server-deepseek_r1
-  image: mcpcommunity/66julienmartin-mcp-server-deepseek_r1
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/66julienmartin/MCP-server-Deepseek_R1
-
-- name: aaronsb-datetime
-  image: mcpcommunity/aaronsb-datetime
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/aaronsb/datetime
-
-- name: aarora79-aws-cost-explorer-mcp-server
-  image: mcpcommunity/aarora79-aws-cost-explorer-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/aarora79/aws-cost-explorer-mcp-server
-
-- name: adenot-mcp-google-search
-  image: mcpcommunity/adenot-mcp-google-search
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/adenot/mcp-google-search
-
-- name: adhikasp-mcp-twikit
-  image: mcpcommunity/adhikasp-mcp-twikit
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/adhikasp/mcp-twikit
-    branch: master
-
-- name: adityak74-mcp-scholarly
-  image: mcpcommunity/adityak74-mcp-scholarly
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/adityak74/mcp-scholarly
-
-- name: ahnlabio-bicscan-mcp
-  image: mcpcommunity/ahnlabio-bicscan-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ahnlabio/bicscan-mcp
-
-- name: ahujasid-ableton-mcp
-  image: mcpcommunity/ahujasid-ableton-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ahujasid/ableton-mcp
-
-- name: airtable
-  image: mcp/airtable
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/airtable.svg
-  source:
-    project: https://github.com/domdomegg/airtable-mcp-server
-    branch: master
-  config:
-    secrets:
-      - id: airtable.api_key
-        name: AIRTABLE_API_KEY
-        value: pat123.abc123
-
-- name: alapi-sdk-mcp-alapi-cn
-  image: mcpcommunity/alapi-sdk-mcp-alapi-cn
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ALAPI-SDK/mcp-alapi-cn
-  config:
-    secrets:
-      - id: alapi-sdk-mcp-alapi-cn.token
-        name: ALAPI_TOKEN
-        value: YOUR_ALAPI_TOKEN
-
-- name: alexanimal-tradovate-mcp-server
-  image: mcpcommunity/alexanimal-tradovate-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/alexanimal/tradovate-mcp-server
-
-- name: amanasmuei-mcp-server-nodemcu
-  image: mcpcommunity/amanasmuei-mcp-server-nodemcu
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/amanasmuei/mcp-server-nodemcu
-
-- name: amotivv-cloudflare-browser-rendering-mcp
-  image: mcpcommunity/amotivv-cloudflare-browser-rendering-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/amotivv/cloudflare-browser-rendering-mcp
-
-- name: anshumax-world_bank_mcp_server
-  image: mcpcommunity/anshumax-world_bank_mcp_server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/anshumax/world_bank_mcp_server
-    branch: master
-
-- name: apify-actors-mcp-server
-  image: mcpcommunity/apify-actors-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/apify/actors-mcp-server
-    branch: master
-
-- name: arenukvern-mcp_flutter
-  image: mcpcommunity/arenukvern-mcp_flutter
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Arenukvern/mcp_flutter
-
 - name: armor-crypto
   image: mcp/armor-crypto
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 39
-  about:
-    title: Armor Crypto
-    icon: https://avatars.githubusercontent.com/u/168436604?s=200&v=4
-  source:
-    project: https://github.com/armorwallet/armor-crypto-mcp
   run:
     workdir: /app
   config:
@@ -297,73 +63,8 @@
   tests:
     - tool: get_armor_mcp_version
 
-- name: aryankeluskar-canvas-mcp
-  image: mcpcommunity/aryankeluskar-canvas-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/aryankeluskar/canvas-mcp
-    branch: master
-
-- name: ashdevfr-discourse-mcp-server
-  image: mcpcommunity/ashdevfr-discourse-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/AshDevFr/discourse-mcp-server
-  config:
-    env:
-      - name: DISCOURSE_API_URL
-        default: YOUR_DISCOURSE_API_URL
-        expression: '{{discourse.url|safe}}'
-    parameters:
-      type: object
-      properties:
-        url:
-          type: string
-
-- name: ashiknesin-pushover-mcp
-  image: mcpcommunity/ashiknesin-pushover-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ashiknesin/pushover-mcp
-
-- name: ashley-ha-mcp-manus
-  image: mcpcommunity/ashley-ha-mcp-manus
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ashley-ha/mcp-manus
-
 - name: astra-db
   image: mcp/astra-db
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 40
-  about:
-    title: Astra DB
-    icon: https://avatars.githubusercontent.com/u/573369?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/datastax/astra-db-mcp
-    branch: refs/pull/14/merge
   run:
     workdir: /app
   config:
@@ -382,30 +83,8 @@
         endpoint:
           type: string
 
-- name: atharvagupta2003-mcp-stripe
-  image: mcpcommunity/atharvagupta2003-mcp-stripe
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/atharvagupta2003/mcp-stripe
-
 - name: atlas-docs
   image: mcp/atlas-docs
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 41
-  about:
-    title: Atlas Docs
-    icon: https://avatars.githubusercontent.com/u/184709581?s=200&v=4
-  source:
-    project: https://github.com/CartographAI/atlas-docs-mcp
-    branch: master
   run:
     workdir: /app
   config:
@@ -427,19 +106,6 @@
 
 - name: atlassian
   image: mcp/atlassian
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 28
-  about:
-    title: Atlassian
-    description: Tools for Atlassian products (Confluence and Jira). This integration supports both Atlassian Cloud and Jira Server/Data Center deployments.
-    icon: https://avatars.githubusercontent.com/u/43281909?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/sooperset/mcp-atlassian
   run:
     workdir: /app
   config:
@@ -499,17 +165,6 @@
 
 - name: audiense-insights
   image: mcp/audiense-insights
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 42
-  about:
-    title: Audiense Insights
-    icon: https://avatars.githubusercontent.com/u/2454008?s=200&v=4
-  source:
-    project: https://github.com/AudienseCo/mcp-audiense-insights
   run:
     workdir: /app
   config:
@@ -533,33 +188,8 @@
       required:
         - client_id
 
-- name: automata-labs-team-code-sandbox-mcp
-  image: mcpcommunity/automata-labs-team-code-sandbox-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Automata-Labs-team/code-sandbox-mcp
-
 - name: aws-kb-retrieval-server
   image: mcp/aws-kb-retrieval-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 30
-  about:
-    title: AWS KB Retrieval (Reference)
-    reference: true
-    readme: src/aws-kb-retrieval-server/README.md
-    description: An MCP server implementation for retrieving information from the AWS Knowledge Base using the Bedrock Agent Runtime.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/aws-kb-retrieval-server/Dockerfile
   run:
     workdir: /app
   config:
@@ -582,157 +212,21 @@
 
 - name: azure
   image: mcp/azure
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 98
-  about:
-    title: Azure
-    icon: https://avatars.githubusercontent.com/u/6844498?s=200&v=4
-  source:
-    project: https://github.com/Azure/azure-mcp
-    branch: 1ea702cb489ba95c5d9bea8d41fc18e9343703f8
   run:
     workdir: /app
     command:
       - server
       - start
 
-- name: badhansen-notion-mcp
-  image: mcpcommunity/badhansen-notion-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Badhansen/notion-mcp
-    branch: master
-
-- name: bankless-onchain-mcp
-  image: mcpcommunity/bankless-onchain-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/bankless/onchain-mcp
-
-- name: baranwang-mcp-trends-hub
-  image: mcpcommunity/baranwang-mcp-trends-hub
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/baranwang/mcp-trends-hub
-
-- name: baryhuang-mcp-headless-gmail
-  image: mcpcommunity/baryhuang-mcp-headless-gmail
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/baryhuang/mcp-headless-gmail
-
-- name: baryhuang-mcp-hubspot
-  image: mcpcommunity/baryhuang-mcp-hubspot
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/baryhuang/mcp-hubspot
-  config:
-    secrets:
-      - id: baryhuang-mcp-hubspot.access_token
-        name: HUBSPOT_ACCESS_TOKEN
-        value: YOUR_HUBSPOT_ACCESS_TOKEN
-
-- name: baryhuang-mcp-server-any-openapi
-  image: mcpcommunity/baryhuang-mcp-server-any-openapi
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/baryhuang/mcp-server-any-openapi
-
-- name: baryhuang-mcp-server-aws-resources-python
-  image: mcpcommunity/baryhuang-mcp-server-aws-resources-python
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/baryhuang/mcp-server-aws-resources-python
-
 - name: basic-memory
   image: mcp/basic-memory
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 43
-  about:
-    title: Basic Memory
-    icon: https://avatars.githubusercontent.com/u/88632318?s=200&v=4
-  source:
-    project: https://github.com/basicmachines-co/basic-memory
   run:
     workdir: /app
   tests:
     - tool: project_info
 
-- name: bearnetwork-brnkc-sketchup-mcp
-  image: mcpcommunity/bearnetwork-brnkc-sketchup-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/BearNetwork-BRNKC/SketchUp-MCP
-
-- name: benborla-mcp-server-mysql
-  image: mcpcommunity/benborla-mcp-server-mysql
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/benborla/mcp-server-mysql
-
 - name: bitrefill
   image: mcp/bitrefill
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 44
-  about:
-    title: Bitrefill
-    icon: https://avatars.githubusercontent.com/u/10897174?s=200&v=4
-  source:
-    project: https://github.com/bitrefill/bitrefill-mcp-server
-    branch: master
   run:
     workdir: /app
   config:
@@ -755,29 +249,8 @@
   tests:
     - tool: categories
 
-- name: blankcut-kubernetes-mcp-server
-  image: mcpcommunity/blankcut-kubernetes-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Blankcut/kubernetes-mcp-server
-
 - name: box
   image: mcp/box
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 45
-  about:
-    title: Box
-    icon: https://avatars.githubusercontent.com/u/8659759?s=200&v=4
-  source:
-    project: https://github.com/box-community/mcp-server-box
-    branch: refs/pull/4/merge
   run:
     workdir: /app
   config:
@@ -798,34 +271,8 @@
       required:
         - client_id
 
-- name: boydyngo-aisdev
-  image: mcpcommunity/boydyngo-aisdev
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/boydyngo/AISDEV
-
 - name: brave
   image: mcp/brave-search
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 9
-  about:
-    title: Brave Search (Reference)
-    reference: true
-    readme: src/brave-search/README.md
-    description: Web and local search using Brave's Search API
-    icon: https://avatars.githubusercontent.com/u/12301619?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/brave-search/Dockerfile
   run:
     workdir: /app
   config:
@@ -834,64 +281,8 @@
         name: BRAVE_API_KEY
         value: YOUR_API_KEY_HERE
 
-- name: bsmi021-mcp-server-webscan
-  image: mcpcommunity/bsmi021-mcp-server-webscan
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/bsmi021/mcp-server-webscan
-
-- name: burtthecoder-mcp-shodan
-  image: mcpcommunity/burtthecoder-mcp-shodan
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/BurtTheCoder/mcp-shodan
-  config:
-    secrets:
-      - id: burtthecoder-mcp-shodan.api_key
-        name: SHODAN_API_KEY
-        value: YOUR_SHODAN_API_KEY
-
-- name: calvernaz-alphavantage
-  image: mcpcommunity/calvernaz-alphavantage
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/calvernaz/alphavantage
-
-- name: cam10001110101-mcp-server-ollama-deep-researcher
-  image: mcpcommunity/cam10001110101-mcp-server-ollama-deep-researcher
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Cam10001110101/mcp-server-ollama-deep-researcher
-
 - name: chroma
   image: mcp/chroma
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 46
-  about:
-    title: Chroma
-    icon: https://avatars.githubusercontent.com/u/105881770?s=200&v=4
-  source:
-    project: https://github.com/chroma-core/chroma-mcp
   run:
     workdir: /app
   config:
@@ -902,39 +293,8 @@
   tests:
     - tool: chroma_list_collections
 
-- name: chronulusai-chronulus-mcp
-  image: mcpcommunity/chronulusai-chronulus-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ChronulusAI/chronulus-mcp
-
-- name: chuckwilliams37-mcp-server-docker
-  image: mcpcommunity/chuckwilliams37-mcp-server-docker
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/chuckwilliams37/mcp-server-docker
-
 - name: circleci
   image: mcp/circleci
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 90
-  about:
-    title: CircleCI
-    icon: https://avatars.githubusercontent.com/u/26607840?s=200&v=4
-  source:
-    project: https://github.com/CircleCI-Public/mcp-server-circleci
   run:
     workdir: /app
   config:
@@ -953,162 +313,13 @@
         url:
           type: string
 
-- name: ckreiling-mcp-server-docker
-  image: mcpcommunity/ckreiling-mcp-server-docker
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ckreiling/mcp-server-docker
-    branch: 51d9b9bae211d10a263d9f9457ec95b0ef3da433
-
-- name: cloudflare
-  image: mcp/cloudflare
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/cloudflare/mcp-server-cloudflare
-
-- name: co-browser-browser-use-mcp-server
-  image: mcpcommunity/co-browser-browser-use-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/co-browser/browser-use-mcp-server
-
-- name: codeisdemode-docker-saas-pipeline
-  image: mcpcommunity/codeisdemode-docker-saas-pipeline
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/codeisdemode/docker-saas-pipeline
-
-- name: codergamester-mcp-unity
-  image: mcpcommunity/codergamester-mcp-unity
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/CoderGamester/mcp-unity
-
-- name: coleam00-archon
-  image: mcpcommunity/coleam00-archon
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/coleam00/Archon
-
-- name: coleam00-supabase-mcp
-  image: mcpcommunity/coleam00-supabase-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/coleam00/supabase-mcp
-  config:
-    secrets:
-      - id: coleam00-supabase-mcp.api_key
-        name: SUPABASE_API_KEY
-        value: YOUR_SUPABASE_API_KEY
-    env:
-      - name: SUPABASE_SERVICE_KEY
-        default: http://localhost
-        expression: '{{supabase.service_key}}'
-      - name: SUPABASE_URL
-        default: YOUR_SUPABASE_URL
-        expression: '{{supabase.url|safe}}'
-    parameters:
-      type: object
-      properties:
-        service_key:
-          type: string
-        url:
-          type: string
-      required:
-        - service_key
-        - url
-
 - name: context7
   image: mcp/context7
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 97
-  about:
-    title: Context7
-    icon: https://avatars.githubusercontent.com/u/74989412?s=200&v=4
-  source:
-    project: https://github.com/upstash/context7
-    branch: master
   run:
     workdir: /app
 
-- name: coyasong-youtube-mcp-server
-  image: mcpcommunity/coyasong-youtube-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/coyaSONG/youtube-mcp-server
-  config:
-    secrets:
-      - id: coyasong-youtube-mcp-server.api_key
-        name: YOUTUBE_API_KEY
-        value: YOUR_YOUTUBE_API_KEY
-
-- name: cr7258-elasticsearch-mcp-server
-  image: mcpcommunity/cr7258-elasticsearch-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/cr7258/elasticsearch-mcp-server
-
-- name: cyberagiinc-devdocs
-  image: mcpcommunity/cyberagiinc-devdocs
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/cyberagiinc/DevDocs
-
 - name: cyreslab-ai-shodan
   image: mcp/cyreslab-ai-shodan
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 47
-  about:
-    title: Shodan
-    icon: https://avatars.githubusercontent.com/u/178556137?s=200&v=4
-  source:
-    project: https://github.com/Cyreslab-AI/shodan-mcp-server
-    branch: 935f7044f60570cf2d094d94596eeea7872fb6be
   run:
     workdir: /app
   config:
@@ -1117,29 +328,8 @@
         name: SHODAN_API_KEY
         value: YOUR_SHODAN_API_KEY
 
-- name: da-okazaki-mcp-neo4j-server
-  image: mcpcommunity/da-okazaki-mcp-neo4j-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/da-okazaki/mcp-neo4j-server
-
 - name: dappier
   image: mcp/dappier
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 95
-  about:
-    title: Dappier
-    icon: https://avatars.githubusercontent.com/u/152645347?s=200&v=4
-  source:
-    project: https://github.com/dappierai/dappier-mcp
-    branch: staging
   run:
     workdir: /app
   config:
@@ -1150,17 +340,6 @@
 
 - name: dart
   image: mcp/dart
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 48
-  about:
-    title: Dart AI
-    icon: https://avatars.githubusercontent.com/u/92822028?s=200&v=4
-  source:
-    project: https://github.com/its-dart/dart-mcp-server
   run:
     workdir: /app
   config:
@@ -1181,17 +360,6 @@
 
 - name: databutton
   image: mcp/databutton
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 49
-  about:
-    title: Databutton
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/databutton/databutton-mcp
   run:
     workdir: /app
   tests:
@@ -1205,31 +373,8 @@
           targetAudience: Nice people
           typography: Helvetica
 
-- name: dazeb-markdown-downloader
-  image: mcpcommunity/dazeb-markdown-downloader
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/dazeb/markdown-downloader
-
 - name: descope
   image: mcp/descope
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 50
-  about:
-    title: Descope
-    description: The Descope Model Context Protocol (MCP) server provides an interface to interact with Descope's Management APIs, enabling the search and retrieval of project-related information.
-    icon: https://avatars.githubusercontent.com/u/119703169?s=200&v=4
-  source:
-    project: https://github.com/descope-sample-apps/descope-mcp-server
   run:
     workdir: /usr/src/app
   config:
@@ -1253,48 +398,13 @@
     - tool: search-audits
     - tool: search-users
 
-- name: designcomputer-mysql_mcp_server
-  image: mcpcommunity/designcomputer-mysql_mcp_server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/designcomputer/mysql_mcp_server
-
 - name: desktop-commander
   image: mcp/desktop-commander
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 78
-  about:
-    title: Desktop Commander
-    description: Search, update, manage files and run terminal commands with AI
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/wonderwhy-er/DesktopCommanderMCP
   run:
     workdir: /usr/src/app
 
 - name: devhub-cms
   image: mcp/devhub-cms
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 51
-  about:
-    title: DevHub CMS
-    icon: https://avatars.githubusercontent.com/u/602719?s=200&v=4
-  source:
-    project: https://github.com/devhub/devhub-cms-mcp
   run:
     workdir: /app
   config:
@@ -1318,64 +428,8 @@
       required:
         - url
 
-- name: dexpaprika
-  image: mcp/dexpaprika
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/coinpaprika/dexpaprika-mcp
-
-- name: dheerajoruganty-aws-bedrock-logs-mcp-server
-  image: mcpcommunity/dheerajoruganty-aws-bedrock-logs-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/dheerajoruganty/aws-bedrock-logs-mcp-server
-
-- name: didlawowo-mcp-collection
-  image: mcpcommunity/didlawowo-mcp-collection
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/didlawowo/mcp-collection
-
-- name: dmontgomery40-deepseek-mcp-server
-  image: mcpcommunity/dmontgomery40-deepseek-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/DMontgomery40/deepseek-mcp-server
-  config:
-    secrets:
-      - id: dmontgomery40-deepseek-mcp-server.api_key
-        name: DEEPSEEK_API_KEY
-        value: YOUR_DEEPSEEK_API_KEY
-
 - name: doit
   image: mcp/doit
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 93
-  about:
-    title: DoiT
-    icon: https://avatars.githubusercontent.com/u/8424863?s=200&v=4
-  source:
-    project: https://github.com/doitintl/doit-mcp-server
   run:
     workdir: /app
   config:
@@ -1386,17 +440,6 @@
 
 - name: duckduckgo
   image: mcp/duckduckgo
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 79
-  about:
-    title: DuckDuckGo
-    icon: https://avatars.githubusercontent.com/u/342708?s=200&v=4
-  source:
-    project: https://github.com/nickclyde/duckduckgo-mcp-server
   run:
     workdir: /app
   tests:
@@ -1405,63 +448,8 @@
         max_results: 1
         query: MCP
 
-- name: dvcrn-mcp-server-siri-shortcuts
-  image: mcpcommunity/dvcrn-mcp-server-siri-shortcuts
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/dvcrn/mcp-server-siri-shortcuts
-    branch: refs/pull/2/merge
-
-- name: dynamicendpoints-cloudflare-github-backup-mcp
-  image: mcpcommunity/dynamicendpoints-cloudflare-github-backup-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/DynamicEndpoints/cloudflare-github-backup-mcp
-  config:
-    secrets:
-      - id: dynamicendpoints-cloudflare-github-backup-mcp.api_token
-        name: CLOUDFLARE_API_TOKEN
-        value: YOUR_CLOUDFLARE_API_TOKEN
-      - id: dynamicendpoints-cloudflare-github-backup-mcp.access_token
-        name: GITHUB_ACCESS_TOKEN
-        value: YOUR_GITHUB_ACCESS_TOKEN
-    env:
-      - name: GITHUB_REPO_NAME
-        default: YOUR_GITHUB_REPO_NAME
-        expression: '{{github.url|safe}}'
-      - name: GITHUB_USERNAME
-        default: YOUR_GITHUB_USERNAME
-        expression: '{{gitlab.username}}'
-    parameters:
-      type: object
-      properties:
-        url:
-          type: string
-        username:
-          type: string
-
 - name: e2b
   image: mcp/e2b
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 52
-  about:
-    title: E2B
-    icon: https://avatars.githubusercontent.com/u/129434473?s=200&v=4
-  source:
-    project: https://github.com/e2b-dev/mcp-server
   run:
     workdir: /app
   config:
@@ -1470,35 +458,8 @@
         name: E2B_API_KEY
         value: YOUR_API_KEY_HERE
 
-- name: eddydpyl-sketchfab_mcp
-  image: mcpcommunity/eddydpyl-sketchfab_mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Eddydpyl/sketchfab_mcp
-    branch: master
-  config:
-    secrets:
-      - id: eddydpyl-sketchfab_mcp.api_token
-        name: SKETCHFAB_API_TOKEN
-        value: YOUR_SKETCHFAB_API_TOKEN
-
 - name: edubase
   image: mcp/edubase
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 80
-  about:
-    title: EduBase
-    icon: https://avatars.githubusercontent.com/u/33938028?s=200&v=4
-  source:
-    project: https://github.com/EduBase/MCP
   run:
     workdir: /app
   config:
@@ -1527,20 +488,6 @@
 
 - name: elasticsearch
   image: mcp/elasticsearch
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 53
-  about:
-    title: Elasticsearch
-    description: Interact with your Elasticsearch indices through natural language conversations.
-    icon: https://avatars.githubusercontent.com/u/6764390?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/elastic/mcp-server-elasticsearch
-    branch: refs/pull/37/merge
   run:
     workdir: /app
   config:
@@ -1563,18 +510,6 @@
 
 - name: elevenlabs
   image: mcp/elevenlabs
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 94
-  about:
-    title: ElevenLabs
-    icon: https://avatars.githubusercontent.com/u/94471909?s=200&v=4
-  source:
-    project: https://github.com/elevenlabs/elevenlabs-mcp
-    branch: refs/pull/17/merge
   run:
     workdir: /app
   config:
@@ -1583,61 +518,8 @@
         name: ELEVENLABS_API_KEY
         value: <insert-your-api-key-here>
 
-- name: enemyrr-mcp-mysql-server
-  image: mcpcommunity/enemyrr-mcp-mysql-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/enemyrr/mcp-mysql-server
-
-- name: enescinr-twitter-mcp
-  image: mcpcommunity/enescinr-twitter-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/EnesCinr/twitter-mcp
-
-- name: everaldo-mcp-mistral-ocr
-  image: mcpcommunity/everaldo-mcp-mistral-ocr
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/everaldo/mcp-mistral-ocr
-    branch: master
-  config:
-    secrets:
-      - id: everaldo-mcp-mistral-ocr.api_key
-        name: MISTRAL_API_KEY
-        value: YOUR_MISTRAL_API_KEY
-
 - name: everart
   image: mcp/everart
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 31
-  about:
-    title: EverArt (Reference)
-    reference: true
-    readme: src/everart/README.md
-    description: Image generation server using EverArt's API.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/everart/Dockerfile
   run:
     workdir: /app
   config:
@@ -1646,38 +528,8 @@
         name: EVERART_API_KEY
         value: your_key_here
 
-- name: everything
-  image: mcp/everything
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    title: Everything (Reference)
-    reference: true
-    readme: src/everything/README.md
-    description: Reference / test server with prompts, resources, and tools
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.24
-    dockerfile: src/everything/Dockerfile
-  run:
-    workdir: /app
-
 - name: exa
   image: mcp/exa
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 84
-  about:
-    title: Exa
-    icon: https://avatars.githubusercontent.com/u/77906174?s=200&v=4
-  source:
-    project: https://github.com/exa-labs/exa-mcp-server
   run:
     workdir: /app
   config:
@@ -1686,55 +538,8 @@
         name: EXA_API_KEY
         value: your-api-key-here
 
-- name: executeautomation-mcp-playwright
-  image: mcpcommunity/executeautomation-mcp-playwright
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/executeautomation/mcp-playwright
-
-- name: f4ww4z-mcp-mysql-server
-  image: mcpcommunity/f4ww4z-mcp-mysql-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/f4ww4z/mcp-mysql-server
-
-- name: felores-placid-mcp-server
-  image: mcpcommunity/felores-placid-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/felores/placid-mcp-server
-
 - name: fetch
   image: mcp/fetch
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 16
-  about:
-    title: Fetch (Reference)
-    reference: true
-    readme: src/fetch/README.md
-    description: Fetches a URL from the internet and extracts its contents as markdown
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    directory: src/fetch
   run:
     workdir: /app
   tests:
@@ -1742,24 +547,23 @@
       args:
         url: https://ai-backend-service.docker.com/
 
+- name: fibery
+  image: mcp/fibery
+  run:
+    workdir: /app
+  config:
+    description: Configure the connection to Fibery
+    secrets:
+      - id: fibery.api_token
+        name: FIBERY_API_TOKEN
+        value: your-api-token
+    env:
+      - name: FIBERY_HOST
+        default: your-domain.fibery.io
+        expression: '{{fibery.host|safe}}'
+
 - name: filesystem
   image: mcp/filesystem
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 21
-  about:
-    title: Filesystem (Reference)
-    reference: true
-    readme: src/filesystem/README.md
-    description: Local filesystem access with configurable allowed paths
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/filesystem/Dockerfile
   run:
     workdir: /app
     command:
@@ -1782,17 +586,6 @@
 
 - name: firecrawl
   image: mcp/firecrawl
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 54
-  about:
-    title: Firecrawl
-    icon: https://avatars.githubusercontent.com/u/135057108?s=200&v=4
-  source:
-    project: https://github.com/mendableai/firecrawl-mcp-server
   run:
     workdir: /app
   config:
@@ -1843,17 +636,6 @@
 
 - name: flexprice
   image: mcp/flexprice
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 102
-  about:
-    title: FlexPrice
-    icon: https://avatars.githubusercontent.com/u/168305045?v=4
-  source:
-    project: https://github.com/flexprice/mcp-server
   run:
     workdir: /app
   config:
@@ -1872,99 +654,8 @@
         base_url:
           type: string
 
-- name: furey-mongodb-lens
-  image: mcpcommunity/furey-mongodb-lens
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/furey/mongodb-lens
-
-- name: gannonh-firebase-mcp
-  image: mcpcommunity/gannonh-firebase-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/gannonh/firebase-mcp
-
-- name: gdrive
-  image: mcp/gdrive
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    reference: true
-    readme: src/gdrive/Dockerfile/README.md
-    description: This MCP server integrates with Google Drive to allow listing, reading, and searching over files
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/dgageot/servers
-    upstream: https://github.com/modelcontextprotocol/servers
-    branch: slim/gdrive
-    dockerfile: src/gdrive/Dockerfile
-
-- name: gerred-mcp-server-replicate
-  image: mcpcommunity/gerred-mcp-server-replicate
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/gerred/mcp-server-replicate
-
-- name: git
-  image: mcp/git
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    reference: true
-    readme: src/git/README.md
-    description: A Model Context Protocol server for Git repository interaction and automation
-    icon: https://avatars.githubusercontent.com/u/18133?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    directory: src/git
-  run:
-    workdir: /app
-
-- name: githejie-mcp-server-calculator
-  image: mcpcommunity/githejie-mcp-server-calculator
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/githejie/mcp-server-calculator
-
 - name: github
   image: mcp/github
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 12
-  about:
-    title: GitHub (Reference)
-    reference: true
-    readme: src/github/README.md
-    description: Tools for interacting with the GitHub API, enabling file operations, repository management, search functionality, and more.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/github/Dockerfile
   run:
     workdir: /app
   config:
@@ -1975,17 +666,6 @@
 
 - name: github-chat
   image: mcp/github-chat
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 55
-  about:
-    title: GitHub Chat
-    icon: https://avatars.githubusercontent.com/u/194295535?s=200&v=4
-  source:
-    project: https://github.com/AsyncFuncAI/github-chat-mcp
   run:
     workdir: /app
   config:
@@ -2000,21 +680,6 @@
 
 - name: github-official
   image: mcp/github-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 38
-  about:
-    title: GitHub Official
-    description: Official GitHub MCP Server, by GitHub. Provides seamless integration with GitHub APIs, enabling advanced automation and interaction capabilities for developers and tools.
-    icon: https://avatars.githubusercontent.com/u/9919?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/dgageot/github-mcp-server
-    upstream: https://github.com/github/github-mcp-server
-    branch: temp-fix
   run:
     workdir: /server
   config:
@@ -2025,23 +690,6 @@
 
 - name: gitlab
   image: mcp/gitlab
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 33
-  about:
-    title: GitLab (Reference)
-    reference: true
-    readme: src/gitlab/README.md
-    description: MCP Server for the GitLab API, enabling project management, file operations, and more.
-    icon: https://avatars.githubusercontent.com/u/1086321?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.24
-    dockerfile: src/gitlab/Dockerfile
   run:
     workdir: /app
   config:
@@ -2063,17 +711,6 @@
 
 - name: glif
   image: mcp/glif
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 83
-  about:
-    title: glif.app
-    icon: https://avatars.githubusercontent.com/u/119348676?s=200&v=4
-  source:
-    project: https://github.com/glifxyz/glif-mcp-server
   run:
     workdir: /app
   config:
@@ -2097,45 +734,8 @@
         ignored_saved:
           type: boolean
 
-- name: gongrzhe-quickchart-mcp-server
-  image: mcpcommunity/gongrzhe-quickchart-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/GongRzhe/Quickchart-MCP-Server
-
-- name: gongrzhe-travel-planner-mcp-server
-  image: mcpcommunity/gongrzhe-travel-planner-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/GongRzhe/TRAVEL-PLANNER-MCP-Server
-
 - name: google-maps
   image: mcp/google-maps
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 13
-  about:
-    title: Google Maps (Reference)
-    reference: true
-    readme: src/google-maps/README.md
-    description: Tools for interacting with the Google Maps API.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/google-maps/Dockerfile
   run:
     workdir: /app
   config:
@@ -2146,18 +746,6 @@
 
 - name: grafana
   image: mcp/grafana
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 87
-  about:
-    title: Grafana
-    icon: https://avatars.githubusercontent.com/u/7195757?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/grafana/mcp-grafana
   run:
     workdir: /app
     command:
@@ -2178,26 +766,8 @@
         url:
           type: string
 
-- name: graphlit-graphlit-mcp-server
-  image: mcpcommunity/graphlit-graphlit-mcp-server
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/graphlit/graphlit-mcp-server
-
 - name: gyazo
   image: mcp/gyazo
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 100
-  about:
-    title: Gyazo
-    icon: https://avatars.githubusercontent.com/u/113151?v=4
-  source:
-    project: https://github.com/nota/gyazo-mcp-server
   run:
     workdir: /app
   config:
@@ -2208,17 +778,6 @@
 
 - name: hackle
   image: mcp/hackle
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 101
-  about:
-    title: Hackle
-    icon: https://avatars.githubusercontent.com/u/65485327?v=4
-  source:
-    project: https://github.com/hackle-io/hackle-mcp
   run:
     workdir: /usr/src/app
   config:
@@ -2229,17 +788,6 @@
 
 - name: handwriting-ocr
   image: mcp/handwriting-ocr
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 56
-  about:
-    title: Handwriting OCR
-    icon: https://avatars.githubusercontent.com/u/202432073?s=200&v=4
-  source:
-    project: https://github.com/Handwriting-OCR/handwriting-ocr-mcp-server
   run:
     workdir: /app
   config:
@@ -2248,32 +796,8 @@
         name: API_TOKEN
         value: your-api-token
 
-- name: hellokaton-unsplash-mcp-server
-  image: mcpcommunity/hellokaton-unsplash-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/hellokaton/unsplash-mcp-server
-
 - name: heroku
   image: mcp/heroku
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 57
-  about:
-    title: Heroku
-    icon: https://avatars.githubusercontent.com/u/23211?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/heroku/heroku-mcp-server
-    branch: refs/pull/24/merge
   run:
     workdir: /app
   config:
@@ -2282,38 +806,28 @@
         name: HEROKU_API_KEY
         value: <YOUR_HEROKU_AUTH_TOKEN>
 
-- name: heurist-network-heurist-mesh-mcp-server
-  image: mcpcommunity/heurist-network-heurist-mesh-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/heurist-network/heurist-mesh-mcp-server
-
-- name: hichana-goalstory-mcp
-  image: mcpcommunity/hichana-goalstory-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/hichana/goalstory-mcp
+- name: husqvarna-automower
+  image: mcp/husqvarna-automower
+  run:
+    workdir: /app
+  config:
+    description: Configure the connection to Husqvarna Automower
+    secrets:
+      - id: husqvarna.client.secret
+        name: HUSQVARNA_CLIENT_SECRET
+        value: YOUR_CLIENT_SECRET_HERE
+    env:
+      - name: HUSQVARNA_CLIENT_ID
+        default: YOUR_CLIENT_ID_HERE
+        expression: '{{husqvarna.client_id}}'
+    parameters:
+      type: object
+      properties:
+        client_id:
+          type: string
 
 - name: hyperbrowser
   image: mcp/hyperbrowser
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 58
-  about:
-    title: Hyperbrowser
-    icon: https://avatars.githubusercontent.com/u/189776885?s=200&v=4
-  source:
-    project: https://github.com/hyperbrowserai/mcp
   run:
     workdir: /usr/src/app
   config:
@@ -2325,17 +839,6 @@
 
 - name: hyperspell
   image: mcp/hyperspell
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 59
-  about:
-    title: Hyperspell
-    icon: https://avatars.githubusercontent.com/u/170754924?s=200&v=4
-  source:
-    project: https://github.com/hyperspell/hyperspell-mcp
   run:
     workdir: /app
   config:
@@ -2361,17 +864,6 @@
 
 - name: iaptic
   image: mcp/iaptic
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 60
-  about:
-    title: Iaptic
-    icon: https://avatars.githubusercontent.com/u/72789805?s=200&v=4
-  source:
-    project: https://github.com/iaptic/mcp-server-iaptic
   run:
     workdir: /app
   config:
@@ -2395,136 +887,8 @@
     - tool: iaptic_current_app
     - tool: iaptic_reset_app
 
-- name: icraft2170-youtube-data-mcp-server
-  image: mcpcommunity/icraft2170-youtube-data-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/icraft2170/youtube-data-mcp-server
-  config:
-    secrets:
-      - id: icraft2170-youtube-data-mcp-server.api_key
-        name: YOUTUBE_API_KEY
-        value: YOUR_YOUTUBE_API_KEY
-
-- name: ihor-sokoliuk-mcp-searxng
-  image: mcpcommunity/ihor-sokoliuk-mcp-searxng
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ihor-sokoliuk/mcp-searxng
-
-- name: inkeep
-  image: mcp/inkeep
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/inkeep/mcp-server-python
-  config:
-    secrets:
-      - id: inkeep.api_key
-        name: INKEEP_API_KEY
-        value: <YOUR_INKEEP_API_KEY>
-    env:
-      - name: INKEEP_API_BASE_URL
-        default: https://api.inkeep.com/v1
-        expression: '{{inkeep.api_base_url|safe}}'
-      - name: INKEEP_API_MODEL
-        default: inkeep-rag
-        expression: '{{inkeep.api_model}}'
-      - name: INKEEP_MCP_TOOL_NAME
-        default: search-product-content
-        expression: '{{inkeep.tool_name}}'
-      - name: INKEEP_MCP_TOOL_DESCRIPTION
-        default: Retrieves product documentation about Inkeep. The query should be framed as a conversational question about Inkeep.
-        expression: '{{inkeep.tool_description}}'
-    parameters:
-      type: object
-      properties:
-        api_base_url:
-          type: string
-        api_model:
-          type: string
-        tool_description:
-          type: string
-        tool_name:
-          type: string
-
-- name: integromat-make-mcp-server
-  image: mcpcommunity/integromat-make-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/integromat/make-mcp-server
-  config:
-    secrets:
-      - id: integromat-make-mcp-server.api_key
-        name: MAKE_API_KEY
-        value: YOUR_MAKE_API_KEY
-    env:
-      - name: MAKE_TEAM
-        default: YOUR_MAKE_TEAM
-        expression: '{{make.team}}'
-      - name: MAKE_ZONE
-        default: YOUR_MAKE_ZONE
-        expression: '{{make.zone}}'
-    parameters:
-      type: object
-      properties:
-        team:
-          type: string
-        zone:
-          type: string
-
-- name: ivo-toby-contentful-mcp
-  image: mcpcommunity/ivo-toby-contentful-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ivo-toby/contentful-mcp
-
-- name: jdubois-azure-cli-mcp
-  image: mcpcommunity/jdubois-azure-cli-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/jdubois/azure-cli-mcp
-  run:
-    workdir: /app
-
 - name: jetbrains
   image: mcp/jetbrains
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 29
-  about:
-    title: JetBrains
-    icon: https://avatars.githubusercontent.com/u/878437?s=200&v=4
-  source:
-    project: https://github.com/GannaChernyshova/mcp-jetbrains
   config:
     description: Configure the connection to the IDE
     env:
@@ -2537,69 +901,8 @@
         port:
           type: integer
 
-- name: jktfe-myaimemory-mcp
-  image: mcpcommunity/jktfe-myaimemory-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Jktfe/myAImemory-mcp
-
-- name: john-zhang-dev-xero-mcp
-  image: mcpcommunity/john-zhang-dev-xero-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/john-zhang-dev/xero-mcp
-
-- name: joshmayerr-rps-mcp
-  image: mcpcommunity/joshmayerr-rps-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/JoshMayerr/rps-mcp
-
-- name: joshuatanderson-factbook-mcp
-  image: mcpcommunity/joshuatanderson-factbook-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Joshuatanderson/factbook-mcp
-
-- name: jsonresume-mcp
-  image: mcpcommunity/jsonresume-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/jsonresume/mcp
-    branch: 0228ba0e3d73afa31c0e9c8aadf0d2ebd4af39b3
-
 - name: kagisearch
   image: mcp/kagisearch
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 61
-  about:
-    title: Kagi search
-    icon: https://avatars.githubusercontent.com/u/92134518?s=200&v=4
-  source:
-    project: https://github.com/kagisearch/kagimcp
   run:
     workdir: /app
   config:
@@ -2618,79 +921,8 @@
         engine:
           type: string
 
-- name: kalivaraprasad-gonapa-azure-mcp
-  image: mcpcommunity/kalivaraprasad-gonapa-azure-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/kalivaraprasad-gonapa/azure-mcp
-
-- name: kalivaraprasad-gonapa-react-mcp
-  image: mcpcommunity/kalivaraprasad-gonapa-react-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/kalivaraprasad-gonapa/react-mcp
-
-- name: keboola-keboola-mcp-server
-  image: mcpcommunity/keboola-keboola-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/keboola/keboola-mcp-server
-    branch: master
-
-- name: kenliao94-mcp-server-rabbitmq
-  image: mcpcommunity/kenliao94-mcp-server-rabbitmq
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/kenliao94/mcp-server-rabbitmq
-
-- name: kiliczsh-mcp-mongo-server
-  image: mcpcommunity/kiliczsh-mcp-mongo-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/kiliczsh/mcp-mongo-server
-
-- name: kiwamizamurai-mcp-kibela-server
-  image: mcpcommunity/kiwamizamurai-mcp-kibela-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/kiwamizamurai/mcp-kibela-server
-
 - name: kong
   image: mcp/kong
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 89
-  about:
-    title: Kong Konnect
-    icon: https://avatars.githubusercontent.com/u/962416?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/Kong/mcp-konnect
-    branch: refs/pull/7/merge
   run:
     workdir: /app
   config:
@@ -2711,62 +943,11 @@
 
 - name: kubernetes
   image: mcp/kubernetes
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 18
-  about:
-    title: Kubernetes
-    description: Connect to a Kubernetes cluster and manage it
-    icon: https://avatars.githubusercontent.com/u/13629408?s=200&v=4
-  source:
-    project: https://github.com/Flux159/mcp-server-kubernetes
   run:
     workdir: /usr/local/app
 
-- name: kyrietangsheng-mcp-server-nationalparks
-  image: mcpcommunity/kyrietangsheng-mcp-server-nationalparks
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/KyrieTangSheng/mcp-server-nationalparks
-
-- name: laksh-star-mcp-server-tmdb
-  image: mcpcommunity/laksh-star-mcp-server-tmdb
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Laksh-star/mcp-server-tmdb
-  config:
-    secrets:
-      - id: laksh-star-mcp-server-tmdb.api_key
-        name: TMDB_API_KEY
-        value: YOUR_TMDB_API_KEY
-
 - name: lara
   image: mcp/lara
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 81
-  about:
-    title: Lara Translate
-    description: Connect to Lara Translate API, enabling powerful translation capabilities with support for language detection and context-aware translations.
-    icon: https://avatars.githubusercontent.com/u/10272138?s=200&v=4
-  source:
-    project: https://github.com/translated/lara-mcp
   run:
     workdir: /app
   config:
@@ -2787,46 +968,8 @@
       required:
         - key_id
 
-- name: leehanchung-bing-search-mcp
-  image: mcpcommunity/leehanchung-bing-search-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/leehanchung/bing-search-mcp
-  config:
-    secrets:
-      - id: leehanchung-bing-search-mcp.api_key
-        name: BING_API_KEY
-        value: YOUR_BING_API_KEY
-
-- name: leghis-smart-thinking
-  image: mcpcommunity/leghis-smart-thinking
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Leghis/Smart-Thinking
-
 - name: line
   image: mcp/line
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 99
-  about:
-    title: LINE
-    icon: https://avatars.githubusercontent.com/u/13128444?v=4
-  source:
-    project: https://github.com/line/line-bot-mcp-server
   run:
     workdir: /app
   config:
@@ -2847,144 +990,8 @@
       required:
         - user_id
 
-- name: lmcc-dev-mult-fetch-mcp-server
-  image: mcpcommunity/lmcc-dev-mult-fetch-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/lmcc-dev/mult-fetch-mcp-server
-    branch: refs/pull/8/merge
-
-- name: localrivet-gopdf
-  image: mcpcommunity/localrivet-gopdf
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/localrivet/gopdf
-
-- name: longmans-coin_api_mcp
-  image: mcpcommunity/longmans-coin_api_mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/longmans/coin_api_mcp
-
-- name: lsd-so-lsd-mcp
-  image: mcpcommunity/lsd-so-lsd-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/lsd-so/lsd-mcp
-
-- name: macrat-mcp-server-kintone
-  image: mcpcommunity/macrat-mcp-server-kintone
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/macrat/mcp-server-kintone
-  config:
-    secrets:
-      - id: macrat-mcp-server-kintone.api_token
-        name: KINTONE_API_TOKEN
-        value: YOUR_KINTONE_API_TOKEN
-    env:
-      - name: KINTONE_BASE_URL
-        default: YOUR_KINTONE_BASE_URL
-        expression: '{{kintone.url|safe}}'
-    parameters:
-      type: object
-      properties:
-        url:
-          type: ""
-
-- name: manusa-kubernetes-mcp-server
-  image: mcpcommunity/manusa-kubernetes-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/manusa/kubernetes-mcp-server
-
-- name: mark3labs-mcp-filesystem-server
-  image: mcpcommunity/mark3labs-mcp-filesystem-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/mark3labs/mcp-filesystem-server
-
-- name: mashriram-azure_mcp_server
-  image: mcpcommunity/mashriram-azure_mcp_server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/mashriram/azure_mcp_server
-    branch: master
-
-- name: mauricio-cantu-brasil-api-mcp-server
-  image: mcpcommunity/mauricio-cantu-brasil-api-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/mauricio-cantu/brasil-api-mcp-server
-
-- name: maxteabag-githubworkflowmcp
-  image: mcpcommunity/maxteabag-githubworkflowmcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Maxteabag/GithubWorkflowMCP
-    branch: master
-  config:
-    secrets:
-      - id: /maxteabag-githubworkflowmcp.access_token
-        name: GITHUB_PERSONAL_ACCESS_TOKEN
-        value: YOUR_GITHUB_PERSONAL_ACCESS_TOKEN
-
 - name: mcp-discord
   image: mcp/mcp-discord
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 35
-  about:
-    title: Discord
-    description: Interact with the Discord platform.
-    icon: https://avatars.githubusercontent.com/u/1965106?s=200&v=4
-  source:
-    project: https://github.com/slimslenderslacks/mcp-discord
-    branch: slim/docker
   run:
     workdir: /app
   config:
@@ -2993,80 +1000,8 @@
         name: DISCORD_TOKEN
         value: YOUR_DISCORD_TOKEN
 
-- name: memory
-  image: mcp/memory
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    title: Memory (Reference)
-    reference: true
-    readme: src/memory/README.md
-    description: Knowledge graph-based persistent memory system
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.24
-    dockerfile: src/memory/Dockerfile
-  run:
-    workdir: /app
-
-- name: metatool-ai-mcp-server-metamcp
-  image: mcpcommunity/metatool-ai-mcp-server-metamcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/metatool-ai/mcp-server-metamcp
-
-- name: mfydev-ghost-mcp
-  image: mcpcommunity/mfydev-ghost-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/MFYDev/ghost-mcp
-
-- name: mongodb
-  image: mcp/mongodb
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    description: A Model Context Protocol server that provides read-only access to MongoDB databases.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/mongodb-developer/mongodb-mcp-server
-    branch: refs/pull/5/merge
-  config:
-    env:
-      - name: MONGODB_URI
-        default: mongodb://localhost:27017
-        expression: '{{mongodb.uri|safe}}'
-    parameters:
-      type: object
-      properties:
-        uri:
-          type: string
-
 - name: multiversx-mx
   image: mcp/multiversx-mx
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 62
-  about:
-    title: MultiversX
-    icon: https://avatars.githubusercontent.com/u/114073177?s=200&v=4
-  source:
-    project: https://github.com/multiversx/mx-mcp
   run:
     workdir: /app
   config:
@@ -3089,29 +1024,86 @@
         - network
         - wallet
 
-- name: nahmanmate-code-research-mcp-server
-  image: mcpcommunity/nahmanmate-code-research-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/nahmanmate/code-research-mcp-server
+- name: neo4j-cloud-aura-api
+  image: mcp/neo4j-cloud-aura-api
+  run:
+    workdir: /app
+  config:
+    description: Configure the connection to Neo4j Aura
+    secrets:
+      - id: neo4j.password
+        name: NEO4J_AURA_CLIENT_SECRET
+        value: <your-client-secret>
+    env:
+      - name: NEO4J_AURA_CLIENT_ID
+        default: <your-client-id>
+        expression: '{{neo4j.client_id}}'
+    parameters:
+      type: object
+      properties:
+        client_id:
+          type: string
+      required:
+        - client_id
+
+- name: neo4j-cypher
+  image: mcp/neo4j-cypher
+  run:
+    workdir: /app
+  config:
+    description: Configure the connection to Neo4j
+    secrets:
+      - id: neo4j.password
+        name: NEO4J_PASSWORD
+        value: password
+    env:
+      - name: NEO4J_URL
+        default: bolt://host.docker.internal:7687
+        expression: '{{neo4j.url}}'
+      - name: NEO4J_USERNAME
+        default: neo4j
+        expression: '{{neo4j.username}}'
+    parameters:
+      type: object
+      properties:
+        url:
+          type: string
+        username:
+          type: string
+      required:
+        - url
+        - username
+
+- name: neo4j-memory
+  image: mcp/neo4j-memory
+  run:
+    workdir: /app
+  config:
+    description: Configure the connection to Neo4j
+    secrets:
+      - id: neo4j.password
+        name: NEO4J_PASSWORD
+        value: password
+    env:
+      - name: NEO4J_URL
+        default: bolt://host.docker.internal:7687
+        expression: '{{neo4j.url}}'
+      - name: NEO4J_USERNAME
+        default: neo4j
+        expression: '{{neo4j.username}}'
+    parameters:
+      type: object
+      properties:
+        url:
+          type: string
+        username:
+          type: string
+      required:
+        - url
+        - username
 
 - name: neon
   image: mcp/neon
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 63
-  about:
-    title: Neon
-    icon: https://avatars.githubusercontent.com/u/183852044?s=200&v=4
-  source:
-    project: https://github.com/neondatabase-labs/mcp-server-neon
-    branch: dbfa184afd9fc677c0d6b007a62b33194e883821
   run:
     workdir: /app
   config:
@@ -3125,38 +1117,8 @@
         params:
           key: value
 
-- name: newideas99-deepseek-thinking-claude-3.5-sonnet-cline-mcp
-  image: mcpcommunity/newideas99-deepseek-thinking-claude-3.5-sonnet-cline-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/newideas99/Deepseek-Thinking-Claude-3.5-Sonnet-CLINE-MCP
-
-- name: nkkko-daytona-mcp-interpreter
-  image: mcpcommunity/nkkko-daytona-mcp-interpreter
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/nkkko/daytona-mcp-interpreter
-
 - name: notion
   image: mcp/notion
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 26
-  about:
-    title: Notion
-    icon: https://avatars.githubusercontent.com/u/4792552?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/makenotion/notion-mcp-server
   run:
     env:
       OPENAPI_MCP_HEADERS: '"{\"Authorization\": \"Bearer $INTERNAL_INTEGRATION_TOKEN\", \"Notion-Version\": \"2022-06-28\"}"'
@@ -3166,36 +1128,8 @@
         name: INTERNAL_INTEGRATION_TOKEN
         value: ntn_****
 
-- name: ntropy-network-ntropy-mcp
-  image: mcpcommunity/ntropy-network-ntropy-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ntropy-network/ntropy-mcp
-    branch: master
-
 - name: obsidian
   image: mcp/obsidian
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 34
-  about:
-    title: Obsidian
-    icon: https://avatars.githubusercontent.com/u/65011256?s=200&v=4
-    details: |
-      # Configuration
-
-      See the [setup instructions](https://github.com/slimslenderslacks/mcp-obsidian/tree/slim/docker?tab=readme-ov-file#quickstart) for how to
-      add the REST API plugin to your local Obsidian instance.
-  source:
-    project: https://github.com/docker/mcp-obsidian
-    upstream: https://github.com/MarkusPfundstein/mcp-obsidian
-    branch: docker-support
   run:
     workdir: /app
   config:
@@ -3206,134 +1140,18 @@
         value: YOUR_OBSIDIAN_API_KEY
     env:
       - name: OBSIDIAN_HOST
-        default: "host.docker.internal"
-        expression: "host.docker.internal"
-
-- name: octomind
-  image: mcp/octomind
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/128322493?s=200&v=4
-  source:
-    project: https://github.com/OctoMind-dev/octomind-mcp
-  config:
-    secrets:
-      - id: octomind.api_key
-        name: APIKEY
-        value: your-api-key-here
-  tests:
-    - tool: getVersion
-
-- name: ognis1205-mcp-server-unitycatalog
-  image: mcpcommunity/ognis1205-mcp-server-unitycatalog
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ognis1205/mcp-server-unitycatalog
-
-- name: omedia-mcp-server-drupal
-  image: mcpcommunity/omedia-mcp-server-drupal
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Omedia/mcp-server-drupal
-    branch: develop
+        default: host.docker.internal
+        expression: host.docker.internal
 
 - name: openapi-schema
   image: mcp/openapi-schema
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 27
-  about:
-    title: OpenAPI Schema
-    icon: https://avatars.githubusercontent.com/u/16343502?s=200&v=4
-  source:
-    project: https://github.com/slimslenderslacks/mcp-openapi-schema
-    upstream: https://github.com/hannesj/mcp-openapi-schema
-    branch: master
   run:
     workdir: /app
     volumes:
       - '{{openApiSchemaPath|or:[]|volume|into}}'
 
-- name: openbnb-org-mcp-server-airbnb
-  image: mcpcommunity/openbnb-org-mcp-server-airbnb
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/openbnb-org/mcp-server-airbnb
-
-- name: openledger-open-ledger-mcp-server
-  image: mcpcommunity/openledger-open-ledger-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/openledger/Open-Ledger-MCP-Server
-
-- name: operative-sh-playwright-consolelogs-mcp
-  image: mcpcommunity/operative-sh-playwright-consolelogs-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Operative-Sh/playwright-consolelogs-mcp
-
-- name: operative-sh-web-qa-agent
-  image: mcpcommunity/operative-sh-web-qa-agent
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Operative-Sh/web-qa-agent
-
-- name: opgginc-esports-mcp
-  image: mcpcommunity/opgginc-esports-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/opgginc/esports-mcp
-  run:
-    workdir: /app
-
 - name: opik
   image: mcp/opik
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 65
-  about:
-    title: Opik
-    icon: https://avatars.githubusercontent.com/u/31487821?s=200&v=4
-  source:
-    project: https://github.com/comet-ml/opik-mcp
   run:
     workdir: /app
   config:
@@ -3366,104 +1184,15 @@
       args:
         topic: prompts
 
-- name: oracle
-  image: mcp/oracle
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/danielmeppiel/oracle-mcp-server
-  config:
-    secrets:
-      - id: oracle.connection.string
-        name: ORACLE_CONNECTION_STRING
-        value: your_oracle_connection_string
-      - id: ""
-        name: ""
-        value: ""
-
-- name: oschina-mcp-gitee
-  image: mcpcommunity/oschina-mcp-gitee
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/oschina/mcp-gitee
-    branch: master
-
-- name: osomai-servicenow-mcp
-  image: mcpcommunity/osomai-servicenow-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/osomai/servicenow-mcp
-
 - name: osp_marketing_tools
   image: mcp/osp_marketing_tools
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 66
-  about:
-    title: OSP Marketing Tools
-    icon: https://avatars.githubusercontent.com/u/47528973?s=200&v=4
-  source:
-    project: https://github.com/open-strategy-partners/osp_marketing_tools
   run:
     workdir: /app
   tests:
     - tool: health_check
 
-- name: overstarry-qweather-mcp
-  image: mcpcommunity/overstarry-qweather-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/overstarry/qweather-mcp
-    branch: master
-  config:
-    secrets:
-      - id: overstarry-qweather-mcp.api_key
-        name: QWEATHER_API_KEY
-        value: YOUR_QWEATHER_API_KEY
-    env:
-      - name: QWEATHER_API_BASE
-        default: YOUR_QWEATHER_API_BASE
-        expression: '{{qweather.api_base|safe}}'
-    parameters:
-      type: object
-      properties:
-        api_base:
-          type: string
-      required:
-        - api_base
-
 - name: oxylabs
   image: mcp/oxylabs
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 67
-  about:
-    title: Oxylabs
-    description: A Model Context Protocol (MCP) server that enables AI assistants like Claude to seamlessly access web data through Oxylabs' powerful web scraping technology.
-    icon: https://avatars.githubusercontent.com/u/43960873?s=200&v=4
-  source:
-    project: https://github.com/oxylabs/oxylabs-mcp
   run:
     workdir: /app
   config:
@@ -3484,76 +1213,8 @@
       required:
         - username
 
-- name: pab1it0-adx-mcp-server
-  image: mcpcommunity/pab1it0-adx-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/pab1it0/adx-mcp-server
-  config:
-    env:
-      - name: ADX_CLUSTER_URL
-        default: YOUR_ADX_CLUSTER_URL
-        expression: '{{adx.cluster_url|safe}}'
-      - name: ADX_DATABASE
-        default: YOUR_ADX_DATABASE
-        expression: '{{adx.database}}'
-    parameters:
-      type: object
-      properties:
-        cluster_url:
-          type: string
-        database:
-          type: string
-
-- name: pab1it0-prometheus-mcp-server
-  image: mcpcommunity/pab1it0-prometheus-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/pab1it0/prometheus-mcp-server
-
-- name: paypal
-  image: mcp/paypal
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/paypal/agent-toolkit/tree/main/modelcontextprotocol
-
-- name: peng-shawn-mermaid-mcp-server
-  image: mcpcommunity/peng-shawn-mermaid-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/peng-shawn/mermaid-mcp-server
-
 - name: perplexity-ask
   image: mcp/perplexity-ask
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 68
-  about:
-    title: Perplexity
-    description: Connector for Perplexity API, to enable real-time, web-wide research.
-    icon: https://avatars.githubusercontent.com/u/110299016?s=200&v=4
-  source:
-    project: https://github.com/ppl-ai/modelcontextprotocol
-    branch: f0a927c250e04b389ff5c34f6a2a85ad625668e8
-    dockerfile: perplexity-ask/Dockerfile
   run:
     workdir: /app
   config:
@@ -3563,58 +1224,13 @@
         name: PERPLEXITY_API_KEY
         value: YOUR_PERPLEXITY_API_KEY
 
-- name: phialsbasement-nmap-mcp-server
-  image: mcpcommunity/phialsbasement-nmap-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/PhialsBasement/nmap-mcp-server
-
 - name: playwright
   image: mcp/playwright
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 103
-  about:
-    title: Playwright
-    icon: https://avatars.githubusercontent.com/u/6154722?v=4
-  source:
-    project: https://github.com/microsoft/playwright-mcp
   run:
     workdir: /app
 
-- name: poseylabs-posey
-  image: mcpcommunity/poseylabs-posey
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/poseylabs/posey
-
 - name: postgres
   image: mcp/postgres
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 23
-  about:
-    title: PostgreSQL readonly (Reference)
-    reference: true
-    readme: src/postgres/README.md
-    description: Connect with read-only access to PostgreSQL databases. This server enables LLMs to inspect database schemas and execute read-only queries.
-    icon: https://avatars.githubusercontent.com/u/177543?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/postgres/Dockerfile
   run:
     workdir: /app
     command:
@@ -3625,78 +1241,13 @@
         name: POSTGRES_URL
         value: postgresql://host.docker.internal:5432/mydb
 
-- name: powerdrill
-  image: mcp/powerdrill
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/powerdrillai/powerdrill-mcp
-  config:
-    description: Configure the connection to Powerdrill
-    secrets:
-      - id: powerdrill.api_key
-        name: POWERDRILL_PROJECT_API_KEY
-        value: your_api_key
-    env:
-      - name: POWERDRILL_USER_ID
-        default: your_user_id
-        expression: '{{powerdrill.user}}'
-    parameters:
-      type: object
-      properties:
-        user:
-          type: string
-      required:
-        - user
-
-- name: prajwalnayak7-mcp-server-redis
-  image: mcpcommunity/prajwalnayak7-mcp-server-redis
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/redis.svg
-  source:
-    project: https://github.com/prajwalnayak7/mcp-server-redis
-
 - name: pulumi
   image: mcp/pulumi
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 88
-  about:
-    title: Pulumi
-    icon: https://avatars.githubusercontent.com/u/21992475?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/pulumi/mcp-server
   run:
     workdir: /app
 
 - name: puppeteer
   image: mcp/puppeteer
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 20
-  about:
-    title: Puppeteer (Reference)
-    reference: true
-    readme: src/puppeteer/README.md
-    description: Browser automation and web scraping using Puppeteer.
-    icon: https://avatars.githubusercontent.com/u/6906516?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/puppeteer/Dockerfile
   run:
     workdir: /project
   config:
@@ -3706,89 +1257,8 @@
         default: "true"
         expression: "true"
 
-- name: puravparab-gitingest-mcp
-  image: mcpcommunity/puravparab-gitingest-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/puravparab/Gitingest-MCP
-
-- name: pv-bhat-vibe-check-mcp-server
-  image: mcpcommunity/pv-bhat-vibe-check-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/PV-Bhat/vibe-check-mcp-server
-
-- name: qdrant-mcp-server-qdrant
-  image: mcpcommunity/qdrant-mcp-server-qdrant
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/qdrant/mcp-server-qdrant
-    branch: master
-
-- name: r-huijts-ns-mcp-server
-  image: mcpcommunity/r-huijts-ns-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/r-huijts/ns-mcp-server
-
-- name: ragflow
-  image: mcp/ragflow
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/69910226?s=200&v=4
-  source:
-    project: https://github.com/oraichain/ragflow-mcp
-    branch: master
-
-- name: rashed-k-lagoon-cli-commands-examples
-  image: mcpcommunity/rashed-k-lagoon-cli-commands-examples
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/rashed-k/lagoon-cli-commands-examples
-
-- name: ravenwits-mcp-server-arangodb
-  image: mcpcommunity/ravenwits-mcp-server-arangodb
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ravenwits/mcp-server-arangodb
-
 - name: razorpay
   image: mcp/razorpay
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 104
-  about:
-    title: Razorpay
-    icon: https://avatars.githubusercontent.com/u/7713209?v=4
-  source:
-    project: https://github.com/razorpay/razorpay-mcp-server
   run:
     workdir: /app
   config:
@@ -3811,18 +1281,6 @@
 
 - name: redis
   image: mcp/redis
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 11
-  about:
-    title: Redis
-    description: Access to Redis database operations.
-    icon: https://avatars.githubusercontent.com/u/1529926?v=4
-  source:
-    project: https://github.com/redis/mcp-redis
   run:
     workdir: /app
   config:
@@ -3888,19 +1346,6 @@
 
 - name: redis-cloud
   image: mcp/redis-cloud
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 69
-  about:
-    title: Redis Cloud
-    description: MCP Server for Redis Cloud's API, allowing you to manage your Redis Cloud resources using natural language.
-    icon: https://avatars.githubusercontent.com/u/1529926?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/redis/mcp-redis-cloud
   run:
     workdir: /app
   config:
@@ -3921,39 +1366,8 @@
       required:
         - api_key
 
-- name: redis-reference
-  image: mcp/redis-reference
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    reference: true
-    readme: src/redis/README.md
-    description: Access to Redis database operations.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.24
-    dockerfile: src/redis/Dockerfile
-  run:
-    command:
-      - redis://host.docker.internal:6379
-
 - name: resend
   image: mcp/resend
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 37
-  about:
-    title: Send emails
-    icon: https://avatars.githubusercontent.com/u/109384852?s=200&v=4
-  source:
-    project: https://github.com/slimslenderslacks/mcp-send-email
-    upstream: https://github.com/resend/mcp-send-email
-    branch: slim/docker
   run:
     workdir: /app
   config:
@@ -3982,28 +1396,8 @@
         - reply_to
         - sender
 
-- name: rishikavikondala-mcp-server-aws
-  image: mcpcommunity/rishikavikondala-mcp-server-aws
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/rishikavikondala/mcp-server-aws
-
 - name: risken
   image: mcp/risken
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 96
-  about:
-    title: RISKEN
-    icon: https://avatars.githubusercontent.com/u/88366693?s=200&v=4
-  source:
-    project: https://github.com/ca-risken/risken-mcp-server
   run:
     command:
       - stdio
@@ -4023,87 +1417,8 @@
         url:
           type: string
 
-- name: ruixingshi-deepseek-thinker-mcp
-  image: mcpcommunity/ruixingshi-deepseek-thinker-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ruixingshi/deepseek-thinker-mcp
-
-- name: rvibek-mcp_demographics
-  image: mcpcommunity/rvibek-mcp_demographics
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/rvibek/mcp_demographics
-
-- name: ryojerryyu-mcp-server-memos-py
-  image: mcpcommunity/ryojerryyu-mcp-server-memos-py
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/RyoJerryYu/mcp-server-memos-py
-    branch: master
-
-- name: sakce-mcp-server-monday
-  image: mcpcommunity/sakce-mcp-server-monday
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/sakce/mcp-server-monday
-
-- name: sammcj-mcp-package-docs
-  image: mcpcommunity/sammcj-mcp-package-docs
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/sammcj/mcp-package-docs
-
-- name: saseq-discord-mcp
-  image: mcpcommunity/saseq-discord-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/SaseQ/discord-mcp
-  config:
-    secrets:
-      - id: saseq-discord-mcp.token
-        name: DISCORD_TOKEN
-        value: YOUR_DISCORD_TOKEN
-
 - name: scrapegraph
   image: mcp/scrapegraph
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 70
-  about:
-    title: ScrapeGraph
-    icon: https://avatars.githubusercontent.com/u/171017415?s=200&v=4
-  source:
-    project: https://github.com/ScrapeGraphAI/scrapegraph-mcp
   run:
     workdir: /app
   config:
@@ -4114,18 +1429,6 @@
 
 - name: scrapezy
   image: mcp/scrapezy
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 71
-  about:
-    title: Scrapezy
-    description: A Model Context Protocol server for Scrapezy that enables AI models to extract structured data from websites.
-    icon: https://avatars.githubusercontent.com/u/196929482?s=200&v=4
-  source:
-    project: https://github.com/Scrapezy/mcp
   run:
     workdir: /app
   config:
@@ -4134,44 +1437,8 @@
         name: SCRAPEZY_API_KEY
         value: your_api_key
 
-- name: secretiveshell-mcp-llms-txt
-  image: mcpcommunity/secretiveshell-mcp-llms-txt
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/SecretiveShell/MCP-llms-txt
-    branch: master
-
-- name: semgrep-mcp
-  image: mcpcommunity/semgrep-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/semgrep/mcp
-
 - name: sentry
   image: mcp/sentry
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 32
-  about:
-    title: Sentry (Reference)
-    reference: true
-    readme: src/sentry/README.md
-    description: A Model Context Protocol server for retrieving and analyzing issues from Sentry.io. This server provides tools to inspect error reports, stacktraces, and other debugging information from your Sentry account.
-    icon: https://avatars.githubusercontent.com/u/1396951?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    directory: src/sentry
   run:
     workdir: /app
     command:
@@ -4183,52 +1450,8 @@
         name: SENTRY_AUTH_TOKEN
         value: YOUR_SENTRY_TOKEN
 
-- name: sequentialthinking
-  image: mcp/sequentialthinking
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    title: Sequential Thinking (Reference)
-    reference: true
-    readme: src/sequentialthinking/README.md
-    description: A tool for dynamic and reflective problem-solving through a structured thinking process.
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    dockerfile: src/sequentialthinking/Dockerfile
-  run:
-    workdir: /app
-
-- name: shannonlal-mcp-postman
-  image: mcpcommunity/shannonlal-mcp-postman
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/shannonlal/mcp-postman
-    branch: refs/pull/38/merge
-
 - name: shopify
   image: mcp/shopify
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 72
-  about:
-    title: Shopify
-    icon: https://avatars.githubusercontent.com/u/8085?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/Shopify/dev-mcp
-    branch: refs/pull/7/merge
   run:
     workdir: /app
   tests:
@@ -4236,62 +1459,8 @@
       args:
         prompt: mcp
 
-- name: simonb97-win-cli-mcp-server
-  image: mcpcommunity/simonb97-win-cli-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/SimonB97/win-cli-mcp-server
-
-- name: singlestore-labs-mcp-server-singlestore
-  image: mcpcommunity/singlestore-labs-mcp-server-singlestore
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/singlestore-labs/mcp-server-singlestore
-
-- name: sirmews-mcp-pinecone
-  image: mcpcommunity/sirmews-mcp-pinecone
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/sirmews/mcp-pinecone
-
-- name: skydeckai-mcp-server-rememberizer
-  image: mcpcommunity/skydeckai-mcp-server-rememberizer
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/skydeckai/mcp-server-rememberizer
-
 - name: slack
   image: mcp/slack
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 10
-  about:
-    title: Slack (Reference)
-    reference: true
-    readme: src/slack/README.md
-    description: Interact with Slack Workspaces over the Slack API.
-    icon: https://avatars.githubusercontent.com/u/6911160?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.24
-    dockerfile: src/slack/Dockerfile
   run:
     workdir: /app
   config:
@@ -4317,36 +1486,8 @@
       required:
         - team_id
 
-- name: slimslenderslacks-discordmcp
-  image: mcpcommunity/slimslenderslacks-discordmcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/slimslenderslacks/discordmcp
-    upstream: https://github.com/v-3/discordmcp
-    branch: slim/docker
-  config:
-    secrets:
-      - id: slimslenderslacks-discordmcp.token
-        name: DISCORD_TOKEN
-        value: YOUR_DISCORD_TOKEN
-
 - name: smithery-cli
   image: mcp/smithery-cli
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 92
-  about:
-    title: Smithery CLI
-    icon: https://avatars.githubusercontent.com/u/190488992?s=200&v=4
-  source:
-    project: https://github.com/smithery-ai/smithery-cli-mcp
   run:
     workdir: /app
   config:
@@ -4355,91 +1496,8 @@
         name: SMITHERY_API_KEY
         value: your_api_key_here
 
-- name: space-frontiers
-  image: mcp/space-frontiers
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/173275895?s=200&v=4
-  source:
-    project: https://github.com/SpaceFrontiers/mcp
-
-- name: sparfenyuk-mcp-proxy
-  image: mcpcommunity/sparfenyuk-mcp-proxy
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/sparfenyuk/mcp-proxy
-
-- name: sqlite
-  image: mcp/sqlite
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    reference: true
-    readme: src/sqlite/README.md
-    description: Database interaction and business intelligence capabilities
-    icon: https://avatars.githubusercontent.com/u/48680494?v=4
-    highlight: true
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.24
-    directory: src/sqlite
-  run:
-    workdir: /app
-  tests:
-    - tool: create-table
-      args:
-        query: CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)
-    - tool: read-query
-      args:
-        query: SELECT * FROM test
-    - tool: write-query
-      args:
-        query: INSERT INTO test (name) VALUES ('test')
-    - tool: list-tables
-
-- name: square
-  image: mcp/square
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/block/square-mcp
-
-- name: steel-dev-steel-mcp-server
-  image: mcpcommunity/steel-dev-steel-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/steel-dev/steel-mcp-server
-
 - name: stripe
   image: mcp/stripe
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 8
-  about:
-    title: Stripe
-    readme: modelcontextprotocol/README.md
-    description: Interact with Stripe services over the Stripe API.
-    icon: https://avatars.githubusercontent.com/u/856813?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/stripe/agent-toolkit
-    directory: modelcontextprotocol
   run:
     workdir: /app
     command:
@@ -4455,55 +1513,8 @@
         language: go
         question: getting started
 
-- name: strowk-mcp-k8s-go
-  image: mcpcommunity/strowk-mcp-k8s-go
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/strowk/mcp-k8s-go
-    branch: refs/pull/27/head
-
-- name: syucream-holaspirit-mcp-server
-  image: mcpcommunity/syucream-holaspirit-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/syucream/holaspirit-mcp-server
-  config:
-    secrets:
-      - id: syucream-holaspirit-mcp-server.api_token
-        name: HOLASPIRIT_API_TOKEN
-        value: YOUR_HOLASPIRIT_API_TOKEN
-
-- name: syucream-lightdash-mcp-server
-  image: mcpcommunity/syucream-lightdash-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/syucream/lightdash-mcp-server
-
 - name: tavily
   image: mcp/tavily
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 73
-  about:
-    title: Tavily
-    description: The Tavily MCP server provides seamless interaction with the tavily-search and tavily-extract tools, real-time web search capabilities through the tavily-search tool and Intelligent data extraction from web pages via the tavily-extract tool.
-    icon: https://avatars.githubusercontent.com/u/170207473?s=200&v=4
-  source:
-    project: https://github.com/tavily-ai/tavily-mcp
   run:
     workdir: /app
   config:
@@ -4512,39 +1523,8 @@
         name: TAVILY_API_KEY
         value: your-tavily-apikey-here
 
-- name: teddyzxcv-ntfy-mcp
-  image: mcpcommunity/teddyzxcv-ntfy-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/teddyzxcv/ntfy-mcp
-  config:
-    env:
-      - name: NTFY_TOPIC
-        default: YOUR_NTFY_TOPIC
-        expression: '{{ntfy.topic}}'
-    parameters:
-      type: object
-      properties:
-        topic:
-          type: string
-
 - name: tembo
   image: mcp/tembo
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 74
-  about:
-    title: Tembo
-    icon: https://avatars.githubusercontent.com/u/113815875?s=200&v=4
-  source:
-    project: https://github.com/tembo-io/mcp-server-tembo
   run:
     workdir: /app
   config:
@@ -4553,95 +1533,8 @@
         name: TEMBO_API_KEY
         value: your-tembo-apikey-here
 
-- name: terryso-mcp-pinterest
-  image: mcpcommunity/terryso-mcp-pinterest
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/terryso/mcp-pinterest
-    branch: master
-
-- name: tesla0225-mcp-create
-  image: mcpcommunity/tesla0225-mcp-create
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/tesla0225/mcp-create
-
-- name: tevonsb-homeassistant-mcp
-  image: mcpcommunity/tevonsb-homeassistant-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/tevonsb/homeassistant-mcp
-
-- name: thadius83-mcp-server-openai
-  image: mcpcommunity/thadius83-mcp-server-openai
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/thadius83/mcp-server-openai
-
-- name: thirdstrandstudio-figma
-  image: mcpcommunity/thirdstrandstudio-figma
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/figma.svg
-  source:
-    project: https://github.com/thirdstrandstudio/mcp-figma
-  config:
-    secrets:
-      - id: thirdstrandstudio-figma.api_key
-        name: FIGMA_API_KEY
-        value: YOUR_FIGMA_API_KEY
-
-- name: thirdstrandstudio-mcp-xpath
-  image: mcpcommunity/thirdstrandstudio-mcp-xpath
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/thirdstrandstudio/mcp-xpath
-
 - name: time
   image: mcp/time
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 15
-  about:
-    title: Time (Reference)
-    reference: true
-    readme: src/time/README.md
-    description: Time and timezone conversion capabilities
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/modelcontextprotocol/servers
-    branch: 2025.4.6
-    directory: src/time
   run:
     workdir: /app
   tests:
@@ -4654,29 +1547,8 @@
         target_timezone: America/Los_Angeles
         time: "10:05"
 
-- name: tinyfish-io-agentql-mcp
-  image: mcpcommunity/tinyfish-io-agentql-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/tinyfish-io/agentql-mcp
-
 - name: triplewhale
   image: mcp/triplewhale
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 75
-  about:
-    title: Triplewhale
-    icon: https://avatars.githubusercontent.com/u/79388081?s=200&v=4
-  source:
-    project: https://github.com/Triple-Whale/mcp-server-triplewhale
-    branch: master
   run:
     workdir: /app
   config:
@@ -4687,17 +1559,6 @@
 
 - name: tweetbinder
   image: mcp/tweetbinder
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 76
-  about:
-    title: TweetBinder
-    icon: https://avatars.githubusercontent.com/u/2454008?s=200&v=4
-  source:
-    project: https://github.com/audienseco/mcp-tweetbinder
   run:
     workdir: /app
   config:
@@ -4706,90 +1567,8 @@
         name: TWEETBINDER_API_TOKEN
         value: your-bearer-token-here
 
-- name: ucalyptus-prem-mcp-server
-  image: mcpcommunity/ucalyptus-prem-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ucalyptus/prem-mcp-server
-  config:
-    secrets:
-      - id: ucalyptus-prem-mcp-server.key
-        name: PREM_API_KEY
-        value: YOUR_PREM_API_KEY
-    env:
-      - name: PREM_PROJECT_ID
-        default: YOUR_PREM_PROJECT_ID
-        expression: '{{prom_project_id}}'
-    parameters:
-      type: object
-      properties:
-        prom_project_id:
-          type: string
-
-- name: upstash-mcp-server
-  image: mcpcommunity/upstash-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/upstash/mcp-server
-  config:
-    description: Configure the connection to Upstash
-    secrets:
-      - id: upstash.api_key
-        name: UPSTASH_API_KEY
-        value: <UPSTASH_API_KEY>
-    env:
-      - name: UPSTASH_EMAIL
-        default: <UPSTASH_EMAIL>
-        expression: '{{upstash.email}}'
-    parameters:
-      type: object
-      properties:
-        email:
-          type: string
-
-- name: utensils-mcp-nixos
-  image: mcpcommunity/utensils-mcp-nixos
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/utensils/mcp-nixos
-
-- name: verodat-verodat-mcp-server
-  image: mcpcommunity/verodat-verodat-mcp-server
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Verodat/verodat-mcp-server
-
 - name: veyrax
   image: mcp/veyrax
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 77
-  about:
-    title: VeyraX
-    description: VeyraX MCP is the only connection you need to access all your tools in any MCP-compatible environment.
-    icon: https://avatars.githubusercontent.com/u/201344226?s=200&v=4
-  source:
-    project: https://github.com/VeyraX/veyrax-mcp
   run:
     workdir: /app
   config:
@@ -4798,43 +1577,8 @@
         name: VEYRAX_API_KEY
         value: your-veyrax-api-key-here
 
-- name: vidhupv-x-mcp
-  image: mcpcommunity/vidhupv-x-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/vidhupv/x-mcp
-
-- name: voska-hass-mcp
-  image: mcpcommunity/voska-hass-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/voska/hass-mcp
-    branch: master
-
 - name: webflow
   image: mcp/webflow
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 85
-  about:
-    title: Webflow
-    icon: https://avatars.githubusercontent.com/u/1229663?s=200&v=4
-    highlight: true
-  source:
-    project: https://github.com/slimslenderslacks/mcp-server
-    upstream: https://github.com/webflow/mcp-server
-    branch: slim/docker
   run:
     workdir: /app
   config:
@@ -4843,337 +1587,18 @@
         name: WEBFLOW_TOKEN
         value: your_api_token
 
+- name: wikipedia-mcp
+  image: mcp/wikipedia-mcp
+
 - name: wolfram-alpha
   image: mcp/wolfram-alpha
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 82
-  about:
-    title: WolframAlpha
-    icon: https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/wolfram.svg
-  source:
-    project: https://github.com/SecretiveShell/MCP-wolfram-alpha
-    branch: master
   config:
     secrets:
       - id: wolfram-alpha.api_key
         name: WOLFRAM_API_KEY
         value: your-app-id
 
-- name: wolkwork-toggl-mcp
-  image: mcpcommunity/wolkwork-toggl-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/wolkwork/toggl-mcp
-
-- name: wshobson-mcp-trader
-  image: mcpcommunity/wshobson-mcp-trader
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/wshobson/mcp-trader
-
-- name: xgenerationlab-xiyan_mcp_server
-  image: mcpcommunity/xgenerationlab-xiyan_mcp_server
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/XGenerationLab/xiyan_mcp_server
-
-- name: yangkyeongmo-mcp-server-apache-airflow
-  image: mcpcommunity/yangkyeongmo-mcp-server-apache-airflow
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/yangkyeongmo/mcp-server-apache-airflow
-  config:
-    env:
-      - name: AIRFLOW_HOST
-        default: YOUR_AIRFLOW_HOST
-        expression: '{{airflow.host|safe}}'
-    parameters:
-      type: object
-      properties:
-        host:
-          type: string
-
-- name: yanxingliu-dify-mcp-server
-  image: mcpcommunity/yanxingliu-dify-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/YanxingLiu/dify-mcp-server
-
-- name: yash-kavaiya-mcp-server-conversation-agents
-  image: mcpcommunity/yash-kavaiya-mcp-server-conversation-agents
-  meta:
-    builds: true
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/Yash-Kavaiya/mcp-server-conversation-agents
-
-- name: yokingma-one-search-mcp
-  image: mcpcommunity/yokingma-one-search-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/yokingma/one-search-mcp
-
 - name: youtube_transcript
   image: mcp/youtube-transcript
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 22
-  about:
-    title: YouTube transcripts
-    readme: README.md
-    description: Retrieves transcripts for given YouTube video URLs
-    icon: https://avatars.githubusercontent.com/u/4052902?s=200&v=4
-  source:
-    project: https://github.com/slimslenderslacks/mcp-youtube-transcript
-    upstream: https://github.com/jkawamoto/mcp-youtube-transcript
-    branch: slim/docker
   run:
     workdir: /app
-
-- name: zcaceres-gtasks-mcp
-  image: mcpcommunity/zcaceres-gtasks-mcp
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/zcaceres/gtasks-mcp
-
-- name: zubeidhendricks-youtube-mcp-server
-  image: mcpcommunity/zubeidhendricks-youtube-mcp-server
-  meta:
-    builtByDocker: true
-  about:
-    icon: https://avatars.githubusercontent.com/u/182288589?s=200&v=4
-  source:
-    project: https://github.com/ZubeidHendricks/youtube-mcp-server
-
-- name: fibery
-  image: mcp/fibery
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 105
-  about:
-    title: Fibery
-    icon: https://avatars.githubusercontent.com/u/72027989?v=4
-    description: Interact with your Fibery workspace.
-  source:
-    project: https://github.com/Fibery-inc/fibery-mcp-server
-  run:
-    workdir: /app
-  config:
-    description: Configure the connection to Fibery
-    secrets:
-      - id: fibery.api_token
-        name: FIBERY_API_TOKEN
-        value: your-api-token
-    env:
-      - name: FIBERY_HOST
-        default: your-domain.fibery.io
-        expression: '{{fibery.host|safe}}'
-    prameters:
-      type: object
-      properties:
-        host:
-          type: string
-
-- name: husqvarna-automower
-  image: mcp/husqvarna-automower
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 106
-  about:
-    title: Husqvarna Automower
-    icon: https://avatars.githubusercontent.com/u/17142631?v=4
-  source:
-    project: https://github.com/jeanlaurent/mcp-husqvarna-automower
-  run:
-    workdir: /app
-  config:
-    description: Configure the connection to Husqvarna Automower
-    secrets:
-      - id: husqvarna.client.secret
-        name: HUSQVARNA_CLIENT_SECRET
-        value: YOUR_CLIENT_SECRET_HERE
-    env:
-      - name: HUSQVARNA_CLIENT_ID
-        default: YOUR_CLIENT_ID_HERE
-        expression: '{{husqvarna.client_id}}'
-    parameters:
-      type: object
-      properties:
-        client_id:
-          type: string
-
-- name: neo4j-memory
-  image: mcp/neo4j-memory
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 107
-  about:
-    title: Neo4j Memory
-    icon: https://avatars.githubusercontent.com/u/916372?s=200&v=4
-    description: Provide persistent memory capabilities through Neo4j graph database integration.
-  source:
-    project: https://github.com/neo4j-contrib/mcp-neo4j
-    directory: servers/mcp-neo4j-memory
-  run:
-    workdir: /app
-  config:
-    description: Configure the connection to Neo4j 
-    secrets:
-      - id: neo4j.password
-        name: NEO4J_PASSWORD
-        value: password
-    env:
-      - name: NEO4J_URL
-        default: bolt://host.docker.internal:7687
-        expression: '{{neo4j.url}}'
-      - name: NEO4J_USERNAME
-        default: neo4j
-        expression: '{{neo4j.username}}'
-    parameters:
-      name: neo4j
-      type: object
-      properties:
-        url:
-          type: string
-        username:
-          type: string
-      required:
-        - url
-        - username
-  requirement: neo4j
-
-- name: neo4j-cypher
-  image: mcp/neo4j-cypher
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 108
-  about:
-    title: Neo4j Cypher
-    icon: https://avatars.githubusercontent.com/u/916372?s=200&v=4
-    description: Interact with Neo4j using Cypher graph queries.
-  source:
-    project: https://github.com/neo4j-contrib/mcp-neo4j
-    directory: servers/mcp-neo4j-cypher
-  run:
-    workdir: /app
-  config:
-    description: Configure the connection to Neo4j
-    secrets:
-      - id: neo4j.password
-        name: NEO4J_PASSWORD
-        value: password
-    env:
-      - name: NEO4J_URL
-        default: bolt://host.docker.internal:7687
-        expression: '{{neo4j.url}}'
-      - name: NEO4J_USERNAME
-        default: neo4j
-        expression: '{{neo4j.username}}'
-    parameters:
-      name: neo4j
-      type: object
-      properties:
-        url:
-          type: string
-        username:
-          type: string
-      required:
-        - url
-        - username
-  requirement: neo4j
-
-- name: neo4j-cloud-aura-api
-  image: mcp/neo4j-cloud-aura-api
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 109
-  about:
-    title: Neo4j Cloud Aura Api
-    icon: https://avatars.githubusercontent.com/u/916372?s=200&v=4
-    description: Manage Neo4j Aura database instances through the Neo4j Aura API.
-  source:
-    project: https://github.com/neo4j-contrib/mcp-neo4j
-    directory: servers/mcp-neo4j-cloud-aura-api
-  run:
-    workdir: /app
-  config:
-    description: Configure the connection to Neo4j Aura
-    secrets:
-      - id: neo4j.password
-        name: NEO4J_AURA_CLIENT_SECRET
-        value: <your-client-secret>
-    env:
-      - name: NEO4J_AURA_CLIENT_ID
-        default: <your-client-id>
-        expression: '{{neo4j.client_id}}'
-    parameters:
-      name: neo4j
-      type: object
-      properties:
-        client_id:
-          type: string
-      required:
-        - client_id
-        
-- name: wikipedia-mcp
-  image: mcp/wikipedia-mcp
-  meta:
-    builds: true
-    builtByDocker: true
-    starts: true
-    includeInCatalog: true
-    order: 110
-  about:
-    title: Wikipedia
-    icon: https://avatars.githubusercontent.com/u/56668?s=200&v=4
-  source:
-    project: https://github.com/Rudra-ravi/wikipedia-mcp
-

@@ -17,15 +17,20 @@ func startMCPClient(ctx context.Context, mcpImage string, pull bool, config stri
 		return nil, fmt.Errorf("listing servers: %w", err)
 	}
 
-	var command []string
-	server, ok := serversByName[mcpImage]
-	if ok {
-		command = server.Run.Command
+	var runConfig servers.Run
+	if server, ok := serversByName[mcpImage]; ok {
+		runConfig = server.Run
 	}
 
-	var args []string
-	var env []string
+	args := []string{"--security-opt", "no-new-privileges"}
+	if runConfig.Workdir != "" {
+		args = append(args, "--workdir", runConfig.Workdir)
+	}
+	// TODO: runConfig.Env
+	// TODO: runConfig.Volumes
+	// TODO: reeplace placeholders in runConfig.Command
 
+	var env []string
 	for _, cfg := range parseConfig(config) {
 		prefix := mcpImage + "."
 		if !strings.HasPrefix(cfg, prefix) {
@@ -46,7 +51,7 @@ func startMCPClient(ctx context.Context, mcpImage string, pull bool, config stri
 		args = append(args, "-e", parts[0])
 	}
 
-	client := mcpclient.NewClientArgs(mcpImage, pull, env, args, command)
+	client := mcpclient.NewClientArgs(mcpImage, pull, env, args, runConfig.Command)
 	if err := client.Start(ctx); err != nil {
 		return nil, fmt.Errorf("failed to start server %s: %w", mcpImage, err)
 	}

@@ -5,20 +5,10 @@ import (
 )
 
 type Server struct {
-	Name        string `yaml:"name" json:"name"`
-	Image       string `yaml:"image" json:"image"`
-	Meta        Meta   `yaml:"meta,omitempty" json:"meta,omitempty"`
-	About       About  `yaml:"about,omitempty" json:"about,omitempty"`
-	Source      Source `yaml:"source" json:"source"`
-	Run         Run    `yaml:"run,omitempty" json:"run,omitempty"`
-	Config      Config `yaml:"config,omitempty" json:"config,omitempty"`
-	Tests       []Test `yaml:"tests,omitempty" json:"tests,omitempty"`
-	Requirement string `yaml:"requirement,omitempty" json:"requirement,omitempty"`
-}
-
-type Test struct {
-	Tool string         `yaml:"tool" json:"tool"`
-	Args map[string]any `yaml:"args,omitempty" json:"args,omitempty"`
+	Name   string `yaml:"name" json:"name"`
+	Image  string `yaml:"image" json:"image"`
+	Run    Run    `yaml:"run,omitempty" json:"run,omitempty"`
+	Config Config `yaml:"config,omitempty" json:"config,omitempty"`
 }
 
 type Secret struct {
@@ -52,24 +42,6 @@ type Items struct {
 	Type string `yaml:"type" json:"type"`
 }
 
-type About struct {
-	Title       string `yaml:"title,omitempty" json:"title,omitempty"`
-	Reference   bool   `yaml:"reference,omitempty" json:"reference,omitempty"`
-	Readme      string `yaml:"readme,omitempty" json:"readme,omitempty"`
-	Description string `yaml:"description,omitempty" json:"description,omitempty"`
-	Icon        string `yaml:"icon,omitempty" json:"icon,omitempty"`
-	Details     string `yaml:"details,omitempty" json:"details,omitempty"`
-	Highlight   bool   `yaml:"highlight,omitempty" json:"highlight,omitempty"`
-}
-
-type Source struct {
-	Project    string `yaml:"project" json:"project"`
-	Upstream   string `yaml:"upstream,omitempty" json:"upstream,omitempty"`
-	Branch     string `yaml:"branch,omitempty" json:"branch,omitempty"`
-	Directory  string `yaml:"directory,omitempty" json:"directory,omitempty"`
-	Dockerfile string `yaml:"dockerfile,omitempty" json:"dockerfile,omitempty"`
-}
-
 type Run struct {
 	Workdir string            `yaml:"workdir,omitempty" json:"workdir,omitempty"`
 	Command []string          `yaml:"command,omitempty" json:"command,omitempty"`
@@ -83,14 +55,6 @@ type Config struct {
 	Env         []Env    `yaml:"env,omitempty" json:"env,omitempty"`
 	Parameters  Schema   `yaml:"parameters,omitempty" json:"parameters,omitempty"`
 	AnyOf       []AnyOf  `yaml:"anyOf,omitempty" json:"anyOf,omitempty"`
-}
-
-type Meta struct {
-	Builds           bool `yaml:"builds,omitempty" json:"builds,omitempty"`
-	BuiltByDocker    bool `yaml:"builtByDocker,omitempty" json:"builtByDocker,omitempty"`
-	Starts           bool `yaml:"starts,omitempty" json:"starts,omitempty"`
-	IncludeInCatalog bool `yaml:"includeInCatalog,omitempty" json:"includeInCatalog,omitempty"`
-	Order            int  `yaml:"order,omitempty" json:"order,omitempty"`
 }
 
 type SchemaEntry struct {
@@ -121,29 +85,4 @@ func (tl *SchemaList) UnmarshalYAML(value *yaml.Node) error {
 		})
 	}
 	return nil
-}
-
-func (tl SchemaList) MarshalYAML() (interface{}, error) {
-	mapNode := &yaml.Node{
-		Kind:    yaml.MappingNode,
-		Content: []*yaml.Node{},
-	}
-
-	for _, entry := range tl {
-		// Key node: the tile name
-		keyNode := &yaml.Node{
-			Kind:  yaml.ScalarNode,
-			Value: entry.Name,
-		}
-
-		// Value node: marshal the Schema
-		valNode := &yaml.Node{}
-		if err := valNode.Encode(entry.Schema); err != nil {
-			return nil, err
-		}
-
-		mapNode.Content = append(mapNode.Content, keyNode, valNode)
-	}
-
-	return mapNode, nil
 }
