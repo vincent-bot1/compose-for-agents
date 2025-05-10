@@ -2,13 +2,12 @@ package server
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 	"strings"
 
-	"github.com/docker/gateway/cmd/agents_gateway/secrets"
+	mcpclient "github.com/docker/gateway/cmd/agents_gateway/mcp"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -27,31 +26,11 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		toolNeeded[strings.TrimSpace(tool)] = true
 	}
 
-	mcpServer := server.NewMCPServer("Docker AI MCP Gateway", "1.0.1", server.WithToolHandlerMiddleware(func(next server.ToolHandlerFunc) server.ToolHandlerFunc {
-		return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			// Print arguments into a string
-			var arguments string
-			buf, err := json.Marshal(request.Params.Arguments)
-			if err != nil {
-				arguments = fmt.Sprintf("%v", request.Params.Arguments)
-			} else {
-				arguments = string(buf)
-			}
-
-			if scanSecrets {
-				fmt.Printf("Scanning tool call arguments for secrets...\n")
-				if secrets.ContainsSecrets(arguments) {
-					return nil, fmt.Errorf("a secret is being passed to tool %s", request.Params.Name)
-				}
-			}
-
-			if logCalls {
-				fmt.Printf("Calling tool %s with arguments: %s\n", request.Params.Name, arguments)
-			}
-
-			return next(ctx, request)
-		}
-	}))
+	mcpServer := server.NewMCPServer(
+		"Docker AI MCP Gateway",
+		"1.0.1",
+		server.WithToolHandlerMiddleware(callbacks(logCalls, scanSecrets)),
+	)
 
 	for mcpImage := range strings.SplitSeq(servers, ",") {
 		mcpImage := strings.TrimSpace(mcpImage)
