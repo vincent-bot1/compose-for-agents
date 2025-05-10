@@ -20,6 +20,12 @@ Make sure you have a GitHub token in your env:
 export GITHUB_TOKEN=<TOKEN>
 ```
 
+Add your OpenAI API key to your environment:
+
+```console
+export OPENAI_API_KEY=<KEY>
+```
+
 Then you can run:
 
 ```console
