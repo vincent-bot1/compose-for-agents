@@ -20,10 +20,9 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		return err
 	}
 
-	// Filter out tools
-	toolNeeded := map[string]bool{}
-	for tool := range strings.SplitSeq(tools, ",") {
-		toolNeeded[strings.TrimSpace(tool)] = true
+	serverTools, err := listTools(ctx, servers, tools, config)
+	if err != nil {
+		return fmt.Errorf("listing tools: %w", err)
 	}
 
 	mcpServer := server.NewMCPServer(
@@ -31,28 +30,7 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		"1.0.1",
 		server.WithToolHandlerMiddleware(callbacks(logCalls, scanSecrets)),
 	)
-
-	for _, mcpImage := range parseServers(servers) {
-		pull := true
-		client, err := startMCPClient(ctx, mcpImage, pull, config)
-		if err != nil {
-			return err
-		}
-
-		tools, err := client.ListTools(ctx)
-		client.Close()
-		if err != nil {
-			return fmt.Errorf("listing tools: %w", err)
-		}
-
-		for _, tool := range tools {
-			if _, ok := toolNeeded[tool.Name]; !ok {
-				continue
-			}
-
-			mcpServer.AddTool(tool, mcpServerHandler(mcpImage, tool, config))
-		}
-	}
+	mcpServer.SetTools(serverTools...)
 
 	stdioServer := server.NewStdioServer(mcpServer)
 	for {
