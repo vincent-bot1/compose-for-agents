@@ -1,4 +1,4 @@
-module github.com/docker/gateway
+module github.com/docker/compose-agents-demo
 
 go 1.24.0
 
@@ -10,6 +10,7 @@ require (
 	github.com/docker/docker v28.1.1+incompatible
 	github.com/mark3labs/mcp-go v0.25.0
 	github.com/spf13/cobra v1.9.1
+	golang.org/x/sync v0.14.0
 )
 
 require (
@@ -106,7 +107,6 @@ require (
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/term v0.29.0 // indirect
 	golang.org/x/text v0.22.0 // indirect

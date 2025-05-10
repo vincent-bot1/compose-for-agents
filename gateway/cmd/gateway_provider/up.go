@@ -9,9 +9,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/docker/compose-agents-demo/gateway/cmd/gateway_provider/docker"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
-	"github.com/docker/gateway/cmd/gateway_provider/docker"
 )
 
 func NewUpCmd(flags *Flags) *cobra.Command {

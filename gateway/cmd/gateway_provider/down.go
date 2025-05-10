@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/docker/gateway/cmd/gateway_provider/docker"
+	"github.com/docker/compose-agents-demo/gateway/cmd/gateway_provider/docker"
 	"github.com/spf13/cobra"
 )
 
