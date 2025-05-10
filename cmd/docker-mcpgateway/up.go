@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -41,10 +42,16 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		return err
 	}
 
-	serverNames, err := enabledMCPServers(ctx)
+	enabledServers, err := enabledMCPServers(ctx)
 	if err != nil {
-		compose.ErrorMessage("could not read the MCP config", err)
+		return fmt.Errorf("reading configuration: %w", err)
 	}
+
+	var serverNames []string
+	for serverName := range enabledServers {
+		serverNames = append(serverNames, serverName)
+	}
+	sort.Strings(serverNames)
 
 	serversByName, err := catalog.Get()
 	if err != nil {
@@ -82,7 +89,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	// Make sure to restart the gateway if the config changes.
-	configStr := string(catalog.McpServersYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ")
+	configStr := string(catalog.McpServersYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ") + ":" + fmt.Sprintf("%+v", enabledServers)
 	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(configStr)))
 	if exists {
 		if inspect.State.Running && inspect.Config.Labels[compose.LabelNames.ConfigHash] == configHash {

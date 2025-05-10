@@ -32,13 +32,15 @@ func listTools(ctx context.Context, serverNames string, serversByName map[string
 		errs.Go(func() error {
 			client, err := startMCPClient(ctx, serverConfig, true)
 			if err != nil {
-				return err
+				fmt.Println("Can't start MCP server:", err)
+				return nil
 			}
 
 			tools, err := client.ListTools(ctx)
 			client.Close() // Close early
 			if err != nil {
-				return fmt.Errorf("listing tools: %w", err)
+				fmt.Println("Can't list tools:", err)
+				return nil
 			}
 
 			for _, tool := range tools {
