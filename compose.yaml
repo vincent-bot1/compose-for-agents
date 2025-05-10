@@ -14,6 +14,9 @@ services:
       - OPENAI_API_KEY
     ports:
       - "7777:7777"
+    volumes:
+      - ./agents.yaml:/agents.yaml
+    command: /agents.yaml
     depends_on:
       - mcpgateway
       - gemma

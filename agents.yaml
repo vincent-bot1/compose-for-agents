@@ -1,0 +1,35 @@
+agents:
+  writer:
+    name: Writer
+    role: Expert at writing clear, engaging content
+    model: gemma3 # uses Docker Model Runner
+    chat: false # Defaults to true?
+
+  researcher:
+    name: Researcher
+    role: Expert at finding information
+    tools:
+      - mcp/duckduckgo.search
+      - mcp/duckduckgo.fetch_content
+      - mcp/github-mcp-server.get_me
+    model_provider: openai
+    model: gpt-4o
+    chat: false # Defaults to true?
+
+  github:
+    name: Github Agent
+    description: A specialized agent for GitHub tasks
+    tools:
+      - mcp/github-mcp-server.get_me
+    model_provider: openai
+    model: gpt-4o
+
+teams:
+  content_team:
+    name: Content Team
+    mode: coordinate
+    members: [researcher, writer]
+    markdown: true
+    instructions: You are a team of researchers and writers that work together to create high-quality content. Use your tools to find information before writing content.
+    model_provider: openai
+    model: gpt-4o

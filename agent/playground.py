@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import os
 
 import nest_asyncio
@@ -8,62 +9,98 @@ from agno.playground import Playground, serve_playground_app
 from agno.team import Team
 from agno.tools.mcp import MCPTools
 from fastapi.middleware.cors import CORSMiddleware
+import yaml
 
 # Allow nested event loops
 nest_asyncio.apply()
 
 
-async def run_server() -> None:
-    """Run the GitHub agent server."""
-    # Create a client session to connect to the MCP server
-    async with MCPTools(
-        command=f"/usr/bin/socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}"
-    ) as mcp_tools:
-        gemma_model = OpenAIChat(
-            id="ai/gemma3",
+def create_model(model_name: str, provider: str) -> OpenAIChat:
+    """Create a model instance based on the model name and provider."""
+    if provider == "docker":
+        model = OpenAIChat(
+            id="ai/" + model_name,
             base_url="http://model-runner.docker.internal/engines/llama.cpp/v1",
         )
-        gemma_model.role_map = {
+        model.role_map = {
             "system": "system",
             "user": "user",
             "assistant": "assistant",
             "tool": "tool",
             "model": "assistant",
         }
+        return model
 
-        # Create individual specialized agents
-        researcher = Agent(
-            name="Researcher",
-            role="Expert at finding information",
-            tools=[mcp_tools],
-            model=OpenAIChat("gpt-4o"),
-        )
+    if provider == "openai":
+        if os.environ.get("OPENAI_API_KEY") is None:
+            raise ValueError(
+                "OPENAI_API_KEY environment variable not set for OpenAI model"
+            )
+        return OpenAIChat(model_name)
 
-        # Create individual specialized agents
-        github = Agent(
-            name="Github agent",
-            description="A specialized agent for GitHub tasks",
-            tools=[mcp_tools],
-            model=OpenAIChat("gpt-4o"),
-        )
+    raise ValueError(f"Unknown agent model provider: {provider}")
 
-        writer = Agent(
-            name="Writer",
-            role="Expert at writing clear, engaging content",
-            model=gemma_model,
-        )
 
-        # Create a team with these agents
-        content_team = Team(
-            name="Content Team",
-            mode="coordinate",
-            members=[researcher, writer],
-            instructions="You are a team of researchers and writers that work together to create high-quality content. Use your tools to find information before writing content.",
-            model=OpenAIChat("gpt-4o"),
-            markdown=True,
-        )
+async def run_server(config) -> None:
+    """Run the playground server."""
+    # Create a client session to connect to the MCP server
+    async with MCPTools(
+        command=f"/usr/bin/socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}"
+    ) as mcp_tools:
 
-        playground = Playground(agents=[github], teams=[content_team])
+        agents = []
+        agents_by_id = {}
+        teams = []
+        teams_by_id = {}
+
+        for agent_id, agent_data in config.get("agents", {}).items():
+            model_name = agent_data.get("model")
+            if not model_name:
+                raise ValueError(f"Model name not specified for agent {agent_id}")
+            provider = agent_data.get("model_provider", "docker")
+            model = create_model(model_name, provider)
+            markdown = agent_data.get("markdown", False)
+            agent = Agent(
+                name=agent_data["name"],
+                role=agent_data.get("role", ""),
+                description=agent_data.get("description", ""),
+                tools=[mcp_tools],
+                model=model,
+                markdown=markdown,
+            )
+            agents_by_id[agent_id] = agent
+            # Append only agents that we want to chat with
+            if agent_data.get("chat", True):
+                agents.append(agent)
+
+        for team_id, team_data in config.get("teams", {}).items():
+            model_name = agent_data.get("model")
+            if not model_name:
+                raise ValueError(f"Model name not specified for team {team_id}")
+            provider = agent_data.get("model_provider", "docker")
+            model = create_model(model_name, provider)
+            team_agents: list[Agent | Team] = []
+            for agent_id in team_data.get("members", []):
+                try:
+                    agent = agents_by_id[agent_id]
+                except KeyError:
+                    raise ValueError(f"Agent {agent_id} not found in agents")
+                team_agents.append(agent)
+            markdown = agent_data.get("markdown", False)
+            team = Team(
+                name=team_data.get("name", ""),
+                mode=team_data.get("mode", "coordinate"),
+                members=team_agents,
+                instructions=team_data.get("instructions", ""),
+                model=model,
+                markdown=markdown,
+            )
+            teams_by_id[team_id] = team
+            if team_data.get("chat", True):
+                teams.append(team)
+
+        playground = Playground(agents=agents, teams=teams)
+
         app = playground.get_app()
         app.add_middleware(
             CORSMiddleware,
@@ -77,5 +114,13 @@ async def run_server() -> None:
         serve_playground_app(host="0.0.0.0", app=app)
 
 
+def main():
+    config_filename = sys.argv[1]
+    with open(config_filename, "r") as f:
+        config = yaml.safe_load(f)
+
+    asyncio.run(run_server(config))
+
+
 if __name__ == "__main__":
-    asyncio.run(run_server())
+    main()
