@@ -4,7 +4,7 @@ tasks:
   default:
     desc: Build and run the Docker image
     cmds:
-      - task: build
+      - task: build_and_install
       - task: down
       - task: up
 
