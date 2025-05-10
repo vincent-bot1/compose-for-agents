@@ -32,9 +32,7 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		server.WithToolHandlerMiddleware(callbacks(logCalls, scanSecrets)),
 	)
 
-	for mcpImage := range strings.SplitSeq(servers, ",") {
-		mcpImage := strings.TrimSpace(mcpImage)
-
+	for _, mcpImage := range parseServers(servers) {
 		pull := true
 		client, err := startMCPClient(ctx, mcpImage, pull, config)
 		if err != nil {
@@ -93,7 +91,7 @@ func mcpServerHandler(mcpImage string, tool mcp.Tool, config string) server.Tool
 // config: mcp/github-mcp-server.GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_TOKEN
 func startMCPClient(ctx context.Context, mcpImage string, pull bool, config string) (*mcpclient.Client, error) {
 	args := []string{}
-	for cfg := range strings.SplitSeq(config, ",") {
+	for _, cfg := range parseConfig(config) {
 		prefix := mcpImage + "."
 		if !strings.HasPrefix(cfg, prefix) {
 			continue
