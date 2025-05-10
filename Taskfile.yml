@@ -1,11 +1,16 @@
 version: "3"
 
+dotenv: ['.env']
+
 tasks:
   default:
     cmds:
       - task: up
 
   up:
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ] && [ -n "$GITHUB_TOKEN" ]'
+        msg: "Both OPENAI_API_KEY and GITHUB_TOKEN must be set and non-empty"
     desc: Start the demo Compose Stack
     cmd: docker compose up --build
 
