@@ -4,7 +4,10 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"net"
 	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -13,6 +16,7 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
+	"github.com/docker/go-connections/nat"
 )
 
 func NewUpCmd(flags *Flags) *cobra.Command {
@@ -23,31 +27,29 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serviceName := args[0]
 
+			fmt.Fprintln(os.Stderr, "my environ", os.Environ())
+
 			if err := startGateway(cmd.Context(), serviceName, *flags); err != nil {
 				compose.ErrorMessage("could not start the gateway", err)
 			} else {
 				compose.InfoMessage("started the gateway")
 			}
 
-			compose.Setenv("ENDPOINT", flags.ContainerName(serviceName)+":8811")
 			return nil
 		},
 	}
 }
 
 func startGateway(ctx context.Context, serviceName string, flags Flags) error {
+	const (
+		agentsYaml = "/agents.yaml"
+	)
 	client, err := docker.NewClient(ctx)
 	if err != nil {
 		return err
 	}
 
-	cmd := []string{
-		"--servers=" + flags.Servers,
-		"--config=" + flags.Config,
-		"--tools=" + flags.Tools,
-		"--log_calls=" + boolToString(flags.LogCallsEnabled()),
-		"--scan_secrets=" + boolToString(flags.ScanSecretsEnabled()),
-	}
+	cmd := []string{"/agents.yaml"}
 
 	containerID := flags.ContainerName(serviceName)
 	exists, inspect, err := client.Exists(ctx, containerID)
@@ -65,13 +67,43 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		}
 	}
 
+	agentsYamlSource := flags.Config
+	if !filepath.IsAbs(agentsYamlSource) {
+		abs, err := filepath.Abs(agentsYamlSource)
+		if err != nil {
+			return fmt.Errorf("determining absolute path for config: %w", err)
+		}
+		agentsYamlSource = abs
+	}
+
+	var portBindings nat.PortMap
+
+	fmt.Fprintln(os.Stderr, "GOT APIPORT", flags.APIPort)
+	if flags.APIPort != "" {
+		host, port, err := net.SplitHostPort(flags.APIPort)
+		fmt.Fprintln(os.Stderr, "APIPORT", flags.APIPort, "@", host, "@", port)
+		if err != nil {
+			host = "127.0.0.1"
+			port = flags.APIPort
+		}
+		portNum, err := strconv.Atoi(port)
+		if err != nil {
+			return fmt.Errorf("invalid API port number: %w", err)
+		}
+		portBindings = nat.PortMap{
+			"7777/tcp": []nat.PortBinding{
+				{
+					HostIP:   host,
+					HostPort: strconv.Itoa(portNum),
+				},
+			},
+		}
+	}
+
 	return client.StartContainer(ctx, containerID, container.Config{
-		Image: flags.Image,
+		Image: "demo/agents",
 		Cmd:   cmd,
-		Env: []string{
-			// TEMP for github MCP server
-			"GITHUB_TOKEN=" + os.Getenv("GITHUB_TOKEN"),
-		},
+		Env:   append(os.Environ(), "OPENAI_API_KEY="+flags.OpenAIAPIKey),
 		Labels: map[string]string{
 			compose.LabelNames.Project:         flags.Project,
 			compose.LabelNames.Service:         serviceName,
@@ -80,13 +112,14 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 			compose.LabelNames.ConfigHash:      configHash,
 		},
 	}, container.HostConfig{
-		NetworkMode: container.NetworkMode(flags.NetworkName()),
-		Init:        &trueValue,
+		PortBindings: portBindings,
+		NetworkMode:  container.NetworkMode(flags.NetworkName()),
+		Init:         &trueValue,
 		Mounts: []mount.Mount{
 			{
 				Type:   mount.TypeBind,
-				Source: "/var/run/docker.sock",
-				Target: "/var/run/docker.sock",
+				Source: agentsYamlSource,
+				Target: agentsYaml,
 			},
 		},
 	})
