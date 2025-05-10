@@ -35,8 +35,11 @@ func Run(ctx context.Context, servers, config, tools string, logCalls, scanSecre
 		case <-ctx.Done():
 			return ctx.Err()
 		default:
-			conn, err := ln.Accept()
+			conn, err := acceptWithContext(ctx, ln)
 			if err != nil {
+				if ctx.Err() != nil {
+					return ctx.Err()
+				}
 				fmt.Printf("Error accepting the connection: %v\n", err)
 				continue
 			}
