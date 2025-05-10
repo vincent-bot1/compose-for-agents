@@ -11,6 +11,7 @@ import (
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
+	"github.com/docker/gateway/cmd/gateway_provider/docker"
 )
 
 func NewUpCmd(flags *Flags) *cobra.Command {
@@ -34,6 +35,11 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 }
 
 func startGateway(ctx context.Context, serviceName string, flags Flags) error {
+	client, err := docker.NewClient(ctx)
+	if err != nil {
+		return err
+	}
+
 	cmd := []string{
 		"--servers=" + flags.Servers,
 		"--config=" + flags.Config,
@@ -43,7 +49,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	containerID := flags.ContainerName(serviceName)
-	exists, inspect, err := Exists(ctx, containerID)
+	exists, inspect, err := client.Exists(ctx, containerID)
 	if err != nil {
 		return err
 	}
@@ -53,12 +59,12 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		if inspect.State.Running && inspect.Config.Labels[labelNames.ConfigHash] == configHash {
 			return nil
 		}
-		if err := RemoveContainer(ctx, containerID, true); err != nil {
+		if err := client.RemoveContainer(ctx, containerID, true); err != nil {
 			return err
 		}
 	}
 
-	return StartContainer(ctx, containerID, container.Config{
+	return client.StartContainer(ctx, containerID, container.Config{
 		Image: flags.Image,
 		Cmd:   cmd,
 		Env: []string{

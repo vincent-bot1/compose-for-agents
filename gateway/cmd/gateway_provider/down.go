@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/docker/gateway/cmd/gateway_provider/docker"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +25,12 @@ func NewDownCmd(flags *Flags) *cobra.Command {
 }
 
 func stopGateway(ctx context.Context, containerID string) error {
-	exists, _, err := Exists(ctx, containerID)
+	client, err := docker.NewClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	exists, _, err := client.Exists(ctx, containerID)
 	if err != nil {
 		return err
 	}
@@ -33,5 +39,5 @@ func stopGateway(ctx context.Context, containerID string) error {
 		return nil
 	}
 
-	return RemoveContainer(ctx, containerID, true)
+	return client.RemoveContainer(ctx, containerID, true)
 }
