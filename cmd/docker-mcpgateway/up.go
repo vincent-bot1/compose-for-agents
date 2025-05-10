@@ -9,7 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/docker/compose-agents-demo/gateway/cmd/gateway_provider/docker"
+	"github.com/docker/compose-agents-demo/pkg/compose"
+	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 )
@@ -23,12 +24,12 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 			serviceName := args[0]
 
 			if err := startGateway(cmd.Context(), serviceName, *flags); err != nil {
-				errorMessage("could not start the gateway", err)
+				compose.ErrorMessage("could not start the gateway", err)
 			} else {
-				infoMessage("started the gateway")
+				compose.InfoMessage("started the gateway")
 			}
 
-			setenv("ENDPOINT", flags.ContainerName(serviceName)+":8811")
+			compose.Setenv("ENDPOINT", flags.ContainerName(serviceName)+":8811")
 			return nil
 		},
 	}

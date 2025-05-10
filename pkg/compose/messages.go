@@ -1,4 +1,4 @@
-package main
+package compose
 
 import (
 	"encoding/json"
@@ -10,21 +10,21 @@ type jsonMessage struct {
 	Message string `json:"message"`
 }
 
-func setenv(k, v string) error {
+func Setenv(k, v string) error {
 	return sendToCompose(jsonMessage{
 		Type:    "setenv",
 		Message: fmt.Sprintf("%v=%v", k, v),
 	})
 }
 
-func infoMessage(message string) error {
+func InfoMessage(message string) error {
 	return sendToCompose(jsonMessage{
 		Type:    "info",
 		Message: message,
 	})
 }
 
-func errorMessage(message string, err error) error {
+func ErrorMessage(message string, err error) error {
 	return sendToCompose(jsonMessage{
 		Type:    "error",
 		Message: fmt.Sprintf("%s: %v", message, err),

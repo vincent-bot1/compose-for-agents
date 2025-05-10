@@ -6,6 +6,7 @@ import (
 	"github.com/docker/cli/cli-plugins/manager"
 	"github.com/docker/cli/cli-plugins/plugin"
 	"github.com/docker/cli/cli/command"
+	"github.com/docker/compose-agents-demo/pkg/compose"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 
 		// Don't return an error. Instead, send an error message to compose.
 		cmd.SetFlagErrorFunc(func(_ *cobra.Command, err error) error {
-			errorMessage("Error parsing flags", err)
+			compose.ErrorMessage("Error parsing flags", err)
 			return nil
 		})
 

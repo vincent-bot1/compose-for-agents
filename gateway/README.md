@@ -1,15 +1,9 @@
 ## How to get it running?
 
-Build the `docker/mcpgateway` image:
+Build and install the required dependencies
 
 ```console
-task build-gateway-image
-```
-
-Build the `docker-mcp` compose provider and install it as a cli plugin.
-
-```console
-task build-compose-provider
+task build_and_install
 ```
 
 Manually build the latest version of [docker-compose](https://github.com/docker/compose)

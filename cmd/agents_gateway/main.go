@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/docker/compose-agents-demo/gateway/cmd/agents_gateway/server"
+	"github.com/docker/compose-agents-demo/cmd/agents_gateway/server"
 )
 
 func main() {

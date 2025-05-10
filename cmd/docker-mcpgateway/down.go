@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 
-	"github.com/docker/compose-agents-demo/gateway/cmd/gateway_provider/docker"
+	"github.com/docker/compose-agents-demo/pkg/compose"
+	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +17,9 @@ func NewDownCmd(flags *Flags) *cobra.Command {
 			containerID := flags.ContainerName(args[0])
 
 			if err := stopGateway(cmd.Context(), containerID); err != nil {
-				errorMessage("could not stop the gateway", err)
+				compose.ErrorMessage("could not stop the gateway", err)
 			} else {
-				infoMessage("stopped the gateway")
+				compose.InfoMessage("stopped the gateway")
 			}
 		},
 	}

@@ -8,10 +8,10 @@ Build and install `docker compose` from `main`:
 $ task build-compose
 ```
 
-Build the MCP gateway provider and container:
+Build the all the binaries and images, install the plugins:
 
 ```console
-$ task -d gateway build
+$ task install
 ```
 
 Make sure you have a GitHub token in your env:
@@ -29,8 +29,14 @@ export OPENAI_API_KEY=<KEY>
 Then you can run:
 
 ```console
-$ docker compose up --build
-$ docker compose down --remove-orphans
+$ task up
+$ task down
+```
+
+Cleanup:
+
+```console
+$ task uninstall
 ```
 
 You can then see the agent UI on http://localhost:3000

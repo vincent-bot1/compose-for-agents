@@ -18,3 +18,51 @@ tasks:
     cmds:
       - docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./out https://github.com/docker/compose.git
       - /bin/ln -sf "{{.TASKFILE_DIR}}/out/docker-compose" "{{.HOME}}/.docker/cli-plugins/docker-compose"
+
+  build-docker-agentic:
+    desc: Build the docker-agentic binary
+    cmd: go build -o bin/docker-agentic ./cmd/docker-agentic
+
+  build-docker-mcpgateway:
+    desc: Build the docker-mcpgateway binary
+    cmds:
+      - go build -o bin/docker-mcpgateway ./cmd/docker-mcpgateway
+
+  build-gateway-image:
+    desc: Build the gateway docker image
+    cmd: docker build -t docker/agents_gateway --target=agents_gateway .
+
+  build-images:
+    desc: Build all docker images
+    deps:
+      - build-gateway-image
+
+  build:
+    desc: Build all binaries and images
+    deps:
+      - build-images
+      - build-docker-agentic
+      - build-docker-mcpgateway
+
+  install-docker-agentic:
+    cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
+    deps:
+      - build-docker-agentic
+
+  install-docker-mcpgateway:
+    cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+    deps:
+      - build-docker-mcpgateway
+
+  install:
+    desc: Install all binaries
+    deps:
+      - build # To build images too
+      - install-docker-agentic
+      - install-docker-mcpgateway
+
+  uninstall:
+    desc: Remove all installed files
+    cmds:
+      - /bin/rm -f "{{.HOME}}/.docker/cli-plugins/docker-agentic"
+      - /bin/rm -f "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"

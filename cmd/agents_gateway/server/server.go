@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	mcpclient "github.com/docker/compose-agents-demo/gateway/cmd/agents_gateway/mcp"
+	mcpclient "github.com/docker/compose-agents-demo/cmd/agents_gateway/mcp"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

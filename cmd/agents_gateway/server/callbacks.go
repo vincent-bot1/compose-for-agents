@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/docker/compose-agents-demo/gateway/cmd/agents_gateway/secrets"
+	"github.com/docker/compose-agents-demo/cmd/agents_gateway/secrets"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
