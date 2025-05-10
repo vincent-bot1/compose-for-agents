@@ -12,7 +12,6 @@ import (
 type Client struct {
 	image   string
 	pull    bool
-	workDir string
 	args    []string
 	command []string
 
@@ -42,9 +41,6 @@ func (cl *Client) Start(ctx context.Context) error {
 
 	args := []string{"run", "--rm", "-i", "--init"}
 	args = append(args, cl.args...)
-	if cl.workDir != "" {
-		args = append(args, "-w", cl.workDir)
-	}
 	args = append(args, cl.image)
 	c := NewMCPClient("docker", nil, args...)
 	cl.c = c
