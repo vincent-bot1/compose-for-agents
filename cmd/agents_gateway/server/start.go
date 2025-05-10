@@ -13,14 +13,17 @@ func startMCPClient(ctx context.Context, server catalog.Server, pull bool) (*mcp
 	if server.Run.Workdir != "" {
 		args = append(args, "--workdir", server.Run.Workdir)
 	}
-	// TODO: runConfig.Env
-	// TODO: runConfig.Volumes
-	// TODO: reeplace placeholders in runConfig.Command
 
 	var env []string
-	for _, secret := range server.Config.Secrets {
-		args = append(args, "-e", secret.Name)
+	for _, s := range server.Config.Secrets {
+		args = append(args, "-e", s.Name)
 	}
+	for _, e := range server.Config.Env {
+		args = append(args, "-e", e.Name)
+	}
+
+	// TODO: runConfig.Volumes
+	// TODO: reeplace placeholders in runConfig.Command
 
 	client := mcpclient.NewClientArgs(server.Image, pull, env, args, server.Run.Command)
 	if err := client.Start(ctx); err != nil {

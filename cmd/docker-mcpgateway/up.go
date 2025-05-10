@@ -64,14 +64,21 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		if !ok {
 			continue
 		}
+		configuration, ok := enabledServers[serverName]
+		if !ok {
+			continue
+		}
 
-		for _, secret := range server.Config.Secrets {
-			value, err := secretValue(ctx, secret.Id)
+		for _, s := range server.Config.Secrets {
+			value, err := secretValue(ctx, s.Id)
 			if err != nil {
-				return fmt.Errorf("getting secret %s: %w", secret.Name, err)
+				return fmt.Errorf("getting secret %s: %w", s.Name, err)
 			}
 
-			env = append(env, fmt.Sprintf("%s=%s", secret.Name, value))
+			env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
+		}
+		for _, e := range server.Config.Env {
+			env = append(env, fmt.Sprintf("%s=%s", e.Name, evaluate(e.Expression, configuration.Config[e.Name])))
 		}
 	}
 
@@ -122,6 +129,20 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 			},
 		},
 	})
+}
+
+func evaluate(expression string, config map[string]any) string {
+	if !strings.HasPrefix(expression, "{{") || !strings.HasSuffix(expression, "}}") {
+		return expression
+	}
+
+	expression = strings.TrimPrefix(expression, "{{")
+	expression = strings.TrimSuffix(expression, "}}")
+
+	parts := strings.Split(expression, "|")
+	first := strings.TrimSpace(parts[0])
+
+	return fmt.Sprintf("%s", config[first])
 }
 
 var trueValue = true
