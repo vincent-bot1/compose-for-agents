@@ -27,8 +27,6 @@ interface SessionResponse {
   agent_data: Record<string, unknown>
 }
 
-type EntityType = 'agent' | 'team'
-
 interface LoaderArgs {
   entityType: 'agent' | 'team' | null
   agentId?: string | null
@@ -57,7 +55,7 @@ const useSessionLoader = () => {
 
         setSessionsData(sessions)
       } catch (err) {
-        toast.error('Error loading sessions')
+        toast.error('Error loading sessions' + err)
         setSessionsData([])
       } finally {
         setIsSessionsLoading(false)

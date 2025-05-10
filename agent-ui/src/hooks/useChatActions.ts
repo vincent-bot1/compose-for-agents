@@ -10,7 +10,6 @@ import {
   getPlaygroundTeamsAPI
 } from '@/api/playground'
 import { useQueryState } from 'nuqs'
-import { get } from 'http'
 
 const useChatActions = () => {
   const { chatInputRef } = usePlaygroundStore()
