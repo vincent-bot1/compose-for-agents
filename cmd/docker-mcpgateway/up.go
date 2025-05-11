@@ -12,6 +12,7 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/compose"
 	"github.com/docker/compose-agents-demo/pkg/docker"
+	"github.com/docker/compose-agents-demo/pkg/eval"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 )
@@ -78,7 +79,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 			env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
 		}
 		for _, e := range server.Config.Env {
-			env = append(env, fmt.Sprintf("%s=%s", e.Name, evaluate(e.Expression, configuration.Config[e.Name])))
+			env = append(env, fmt.Sprintf("%s=%s", e.Name, eval.Expression(e.Expression, configuration.Config[e.Name])))
 		}
 	}
 

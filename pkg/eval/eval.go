@@ -1,11 +1,11 @@
-package main
+package eval
 
 import (
 	"fmt"
 	"strings"
 )
 
-func evaluate(expression string, config map[string]any) string {
+func Expression(expression string, config map[string]any) any {
 	if !strings.HasPrefix(expression, "{{") || !strings.HasSuffix(expression, "}}") {
 		return expression
 	}
@@ -13,6 +13,25 @@ func evaluate(expression string, config map[string]any) string {
 	parts := strings.Split(expression[2:len(expression)-2], "|")
 
 	return fmt.Sprintf("%s", dig(parts[0], config))
+}
+
+func Expressions(expressions []string, arguments map[string]any) ([]string, error) {
+	var replaced []string
+
+	for _, expression := range expressions {
+		value := Expression(expression, arguments)
+
+		switch v := value.(type) {
+		case []any:
+			for _, vv := range v {
+				replaced = append(replaced, fmt.Sprintf("%v", vv))
+			}
+		default:
+			replaced = append(replaced, fmt.Sprintf("%v", v))
+		}
+	}
+
+	return replaced, nil
 }
 
 func dig(key string, config map[string]any) any {

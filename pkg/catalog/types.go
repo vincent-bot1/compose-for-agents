@@ -121,3 +121,16 @@ type Container struct {
 	Command []string `yaml:"command" json:"command"`
 	Volumes []string `yaml:"volumes" json:"volumes"`
 }
+
+func (p *Properties) ToMap() map[string]any {
+	m := map[string]any{}
+
+	for k, v := range *p {
+		m[k] = map[string]any{
+			"type":        v.Type,
+			"description": v.Description,
+		}
+	}
+
+	return m
+}

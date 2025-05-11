@@ -44,8 +44,8 @@ func listTools(ctx context.Context, serverNames string, mcpCatalog catalog.Catal
 						Name:        tool.Name,
 						Description: tool.Description,
 						InputSchema: mcp.ToolInputSchema{
-							Type: tool.Parameters.Type,
-							// Properties: tool.Parameters.Properties,
+							Type:       tool.Parameters.Type,
+							Properties: tool.Parameters.Properties.ToMap(),
 						},
 					},
 					Handler: mcpToolHandler(tool),
