@@ -53,7 +53,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 	sort.Strings(serverNames)
 
-	serversByName, err := catalog.Get()
+	serversByName, _, err := catalog.Get()
 	if err != nil {
 		return fmt.Errorf("listing servers: %w", err)
 	}

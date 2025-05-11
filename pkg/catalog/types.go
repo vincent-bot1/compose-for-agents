@@ -86,3 +86,33 @@ func (tl *SchemaList) UnmarshalYAML(value *yaml.Node) error {
 	}
 	return nil
 }
+
+type ToolGroup struct {
+	Name  string `yaml:"name" json:"name"`
+	Tools []Tool `yaml:"tools" json:"tools"`
+}
+
+type Tool struct {
+	Name        string     `yaml:"name" json:"name"`
+	Description string     `yaml:"description" json:"description"`
+	Container   Container  `yaml:"container" json:"container"`
+	Parameters  Parameters `yaml:"parameters" json:"parameters"`
+}
+
+type Parameters struct {
+	Type       string     `yaml:"type" json:"type"`
+	Properties Properties `yaml:"properties" json:"properties"`
+}
+
+type Properties map[string]Property
+
+type Property struct {
+	Type        string `yaml:"type" json:"type"`
+	Description string `yaml:"description" json:"description"`
+}
+
+type Container struct {
+	Image   string   `yaml:"image" json:"image"`
+	Command []string `yaml:"command" json:"command"`
+	Volumes []string `yaml:"volumes" json:"volumes"`
+}
