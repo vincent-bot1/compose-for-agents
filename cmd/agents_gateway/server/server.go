@@ -19,14 +19,14 @@ func Run(ctx context.Context, serverNames, tools string, logCalls, scanSecrets b
 	}
 
 	// Read the MCP catalog
-	serversByName, _, err := catalog.Get()
+	mcpCatalog, err := catalog.Get()
 	if err != nil {
 		return fmt.Errorf("listing catalog: %w", err)
 	}
 
 	toolCallbacks := callbacks(logCalls, scanSecrets)
 
-	serverTools, err := listTools(ctx, serverNames, serversByName, tools)
+	serverTools, err := listTools(ctx, serverNames, mcpCatalog.Servers, tools)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}

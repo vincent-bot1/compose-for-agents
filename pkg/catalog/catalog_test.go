@@ -8,30 +8,26 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	servers, tools, err := Get()
+	mcpCatalog, err := Get()
 
-	assert.NotEmpty(t, servers)
-	assert.NotEmpty(t, tools)
+	assert.NotEmpty(t, mcpCatalog.Servers)
+	assert.NotEmpty(t, mcpCatalog.Tools)
 	assert.NoError(t, err)
 }
 
 func TestServerImages(t *testing.T) {
-	servers, _, err := Get()
+	mcpCatalog, err := Get()
 
 	require.NoError(t, err)
-	for _, server := range servers {
+	for _, server := range mcpCatalog.Servers {
 		assert.NotEmpty(t, server.Name)
 		assert.NotEmpty(t, server.Image)
 	}
-}
-
-func TestToolImages(t *testing.T) {
-	_, groups, err := Get()
 
 	require.NoError(t, err)
-	for _, group := range groups {
-		assert.NotEmpty(t, group.Name)
-		for _, tool := range group.Tools {
+	for name, tools := range mcpCatalog.Tools {
+		assert.NotEmpty(t, name)
+		for _, tool := range tools {
 			assert.NotEmpty(t, tool.Name)
 			assert.NotEmpty(t, tool.Container.Image)
 		}

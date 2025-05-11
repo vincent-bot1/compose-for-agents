@@ -53,14 +53,14 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 	sort.Strings(serverNames)
 
-	serversByName, _, err := catalog.Get()
+	mcpCatalog, err := catalog.Get()
 	if err != nil {
 		return fmt.Errorf("listing servers: %w", err)
 	}
 
 	var env []string
 	for _, serverName := range serverNames {
-		server, ok := serversByName[serverName]
+		server, ok := mcpCatalog.Servers[serverName]
 		if !ok {
 			continue
 		}

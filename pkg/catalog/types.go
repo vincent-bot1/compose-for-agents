@@ -4,6 +4,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type Catalog struct {
+	Servers map[string]Server
+	Tools   map[string]map[string]Tool
+}
+
 type Server struct {
 	Name   string `yaml:"name" json:"name"`
 	Image  string `yaml:"image" json:"image"`
