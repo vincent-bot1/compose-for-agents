@@ -11,7 +11,7 @@ import (
 )
 
 func Run(ctx context.Context, serverNames, tools string, logCalls, scanSecrets bool) error {
-	// List as early as possible to not lose client connections
+	// Listen as early as possible to not lose client connections
 	var lc net.ListenConfig
 	ln, err := lc.Listen(ctx, "tcp", ":8811")
 	if err != nil {
