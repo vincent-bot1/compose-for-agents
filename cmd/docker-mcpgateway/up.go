@@ -131,20 +131,6 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	})
 }
 
-func evaluate(expression string, config map[string]any) string {
-	if !strings.HasPrefix(expression, "{{") || !strings.HasSuffix(expression, "}}") {
-		return expression
-	}
-
-	expression = strings.TrimPrefix(expression, "{{")
-	expression = strings.TrimSuffix(expression, "}}")
-
-	parts := strings.Split(expression, "|")
-	first := strings.TrimSpace(parts[0])
-
-	return fmt.Sprintf("%s", config[first])
-}
-
 var trueValue = true
 
 func boolToString(b bool) string {
