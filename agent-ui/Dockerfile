@@ -12,4 +12,5 @@ RUN pnpm build
 
 EXPOSE 3000
 
-CMD ["pnpm", "start"]
+# Use npm, pnpm doesn't handle exiting gracefully
+CMD ["npm", "run", "start"]

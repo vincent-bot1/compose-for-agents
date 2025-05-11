@@ -114,7 +114,7 @@ const Endpoint = () => {
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="flex flex-col items-start gap-2 hidden">
       <div className="text-primary text-xs font-medium uppercase">Endpoint</div>
       {isEditing ? (
         <div className="flex w-full items-center gap-1">

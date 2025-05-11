@@ -5,18 +5,10 @@ services:
       options:
         config: agents.yaml
         openai_api_key: $OPENAI_API_KEY
-        # Disabled by default, comment to enable the API
-        # api_port: "7777"
         ui_port: 3000
     depends_on:
       - mcpgateway
       - gemma
-  ui:
-    image: demo/ui
-    build:
-      context: agent-ui
-    ports:
-      - "3000:3000"
 
   mcpgateway:
     provider:

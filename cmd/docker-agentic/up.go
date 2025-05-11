@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -19,6 +18,11 @@ import (
 	"github.com/docker/go-connections/nat"
 )
 
+const (
+	agentsImageName = "demo/agents"
+	uiImageName     = "demo/ui"
+)
+
 func NewUpCmd(flags *Flags) *cobra.Command {
 	return &cobra.Command{
 		Use:   "up",
@@ -27,10 +31,23 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serviceName := args[0]
 
-			if err := startGateway(cmd.Context(), serviceName, *flags); err != nil {
-				compose.ErrorMessage("could not start the gateway", err)
+			client, err := docker.NewClient(cmd.Context())
+			if err != nil {
+				return err
+			}
+
+			if err := startAgents(cmd.Context(), client, serviceName, flags); err != nil {
+				compose.ErrorMessage("could not start agents", err)
 			} else {
-				compose.InfoMessage("started the gateway")
+				compose.InfoMessage("agents started")
+			}
+
+			if flags.UIPort != "" {
+				if err := startUI(cmd.Context(), client, serviceName, flags); err != nil {
+					compose.ErrorMessage("could not start UI", err)
+				} else {
+					compose.InfoMessage("UI started")
+				}
 			}
 
 			return nil
@@ -38,24 +55,33 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 	}
 }
 
-func startGateway(ctx context.Context, serviceName string, flags Flags) error {
+func startAgents(ctx context.Context, client *docker.Client, serviceName string, flags *Flags) error {
 	const (
 		agentsYaml = "/agents.yaml"
 	)
-	client, err := docker.NewClient(ctx)
-	if err != nil {
-		return err
-	}
 
 	cmd := []string{"/agents.yaml"}
 
-	containerID := flags.ContainerName(serviceName)
+	containerID := flags.AgentsContainerName(serviceName)
 	exists, inspect, err := client.Exists(ctx, containerID)
 	if err != nil {
 		return err
 	}
 
-	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(cmd, ", "))))
+	agentsData, err := os.ReadFile(flags.Config)
+	if err != nil {
+		return fmt.Errorf("reading agents.yaml: %w", err)
+	}
+
+	configHasher := sha256.New()
+	if _, err := configHasher.Write(agentsData); err != nil {
+		return fmt.Errorf("hashing agents.yaml: %w", err)
+	}
+	if _, err := configHasher.Write([]byte(flags.OpenAIAPIKey)); err != nil {
+		return fmt.Errorf("hashing OpenAI API key: %w", err)
+	}
+
+	configHash := fmt.Sprintf("%x", configHasher.Sum(nil))
 	if exists {
 		if inspect.State.Running && inspect.Config.Labels[compose.LabelNames.ConfigHash] == configHash {
 			return nil
@@ -97,9 +123,11 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	return client.StartContainer(ctx, containerID, container.Config{
-		Image: "demo/agents",
+		Image: agentsImageName,
 		Cmd:   cmd,
-		Env:   append(os.Environ(), "OPENAI_API_KEY="+flags.OpenAIAPIKey),
+		// XXX: This needs the full environment due to MCPGATEWAY_ENDPOINT, one we figure out
+		// a solution for this, pass only the required environment variables.
+		Env: append(os.Environ(), []string{"OPENAI_API_KEY=" + flags.OpenAIAPIKey}...),
 		Labels: map[string]string{
 			compose.LabelNames.Project:         flags.Project,
 			compose.LabelNames.Service:         serviceName,
@@ -121,11 +149,67 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	})
 }
 
-var trueValue = true
-
-func boolToString(b bool) string {
-	if b {
-		return "true"
+func startUI(ctx context.Context, client *docker.Client, serviceName string, flags *Flags) error {
+	containerID := flags.UIContainerName(serviceName)
+	exists, inspect, err := client.Exists(ctx, containerID)
+	if err != nil {
+		return err
 	}
-	return "false"
+
+	if exists {
+		if inspect.State.Running {
+			return nil
+		}
+		if err := client.RemoveContainer(ctx, containerID, true); err != nil {
+			return err
+		}
+	}
+
+	var portBindings nat.PortMap
+
+	var defaultEndpoint string
+	if flags.APIPort != "" {
+		_, port, err := net.SplitHostPort(flags.APIPort)
+		if err != nil {
+			port = flags.APIPort
+		}
+		defaultEndpoint = "http://localhost:" + port
+	}
+
+	if flags.UIPort != "" {
+		host, port, err := net.SplitHostPort(flags.UIPort)
+		if err != nil {
+			host = "127.0.0.1"
+			port = flags.UIPort
+		}
+		portNum, err := strconv.Atoi(port)
+		if err != nil {
+			return fmt.Errorf("invalid UI port number: %w", err)
+		}
+		portBindings = nat.PortMap{
+			"3000/tcp": []nat.PortBinding{
+				{
+					HostIP:   host,
+					HostPort: strconv.Itoa(portNum),
+				},
+			},
+		}
+	}
+
+	return client.StartContainer(ctx, containerID, container.Config{
+		Image: uiImageName,
+		Env:   []string{"DEFAULT_ENDPOINT=" + defaultEndpoint},
+		Labels: map[string]string{
+			compose.LabelNames.Project:         flags.Project,
+			compose.LabelNames.Service:         serviceName,
+			compose.LabelNames.OneOff:          "False",
+			compose.LabelNames.ContainerNumber: "2",
+		},
+	}, container.HostConfig{
+		PortBindings: portBindings,
+		NetworkMode:  container.NetworkMode(flags.NetworkName()),
+		Init:         &trueValue,
+	})
 }
+
+var trueValue = true

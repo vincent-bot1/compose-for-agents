@@ -14,12 +14,22 @@ func NewDownCmd(flags *Flags) *cobra.Command {
 		Short: "called during compose down",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			containerID := flags.ContainerName(args[0])
 
-			if err := stopContainer(cmd.Context(), containerID); err != nil {
-				compose.ErrorMessage("could not stop the agentic container", err)
+			if flags.UIPort != "" {
+				uiContainerID := flags.UIContainerName(args[0])
+				if err := stopContainer(cmd.Context(), uiContainerID); err != nil {
+					compose.ErrorMessage("could not stop the UI container", err)
+				} else {
+					compose.InfoMessage("stopped the UI container")
+				}
+			}
+
+			agentsContainerID := flags.AgentsContainerName(args[0])
+
+			if err := stopContainer(cmd.Context(), agentsContainerID); err != nil {
+				compose.ErrorMessage("could not stop the agents container", err)
 			} else {
-				compose.InfoMessage("stopped the agentic container")
+				compose.InfoMessage("stopped the agents container")
 			}
 		},
 	}

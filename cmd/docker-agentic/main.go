@@ -20,7 +20,7 @@ func main() {
 		cmd.PersistentFlags().StringVar(&flags.Network, "network", "default", "Which docker network to use")
 		cmd.PersistentFlags().StringVar(&flags.Config, "config", "", "Configuration for the agents")
 		cmd.PersistentFlags().StringVar(&flags.OpenAIAPIKey, "openai_api_key", "", "API Key for OpenAI")
-		cmd.PersistentFlags().StringVar(&flags.APIPort, "api_port", "", "Port to use for the API")
+		cmd.PersistentFlags().StringVar(&flags.APIPort, "api_port", "7777", "Port to use for the API")
 		cmd.PersistentFlags().StringVar(&flags.UIPort, "ui_port", "", "Port to use for the UI")
 		cmd.AddCommand(NewUpCmd(&flags))
 		cmd.AddCommand(NewDownCmd(&flags))

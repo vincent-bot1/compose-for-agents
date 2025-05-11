@@ -136,7 +136,19 @@ export const usePlaygroundStore = create<PlaygroundStore>()(
         selectedEndpoint: state.selectedEndpoint
       }),
       onRehydrateStorage: () => (state) => {
-        state?.setHydrated?.()
+
+        fetch('/api/default-endpoint')
+        .then((res) => res.json())
+        .then((data) => {
+          const endpoint = data?.endpoint
+          if (endpoint) {
+            state?.setSelectedEndpoint?.(endpoint)
+          }
+          state?.setHydrated?.()
+        })
+        .catch((err) => {
+          console.error('Failed to override selectedEndpoint:', err)
+        })
       }
     }
   )
