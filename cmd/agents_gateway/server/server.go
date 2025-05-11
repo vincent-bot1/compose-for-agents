@@ -24,19 +24,13 @@ func Run(ctx context.Context, serverNames, tools string, logCalls, scanSecrets b
 		return fmt.Errorf("listing catalog: %w", err)
 	}
 
+	toolCallbacks := callbacks(logCalls, scanSecrets)
+
 	serverTools, err := listTools(ctx, serverNames, serversByName, tools)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
 
-	mcpServer := server.NewMCPServer(
-		"Docker AI MCP Gateway",
-		"1.0.1",
-		server.WithToolHandlerMiddleware(callbacks(logCalls, scanSecrets)),
-	)
-	mcpServer.SetTools(serverTools...)
-
-	stdioServer := server.NewStdioServer(mcpServer)
 	for {
 		select {
 		case <-ctx.Done():
@@ -53,6 +47,11 @@ func Run(ctx context.Context, serverNames, tools string, logCalls, scanSecrets b
 
 			go func() {
 				defer conn.Close()
+
+				mcpServer := server.NewMCPServer("Docker AI MCP Gateway", "1.0.1", server.WithToolHandlerMiddleware(toolCallbacks))
+				mcpServer.SetTools(serverTools...)
+				stdioServer := server.NewStdioServer(mcpServer)
+
 				if err := stdioServer.Listen(ctx, conn, conn); err != nil {
 					fmt.Printf("Error listening: %v\n", err)
 				}
