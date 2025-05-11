@@ -15,11 +15,16 @@ func mcpToolHandler(tool catalog.Tool) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		command, err := eval.Expressions(tool.Container.Command, request.Params.Arguments)
 		if err != nil {
-			return nil, fmt.Errorf("replacing placeholders: %w", err)
+			return nil, fmt.Errorf("replacing arguments in command: %w", err)
+		}
+
+		volumes, err := eval.Expressions(tool.Container.Volumes, request.Params.Arguments)
+		if err != nil {
+			return nil, fmt.Errorf("replacing arguments in volumes: %w", err)
 		}
 
 		args := []string{"run", "--rm", "-i", "--init", "--security-opt", "no-new-privileges"}
-		for _, v := range tool.Container.Volumes {
+		for _, v := range volumes {
 			args = append(args, "-v", v)
 		}
 		args = append(args, tool.Container.Image)
