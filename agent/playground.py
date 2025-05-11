@@ -7,7 +7,7 @@ from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
 from agno.team import Team
-from agno.tools.mcp import MCPTools
+from agno.tools.mcp import MCPTools, Toolkit
 from fastapi.middleware.cors import CORSMiddleware
 import yaml
 
@@ -44,74 +44,85 @@ def create_model(model_name: str, provider: str) -> OpenAIChat:
 async def run_server(config) -> None:
     """Run the playground server."""
     # Create a client session to connect to the MCP server
-    async with MCPTools(
-        command=f"/usr/bin/socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}"
-    ) as mcp_tools:
+    agents = []
+    agents_by_id = {}
+    teams = []
+    teams_by_id = {}
 
-        agents = []
-        agents_by_id = {}
-        teams = []
-        teams_by_id = {}
-
-        for agent_id, agent_data in config.get("agents", {}).items():
-            model_name = agent_data.get("model")
-            if not model_name:
-                raise ValueError(f"Model name not specified for agent {agent_id}")
-            provider = agent_data.get("model_provider", "docker")
-            model = create_model(model_name, provider)
-            markdown = agent_data.get("markdown", False)
-            agent = Agent(
-                name=agent_data["name"],
-                role=agent_data.get("role", ""),
-                description=agent_data.get("description", ""),
-                tools=[mcp_tools],
-                model=model,
-                markdown=markdown,
-            )
-            agents_by_id[agent_id] = agent
-            # Append only agents that we want to chat with
-            if agent_data.get("chat", True):
-                agents.append(agent)
-
-        for team_id, team_data in config.get("teams", {}).items():
-            model_name = agent_data.get("model")
-            if not model_name:
-                raise ValueError(f"Model name not specified for team {team_id}")
-            provider = agent_data.get("model_provider", "docker")
-            model = create_model(model_name, provider)
-            team_agents: list[Agent | Team] = []
-            for agent_id in team_data.get("members", []):
-                try:
-                    agent = agents_by_id[agent_id]
-                except KeyError:
-                    raise ValueError(f"Agent {agent_id} not found in agents")
-                team_agents.append(agent)
-            markdown = agent_data.get("markdown", False)
-            team = Team(
-                name=team_data.get("name", ""),
-                mode=team_data.get("mode", "coordinate"),
-                members=team_agents,
-                instructions=team_data.get("instructions", ""),
-                model=model,
-                markdown=markdown,
-            )
-            teams_by_id[team_id] = team
-            if team_data.get("chat", True):
-                teams.append(team)
-
-        playground = Playground(agents=agents, teams=teams)
-
-        app = playground.get_app()
-        app.add_middleware(
-            CORSMiddleware,
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
+    for agent_id, agent_data in config.get("agents", {}).items():
+        model_name = agent_data.get("model")
+        if not model_name:
+            raise ValueError(f"Model name not specified for agent {agent_id}")
+        provider = agent_data.get("model_provider", "docker")
+        model = create_model(model_name, provider)
+        markdown = agent_data.get("markdown", False)
+        tools: list[Toolkit] = []
+        tools_list = agent_data.get("tools", [])
+        if len(tools_list) > 0:
+            tool_names = [name.split('.', 1)[1] for name in tools_list]
+            t = MCPTools(command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}", include_tools=tool_names)
+            mcp_tools = await t.__aenter__()
+            tools = [mcp_tools]
+        agent = Agent(
+            name=agent_data["name"],
+            role=agent_data.get("role", ""),
+            description=agent_data.get("description", ""),
+            tools=tools, # type: ignore,
+            model=model,
+            markdown=markdown,
         )
+        agents_by_id[agent_id] = agent
+        # Append only agents that we want to chat with
+        if agent_data.get("chat", True):
+            agents.append(agent)
 
-        # Serve the app while keeping the MCPTools context manager alive
-        serve_playground_app(host="0.0.0.0", app=app)
+    for team_id, team_data in config.get("teams", {}).items():
+        model_name = agent_data.get("model")
+        if not model_name:
+            raise ValueError(f"Model name not specified for team {team_id}")
+        provider = agent_data.get("model_provider", "docker")
+        model = create_model(model_name, provider)
+        team_agents: list[Agent | Team] = []
+        for agent_id in team_data.get("members", []):
+            try:
+                agent = agents_by_id[agent_id]
+            except KeyError:
+                raise ValueError(f"Agent {agent_id} not found in agents")
+            team_agents.append(agent)
+        markdown = agent_data.get("markdown", False)
+        team_tools: list[Toolkit] = []
+        tools_list = agent_data.get("tools", [])
+        if len(tools_list) > 0:
+            tool_names = [name.split('.', 1)[1] for name in tools_list]
+            t = MCPTools(command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}", include_tools=tool_names)
+            mcp_tools = await t.__aenter__()
+            team_tools = [mcp_tools]
+        team = Team(
+            name=team_data.get("name", ""),
+            mode=team_data.get("mode", "coordinate"),
+            members=team_agents,
+            instructions=team_data.get("instructions", ""),
+            tools=team_tools, # type: ignore,
+            model=model,
+            markdown=markdown,
+        )
+        teams_by_id[team_id] = team
+        if team_data.get("chat", True):
+            teams.append(team)
+
+    playground = Playground(agents=agents, teams=teams)
+
+    app = playground.get_app()
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Serve the app while keeping the MCPTools context manager alive
+    serve_playground_app(host="0.0.0.0", app=app)
 
 
 def main():
