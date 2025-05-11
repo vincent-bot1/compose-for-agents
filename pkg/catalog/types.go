@@ -107,6 +107,7 @@ type Tool struct {
 type Parameters struct {
 	Type       string     `yaml:"type" json:"type"`
 	Properties Properties `yaml:"properties" json:"properties"`
+	Required   []string   `yaml:"properties" json:"required"`
 }
 
 type Properties map[string]Property
