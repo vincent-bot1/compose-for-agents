@@ -21,13 +21,34 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 				if secrets.ContainsSecrets(arguments) {
 					return nil, fmt.Errorf("a secret is being passed to tool %s", tool)
 				}
+				fmt.Printf("No secret found in arguments.\n")
 			}
 
 			if logCalls {
 				fmt.Printf("Calling tool %s with arguments: %s\n", tool, arguments)
 			}
 
-			return next(ctx, request)
+			result, err := next(ctx, request)
+			if err != nil {
+				return result, err
+			}
+
+			if scanSecrets {
+				fmt.Printf("Scanning tool call response for secrets...\n")
+				var contents string
+				for _, content := range result.Content {
+					if text, ok := content.(*mcp.TextContent); ok {
+						contents += text.Text
+					}
+				}
+
+				if secrets.ContainsSecrets(contents) {
+					return nil, fmt.Errorf("a secret is being returned by the tool %s", tool)
+				}
+				fmt.Printf("No secret found in response.\n")
+			}
+
+			return result, nil
 		}
 	}
 }
