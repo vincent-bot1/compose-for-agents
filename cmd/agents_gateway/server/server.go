@@ -26,7 +26,7 @@ func Run(ctx context.Context, serverNames, tools string, logCalls, scanSecrets b
 
 	toolCallbacks := callbacks(logCalls, scanSecrets)
 
-	serverTools, err := listTools(ctx, serverNames, mcpCatalog.Servers, tools)
+	serverTools, err := listTools(ctx, serverNames, mcpCatalog, tools)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
