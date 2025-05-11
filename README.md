@@ -14,12 +14,6 @@ Build the all the binaries and images, install the plugins:
 $ task install
 ```
 
-Make sure you have a GitHub token in your env:
-
-```console
-export GITHUB_TOKEN=<TOKEN>
-```
-
 Add your OpenAI API key to your environment:
 
 ```console
