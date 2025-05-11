@@ -101,16 +101,19 @@ func startAgents(ctx context.Context, client *docker.Client, serviceName string,
 	}
 
 	var portBindings nat.PortMap
-
+	var exposePorts nat.PortSet
 	if flags.APIPort != "" {
 		host, port, err := net.SplitHostPort(flags.APIPort)
 		if err != nil {
-			host = "127.0.0.1"
+			host = "0.0.0.0"
 			port = flags.APIPort
 		}
 		portNum, err := strconv.Atoi(port)
 		if err != nil {
 			return fmt.Errorf("invalid API port number: %w", err)
+		}
+		exposePorts = nat.PortSet{
+			"7777/tcp": struct{}{},
 		}
 		portBindings = nat.PortMap{
 			"7777/tcp": []nat.PortBinding{
@@ -135,6 +138,7 @@ func startAgents(ctx context.Context, client *docker.Client, serviceName string,
 			compose.LabelNames.ContainerNumber: "1",
 			compose.LabelNames.ConfigHash:      configHash,
 		},
+		ExposedPorts: exposePorts,
 	}, container.HostConfig{
 		PortBindings: portBindings,
 		NetworkMode:  container.NetworkMode(flags.NetworkName()),
@@ -166,7 +170,7 @@ func startUI(ctx context.Context, client *docker.Client, serviceName string, fla
 	}
 
 	var portBindings nat.PortMap
-
+	var exposePorts nat.PortSet
 	var defaultEndpoint string
 	if flags.APIPort != "" {
 		_, port, err := net.SplitHostPort(flags.APIPort)
@@ -179,12 +183,15 @@ func startUI(ctx context.Context, client *docker.Client, serviceName string, fla
 	if flags.UIPort != "" {
 		host, port, err := net.SplitHostPort(flags.UIPort)
 		if err != nil {
-			host = "127.0.0.1"
+			host = "0.0.0.0"
 			port = flags.UIPort
 		}
 		portNum, err := strconv.Atoi(port)
 		if err != nil {
 			return fmt.Errorf("invalid UI port number: %w", err)
+		}
+		exposePorts = nat.PortSet{
+			"3000/tcp": struct{}{},
 		}
 		portBindings = nat.PortMap{
 			"3000/tcp": []nat.PortBinding{
@@ -206,6 +213,7 @@ func startUI(ctx context.Context, client *docker.Client, serviceName string, fla
 			compose.LabelNames.ContainerNumber: "1",
 			compose.LabelNames.ConfigHash:      "TODO",
 		},
+		ExposedPorts: exposePorts,
 	}, container.HostConfig{
 		PortBindings: portBindings,
 		NetworkMode:  container.NetworkMode(flags.NetworkName()),
