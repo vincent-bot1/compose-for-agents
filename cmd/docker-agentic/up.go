@@ -204,6 +204,7 @@ func startUI(ctx context.Context, client *docker.Client, serviceName string, fla
 			compose.LabelNames.Service:         serviceName,
 			compose.LabelNames.OneOff:          "False",
 			compose.LabelNames.ContainerNumber: "1",
+			compose.LabelNames.ConfigHash:      "TODO",
 		},
 	}, container.HostConfig{
 		PortBindings: portBindings,
