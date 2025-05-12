@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -92,7 +93,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 			continue
 		}
 
-		fmt.Println("MCP server not found:", serverName)
+		fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
 	}
 	var dockerImages []string
 	for image := range uniqueDockerImages {
@@ -100,9 +101,11 @@ func (g *Gateway) Run(ctx context.Context) error {
 	}
 
 	// Pull docker images first
-	fmt.Println("Pulling docker images", dockerImages)
+	startPull := time.Now()
+	fmt.Fprintln(os.Stderr, "Pulling docker images", dockerImages)
 	var mcpImages []string
 	errs, ctxPull := errgroup.WithContext(ctx)
+	errs.SetLimit(runtime.NumCPU())
 	for _, dockerImage := range dockerImages {
 		if strings.HasPrefix(dockerImage, "mcp/") {
 			mcpImages = append(mcpImages, dockerImage)
@@ -119,11 +122,11 @@ func (g *Gateway) Run(ctx context.Context) error {
 	if err := errs.Wait(); err != nil {
 		return fmt.Errorf("pulling docker images: %w", err)
 	}
-	fmt.Println("Docker images pulled")
+	fmt.Fprintln(os.Stderr, "Docker images pulled in", time.Since(startPull))
 
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
 	if g.VerifySignatures {
-		fmt.Println("Verifying docker images", mcpImages)
+		fmt.Fprintln(os.Stderr, "Verifying docker images", mcpImages)
 		args := []string{"verify"}
 		args = append(args, mcpImages...)
 		args = append(args, "--key", "https://raw.githubusercontent.com/docker/keyring/refs/heads/main/public/mcp/latest.pub")
@@ -131,17 +134,20 @@ func (g *Gateway) Run(ctx context.Context) error {
 		cmd := exec.CommandContext(ctx, "/usr/bin/cosign", args...)
 		cmd.Env = []string{"COSIGN_REPOSITORY=mcp/signatures"}
 		if out, err := cmd.CombinedOutput(); err != nil {
-			fmt.Println("Failed to verify docker images:", string(out))
+			fmt.Fprintln(os.Stderr, "Failed to verify docker images:", string(out))
 			return fmt.Errorf("verifying images: %w", err)
 		}
-		fmt.Println("Docker images verified")
+		fmt.Fprintln(os.Stderr, "Docker images verified")
 	}
 
 	// List all the available tools.
+	startList := time.Now()
+	fmt.Fprintln(os.Stderr, "Listing MCP tools...")
 	serverTools, err := g.listTools(ctx, mcpCatalog, registryConfig, serverNames)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
+	fmt.Fprintln(os.Stderr, len(serverTools), "MCP tools listed in", time.Since(startList))
 
 	toolCallbacks := callbacks(g.LogCalls, g.ScanSecrets)
 
@@ -151,7 +157,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 		return server.NewStdioServer(mcpServer)
 	}
 
-	fmt.Println("Initialized MCP server in", time.Since(start))
+	fmt.Fprintln(os.Stderr, "Initialized MCP server in", time.Since(start))
 
 	// Start the server
 	if g.Standalone {

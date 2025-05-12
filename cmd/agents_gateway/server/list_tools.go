@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
+	"os"
+	"runtime"
 	"strings"
 	"sync"
 
@@ -18,6 +20,7 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 	var serverToolsLock sync.Mutex
 
 	errs, ctx := errgroup.WithContext(ctx)
+	errs.SetLimit(runtime.NumCPU())
 	for _, serverName := range serverNames {
 		// Is it an MCP Server?
 		serverConfig, ok := mcpCatalog.Servers[serverName]
@@ -25,7 +28,7 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 			// Is it a tool group?
 			tools, ok := mcpCatalog.Tools[serverName]
 			if !ok {
-				fmt.Println("MCP server not found:", serverName)
+				fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
 				continue
 			}
 
@@ -59,14 +62,14 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 		errs.Go(func() error {
 			client, err := g.startMCPClient(ctx, serverConfig, registryConfig)
 			if err != nil {
-				fmt.Println("Can't start MCP server:", err)
+				fmt.Fprintln(os.Stderr, "Can't start MCP server:", err)
 				return nil
 			}
 
 			tools, err := client.ListTools(ctx)
 			client.Close() // Close early
 			if err != nil {
-				fmt.Println("Can't list tools:", err)
+				fmt.Fprintln(os.Stderr, "Can't list tools:", err)
 				return nil
 			}
 
@@ -93,6 +96,10 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 }
 
 func isToolEnabled(serverName, serverImage, toolName string, enabledTools []string) bool {
+	if len(enabledTools) == 0 {
+		return true
+	}
+
 	for _, enabled := range enabledTools {
 		if strings.EqualFold(enabled, toolName) ||
 			strings.EqualFold(enabled, serverName+":"+toolName) ||

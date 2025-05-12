@@ -47,7 +47,10 @@ func parseCommaSeparated(values string) []string {
 	var parsed []string
 
 	for mcpImage := range strings.SplitSeq(values, ",") {
-		parsed = append(parsed, strings.TrimSpace(mcpImage))
+		name := strings.TrimSpace(mcpImage)
+		if len(name) > 0 {
+			parsed = append(parsed, strings.TrimSpace(mcpImage))
+		}
 	}
 
 	return parsed
