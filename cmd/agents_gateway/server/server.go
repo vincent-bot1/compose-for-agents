@@ -15,7 +15,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func Run(ctx context.Context, registryConfig config.Registry, toolsNames []string, logCalls, scanSecrets, verifyImages bool) error {
+func Run(ctx context.Context, registryConfig config.Registry, toolsNames []string, logCalls, scanSecrets, verifySignatures bool) error {
 	// Listen as early as possible to not lose client connections.
 	var lc net.ListenConfig
 	ln, err := lc.Listen(ctx, "tcp", ":8811")
@@ -86,7 +86,7 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 	fmt.Println("Docker images pulled")
 
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
-	if verifyImages {
+	if verifySignatures {
 		fmt.Println("Verifying docker images", mcpImages)
 		args := []string{"verify"}
 		args = append(args, mcpImages...)

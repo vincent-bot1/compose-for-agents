@@ -21,7 +21,7 @@ func main() {
 	tools := flag.String("tools", "", "Comma-separated list of tools to enable")
 	logCalls := flag.Bool("log_calls", false, "Log the tool calls")
 	scanSecrets := flag.Bool("scan_secrets", false, "Verify that secrets are not passed to tools")
-	verifyImages := flag.Bool("verify_images", false, "Verify the signatures off the images")
+	verifySignatures := flag.Bool("verify_signatures", false, "Verify the image signatures")
 	flag.Parse()
 
 	// Parse flags and config
@@ -31,7 +31,7 @@ func main() {
 	}
 	toolNames := parseCommaSeparated(*tools)
 
-	if err := server.Run(ctx, registryConfig, toolNames, *logCalls, *scanSecrets, *verifyImages); err != nil {
+	if err := server.Run(ctx, registryConfig, toolNames, *logCalls, *scanSecrets, *verifySignatures); err != nil {
 		log.Fatalln(err)
 	}
 }
