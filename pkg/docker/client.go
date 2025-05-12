@@ -39,7 +39,7 @@ func NewClient(ctx context.Context) (*Client, error) {
 		}
 	}
 
-	c, err := client.NewClientWithOpts(client.FromEnv, client.WithHost(host))
+	c, err := client.NewClientWithOpts(client.FromEnv, client.WithHost(host), client.WithAPIVersionNegotiation())
 	if err != nil {
 		return nil, err
 	}
