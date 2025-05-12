@@ -5,15 +5,17 @@ import (
 	"fmt"
 	"net"
 	"os/exec"
+	"sort"
 	"strings"
 
 	"github.com/docker/compose-agents-demo/pkg/catalog"
+	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"golang.org/x/sync/errgroup"
 )
 
-func Run(ctx context.Context, serverNames, toolsNames []string, logCalls, scanSecrets, verifyImages bool) error {
+func Run(ctx context.Context, registryConfig config.Registry, toolsNames []string, logCalls, scanSecrets, verifyImages bool) error {
 	// Listen as early as possible to not lose client connections.
 	var lc net.ListenConfig
 	ln, err := lc.Listen(ctx, "tcp", ":8811")
@@ -26,6 +28,13 @@ func Run(ctx context.Context, serverNames, toolsNames []string, logCalls, scanSe
 	if err != nil {
 		return fmt.Errorf("listing catalog: %w", err)
 	}
+
+	// Which servers are enabled in the registry.yaml?
+	var serverNames []string
+	for serverName := range registryConfig.Servers {
+		serverNames = append(serverNames, serverName)
+	}
+	sort.Strings(serverNames)
 
 	// Detect which docker images are used.
 	uniqueDockerImages := map[string]bool{}

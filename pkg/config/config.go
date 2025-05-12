@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"context"
@@ -17,21 +17,7 @@ type Tile struct {
 	Config map[string]any `yaml:"config"`
 }
 
-func enabledMCPServers(ctx context.Context) (map[string]Tile, error) {
-	content, err := readPromptFile(ctx, "registry.yaml")
-	if err != nil {
-		return nil, err
-	}
-
-	var registry Registry
-	if err := yaml.Unmarshal([]byte(content), &registry); err != nil {
-		return nil, err
-	}
-
-	return registry.Servers, nil
-}
-
-func readPromptFile(ctx context.Context, name string) (string, error) {
+func ReadPromptFile(ctx context.Context, name string) (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
@@ -45,4 +31,13 @@ func readPromptFile(ctx context.Context, name string) (string, error) {
 	}
 
 	return string(out), nil
+}
+
+func ParseConfig(registryYaml string) (Registry, error) {
+	var registry Registry
+	if err := yaml.Unmarshal([]byte(registryYaml), &registry); err != nil {
+		return Registry{}, err
+	}
+
+	return registry, nil
 }

@@ -11,6 +11,7 @@ import (
 
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/compose"
+	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/docker/compose-agents-demo/pkg/eval"
 	"github.com/docker/docker/api/types/container"
@@ -43,13 +44,18 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		return err
 	}
 
-	enabledServers, err := enabledMCPServers(ctx)
+	registryConfigYaml, err := config.ReadPromptFile(ctx, "registry.yaml")
+	if err != nil {
+		return fmt.Errorf("no configuration found for the MCP Toolkit extension: %w", err)
+	}
+
+	registryConfig, err := config.ParseConfig(registryConfigYaml)
 	if err != nil {
 		return fmt.Errorf("reading configuration: %w", err)
 	}
 
 	var serverNames []string
-	for serverName := range enabledServers {
+	for serverName := range registryConfig.Servers {
 		serverNames = append(serverNames, serverName)
 	}
 	sort.Strings(serverNames)
@@ -65,7 +71,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		if !ok {
 			continue
 		}
-		configuration, ok := enabledServers[serverName]
+		configuration, ok := registryConfig.Servers[serverName]
 		if !ok {
 			continue
 		}
@@ -86,7 +92,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	cmd := []string{
-		"--servers=" + strings.Join(serverNames, ","),
+		"--registry_yaml=" + registryConfigYaml,
 		"--tools=" + flags.Tools,
 		"--log_calls=" + boolToString(flags.LogCallsEnabled()),
 		"--scan_secrets=" + boolToString(flags.ScanSecretsEnabled()),
@@ -100,7 +106,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	// Make sure to restart the gateway if the config changes.
-	configStr := string(catalog.McpServersYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ") + ":" + fmt.Sprintf("%+v", enabledServers)
+	configStr := string(catalog.McpServersYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ")
 	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(configStr)))
 	if exists {
 		if inspect.State.Running && inspect.Config.Labels[compose.LabelNames.ConfigHash] == configHash {
