@@ -14,9 +14,10 @@ services:
     provider:
       type: mcpgateway
       options:
-        tools: get_me, fetch_content, search
+        tools: get_me, mcp/duckduckgo:*, SQLite:list-tables
         log_calls: yes
         scan_secrets: yes
+        verify_signatures: yes
 
   gemma:
     provider:
