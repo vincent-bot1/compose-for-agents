@@ -37,16 +37,20 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 					continue
 				}
 
+				mcpTool := mcp.Tool{
+					Name:        tool.Name,
+					Description: tool.Description,
+				}
+				if len(tool.Parameters.Properties) > 0 {
+					mcpTool.InputSchema.Type = tool.Parameters.Type
+					mcpTool.InputSchema.Properties = tool.Parameters.Properties.ToMap()
+					mcpTool.InputSchema.Required = tool.Parameters.Required
+				} else {
+					mcpTool.InputSchema.Type = "object"
+				}
+
 				serverTool := server.ServerTool{
-					Tool: mcp.Tool{
-						Name:        tool.Name,
-						Description: tool.Description,
-						InputSchema: mcp.ToolInputSchema{
-							Type:       tool.Parameters.Type,
-							Properties: tool.Parameters.Properties.ToMap(),
-							Required:   tool.Parameters.Required,
-						},
-					},
+					Tool:    mcpTool,
 					Handler: mcpToolHandler(tool),
 				}
 
