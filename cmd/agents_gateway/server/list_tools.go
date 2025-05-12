@@ -30,7 +30,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			}
 
 			for _, tool := range tools {
-				if !isToolEnabled(serverName, tool.Name, toolNames) {
+				if !isToolEnabled(serverName, "", tool.Name, toolNames) {
 					continue
 				}
 
@@ -71,7 +71,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			}
 
 			for _, tool := range tools {
-				if !isToolEnabled(serverName, tool.Name, toolNames) {
+				if !isToolEnabled(serverName, serverConfig.Image, tool.Name, toolNames) {
 					continue
 				}
 
@@ -92,15 +92,22 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 	return serverTools, errs.Wait()
 }
 
-func isToolEnabled(serverName string, toolName string, toolsNames []string) bool {
-	for _, enabled := range toolsNames {
+func isToolEnabled(serverName, serverImage, toolName string, enabledTools []string) bool {
+	for _, enabled := range enabledTools {
 		if strings.EqualFold(enabled, toolName) ||
 			strings.EqualFold(enabled, serverName+":"+toolName) ||
-			strings.EqualFold(enabled, "mcp/"+serverName+":"+toolName) ||
 			strings.EqualFold(enabled, serverName+":*") ||
-			strings.EqualFold(enabled, "mcp/"+serverName+":*") ||
 			strings.EqualFold(enabled, "*") {
 			return true
+		}
+	}
+
+	if serverImage != "" {
+		for _, enabled := range enabledTools {
+			if strings.EqualFold(enabled, serverImage+":"+toolName) ||
+				strings.EqualFold(enabled, serverImage+":*") {
+				return true
+			}
 		}
 	}
 
