@@ -15,7 +15,7 @@ func Expression(expression string, config map[string]any) any {
 	return fmt.Sprintf("%s", dig(parts[0], config))
 }
 
-func Expressions(expressions []string, arguments map[string]any) ([]string, error) {
+func Expressions(expressions []string, arguments map[string]any) []string {
 	var replaced []string
 
 	for _, expression := range expressions {
@@ -31,7 +31,7 @@ func Expressions(expressions []string, arguments map[string]any) ([]string, erro
 		}
 	}
 
-	return replaced, nil
+	return replaced
 }
 
 func dig(key string, config map[string]any) any {

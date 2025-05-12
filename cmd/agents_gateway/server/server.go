@@ -102,7 +102,7 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 	}
 
 	// List all the available tools.
-	serverTools, err := listTools(ctx, serverNames, mcpCatalog, toolsNames)
+	serverTools, err := listTools(ctx, mcpCatalog, registryConfig, serverNames, toolsNames)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
@@ -139,9 +139,9 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 	}
 }
 
-func mcpServerHandler(server catalog.Server, tool mcp.Tool) server.ToolHandlerFunc {
+func mcpServerHandler(server catalog.Server, registryConfig config.Registry, tool mcp.Tool) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		client, err := startMCPClient(ctx, server, false)
+		client, err := startMCPClient(ctx, server, registryConfig)
 		if err != nil {
 			return nil, err
 		}

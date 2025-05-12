@@ -7,12 +7,13 @@ import (
 	"sync"
 
 	"github.com/docker/compose-agents-demo/pkg/catalog"
+	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"golang.org/x/sync/errgroup"
 )
 
-func listTools(ctx context.Context, serverNames []string, mcpCatalog catalog.Catalog, toolsNames []string) ([]server.ServerTool, error) {
+func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig config.Registry, serverNames []string, toolsNames []string) ([]server.ServerTool, error) {
 	// Filter out tools
 	toolNeeded := map[string]bool{}
 	for _, tool := range toolsNames {
@@ -61,7 +62,7 @@ func listTools(ctx context.Context, serverNames []string, mcpCatalog catalog.Cat
 		}
 
 		errs.Go(func() error {
-			client, err := startMCPClient(ctx, serverConfig, false)
+			client, err := startMCPClient(ctx, serverConfig, registryConfig)
 			if err != nil {
 				fmt.Println("Can't start MCP server:", err)
 				return nil
@@ -81,7 +82,7 @@ func listTools(ctx context.Context, serverNames []string, mcpCatalog catalog.Cat
 
 				serverTool := server.ServerTool{
 					Tool:    tool,
-					Handler: mcpServerHandler(serverConfig, tool),
+					Handler: mcpServerHandler(serverConfig, registryConfig, tool),
 				}
 
 				serverToolsLock.Lock()

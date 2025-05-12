@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"os/exec"
 
 	"github.com/docker/compose-agents-demo/pkg/catalog"
@@ -13,22 +12,13 @@ import (
 
 func mcpToolHandler(tool catalog.Tool) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		command, err := eval.Expressions(tool.Container.Command, request.Params.Arguments)
-		if err != nil {
-			return nil, fmt.Errorf("replacing arguments in command: %w", err)
-		}
-
-		volumes, err := eval.Expressions(tool.Container.Volumes, request.Params.Arguments)
-		if err != nil {
-			return nil, fmt.Errorf("replacing arguments in volumes: %w", err)
-		}
-
 		args := []string{"run", "--rm", "-i", "--init", "--security-opt", "no-new-privileges"}
-		for _, v := range volumes {
+
+		for _, v := range eval.Expressions(tool.Container.Volumes, request.Params.Arguments) {
 			args = append(args, "-v", v)
 		}
 		args = append(args, tool.Container.Image)
-		args = append(args, command...)
+		args = append(args, eval.Expressions(tool.Container.Command, request.Params.Arguments)...)
 
 		cmd := exec.CommandContext(ctx, "docker", args...)
 		out, err := cmd.CombinedOutput()

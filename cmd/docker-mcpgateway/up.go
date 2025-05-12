@@ -13,7 +13,6 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/compose"
 	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/docker/compose-agents-demo/pkg/docker"
-	"github.com/docker/compose-agents-demo/pkg/eval"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 )
@@ -71,10 +70,6 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		if !ok {
 			continue
 		}
-		configuration, ok := registryConfig.Servers[serverName]
-		if !ok {
-			continue
-		}
 
 		for _, s := range server.Config.Secrets {
 			value, err := secretValue(ctx, s.Id)
@@ -83,11 +78,6 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 			}
 
 			env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
-		}
-
-		for _, e := range server.Config.Env {
-			value := eval.Expression(e.Expression, configuration.Config)
-			env = append(env, fmt.Sprintf("%s=%s", e.Name, value))
 		}
 	}
 
