@@ -3,12 +3,13 @@ package main
 import "strings"
 
 type Flags struct {
-	Project     string
-	Image       string
-	Network     string
-	Tools       string
-	LogCalls    string // Should be a bool but compose provider mechanism doesn't like that
-	ScanSecrets string // Should be a bool but compose provider mechanism doesn't like that
+	Project      string
+	Image        string
+	Network      string
+	Tools        string
+	LogCalls     string // Should be a bool but compose provider mechanism doesn't like that
+	ScanSecrets  string // Should be a bool but compose provider mechanism doesn't like that
+	VerifyImages string // Should be a bool but compose provider mechanism doesn't like that
 }
 
 func (f *Flags) ContainerName(providerName string) string {
@@ -25,4 +26,8 @@ func (f *Flags) LogCallsEnabled() bool {
 
 func (f *Flags) ScanSecretsEnabled() bool {
 	return strings.EqualFold(f.ScanSecrets, "yes")
+}
+
+func (f *Flags) VerifyImagesEnabled() bool {
+	return strings.EqualFold(f.VerifyImages, "yes")
 }

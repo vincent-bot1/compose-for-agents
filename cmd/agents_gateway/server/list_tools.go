@@ -12,10 +12,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func listTools(ctx context.Context, serverNames string, mcpCatalog catalog.Catalog, tools string) ([]server.ServerTool, error) {
+func listTools(ctx context.Context, serverNames []string, mcpCatalog catalog.Catalog, toolsNames []string) ([]server.ServerTool, error) {
 	// Filter out tools
 	toolNeeded := map[string]bool{}
-	for tool := range strings.SplitSeq(tools, ",") {
+	for _, tool := range toolsNames {
 		toolNeeded[strings.TrimSpace(tool)] = true
 	}
 
@@ -23,7 +23,7 @@ func listTools(ctx context.Context, serverNames string, mcpCatalog catalog.Catal
 	var serverToolsLock sync.Mutex
 
 	errs, ctx := errgroup.WithContext(ctx)
-	for _, serverName := range parseServers(serverNames) {
+	for _, serverName := range serverNames {
 		// Is it an MCP Server?
 		serverConfig, ok := mcpCatalog.Servers[serverName]
 		if !ok {
@@ -61,7 +61,7 @@ func listTools(ctx context.Context, serverNames string, mcpCatalog catalog.Catal
 		}
 
 		errs.Go(func() error {
-			client, err := startMCPClient(ctx, serverConfig, true)
+			client, err := startMCPClient(ctx, serverConfig, false)
 			if err != nil {
 				fmt.Println("Can't start MCP server:", err)
 				return nil

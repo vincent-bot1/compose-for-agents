@@ -18,3 +18,4 @@ services:
         tools: get_me, fetch_content, search, list-tables
         log_calls: yes
         scan_secrets: yes
+        verify_images: yes

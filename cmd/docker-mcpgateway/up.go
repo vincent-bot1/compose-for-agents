@@ -88,6 +88,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		"--tools=" + flags.Tools,
 		"--log_calls=" + boolToString(flags.LogCallsEnabled()),
 		"--scan_secrets=" + boolToString(flags.ScanSecretsEnabled()),
+		"--verify_images=" + boolToString(flags.VerifyImagesEnabled()),
 	}
 
 	containerID := flags.ContainerName(serviceName)

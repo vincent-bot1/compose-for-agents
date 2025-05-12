@@ -22,6 +22,7 @@ func main() {
 		cmd.PersistentFlags().StringVar(&flags.Tools, "tools", "", "Which tools to expose, comma separated list of tools")
 		cmd.PersistentFlags().StringVar(&flags.LogCalls, "log_calls", "", "Log the tool calls?")
 		cmd.PersistentFlags().StringVar(&flags.ScanSecrets, "scan_secrets", "", "Verify that secrets are not passed to tools")
+		cmd.PersistentFlags().StringVar(&flags.VerifyImages, "verify_images", "", "Verify the signatures off the images")
 		cmd.AddCommand(NewUpCmd(&flags))
 		cmd.AddCommand(NewDownCmd(&flags))
 
