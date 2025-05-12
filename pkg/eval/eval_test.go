@@ -26,3 +26,7 @@ func TestEvaluateUnknown(t *testing.T) {
 	assert.Equal(t, "", Expression("{{unknown}}", nil))
 	assert.Equal(t, "", Expression("{{top.unknown}}", map[string]any{"top": nil}))
 }
+
+func TestAtlassian(t *testing.T) {
+	assert.Equal(t, "URL", Expression("{{atlassian.jira.url}}", map[string]any{"atlassian": map[string]any{"jira": map[string]any{"url": "URL", "username": "USERNAME"}}}))
+}

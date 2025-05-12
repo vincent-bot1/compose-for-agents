@@ -78,8 +78,10 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 
 			env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
 		}
+
 		for _, e := range server.Config.Env {
-			env = append(env, fmt.Sprintf("%s=%s", e.Name, eval.Expression(e.Expression, configuration.Config[e.Name])))
+			value := eval.Expression(e.Expression, configuration.Config)
+			env = append(env, fmt.Sprintf("%s=%s", e.Name, value))
 		}
 	}
 

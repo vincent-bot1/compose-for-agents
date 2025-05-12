@@ -14,10 +14,8 @@ type Registry struct {
 }
 
 type Tile struct {
-	Config Config `yaml:"config"`
+	Config map[string]any `yaml:"config"`
 }
-
-type Config map[string]map[string]any
 
 func enabledMCPServers(ctx context.Context) (map[string]Tile, error) {
 	content, err := readPromptFile(ctx, "registry.yaml")
