@@ -13,7 +13,6 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/docker/compose-agents-demo/pkg/docker"
-	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
@@ -181,17 +180,5 @@ func (g *Gateway) Run(ctx context.Context) error {
 				}
 			}()
 		}
-	}
-}
-
-func (g *Gateway) mcpServerHandler(server catalog.Server, registryConfig config.Registry, tool mcp.Tool) server.ToolHandlerFunc {
-	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		client, err := g.startMCPClient(ctx, server, registryConfig)
-		if err != nil {
-			return nil, err
-		}
-		defer client.Close()
-
-		return client.CallTool(ctx, tool.Name, request.Params.Arguments)
 	}
 }

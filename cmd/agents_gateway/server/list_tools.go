@@ -84,7 +84,7 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 
 				serverTool := server.ServerTool{
 					Tool:    tool,
-					Handler: g.mcpServerHandler(serverConfig, registryConfig, tool),
+					Handler: g.mcpServerHandler(serverConfig, registryConfig, tool.Name),
 				}
 
 				serverToolsLock.Lock()
