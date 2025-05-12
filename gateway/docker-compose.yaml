@@ -15,7 +15,7 @@ services:
     provider:
       type: mcpgateway
       options:
-        tools: get_me, fetch_content, search, list-tables
+        tools: get_me, mcp/duckduckgo:*, SQLite:list-tables
         log_calls: yes
         scan_secrets: yes
         verify_images: yes
