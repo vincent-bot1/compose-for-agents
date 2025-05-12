@@ -9,9 +9,9 @@ agents:
     name: Researcher
     role: Expert at finding information
     tools:
-      - mcp/duckduckgo.search
-      - mcp/duckduckgo.fetch_content
-      - mcp/github-mcp-server.get_me
+      - mcp/duckduckgo:search
+      - mcp/duckduckgo:fetch_content
+      - mcp/github-mcp-server:get_me
     model_provider: openai
     model: gpt-4o
     chat: false # Defaults to true?
@@ -20,7 +20,7 @@ agents:
     name: Github Agent
     description: A specialized agent for GitHub tasks
     tools:
-      - mcp/github-mcp-server.get_me
+      - mcp/github-mcp-server:get_me
     model_provider: openai
     model: gpt-4o
 

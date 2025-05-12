@@ -1,15 +1,15 @@
 import asyncio
-import sys
 import os
+import sys
 
 import nest_asyncio
+import yaml
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
 from agno.team import Team
 from agno.tools.mcp import MCPTools, Toolkit
 from fastapi.middleware.cors import CORSMiddleware
-import yaml
 
 # Allow nested event loops
 nest_asyncio.apply()
@@ -59,15 +59,18 @@ async def run_server(config) -> None:
         tools: list[Toolkit] = []
         tools_list = agent_data.get("tools", [])
         if len(tools_list) > 0:
-            tool_names = [name.split('.', 1)[1] for name in tools_list]
-            t = MCPTools(command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}", include_tools=tool_names)
+            tool_names = [name.split(".", 1)[1] for name in tools_list]
+            t = MCPTools(
+                command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}",
+                include_tools=tool_names,
+            )
             mcp_tools = await t.__aenter__()
             tools = [mcp_tools]
         agent = Agent(
             name=agent_data["name"],
             role=agent_data.get("role", ""),
             description=agent_data.get("description", ""),
-            tools=tools, # type: ignore,
+            tools=tools,  # type: ignore,
             model=model,
             markdown=markdown,
         )
@@ -93,8 +96,11 @@ async def run_server(config) -> None:
         team_tools: list[Toolkit] = []
         tools_list = agent_data.get("tools", [])
         if len(tools_list) > 0:
-            tool_names = [name.split('.', 1)[1] for name in tools_list]
-            t = MCPTools(command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}", include_tools=tool_names)
+            tool_names = [name.split(":", 1)[1] for name in tools_list]
+            t = MCPTools(
+                command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}",
+                include_tools=tool_names,
+            )
             mcp_tools = await t.__aenter__()
             team_tools = [mcp_tools]
         team = Team(
@@ -102,7 +108,7 @@ async def run_server(config) -> None:
             mode=team_data.get("mode", "coordinate"),
             members=team_agents,
             instructions=team_data.get("instructions", ""),
-            tools=team_tools, # type: ignore,
+            tools=team_tools,  # type: ignore,
             model=model,
             markdown=markdown,
         )
