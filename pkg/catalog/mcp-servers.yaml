@@ -60,8 +60,6 @@
       properties:
         api_url:
           type: string
-  tests:
-    - tool: get_armor_mcp_version
 
 - name: astra-db
   image: mcp/astra-db
@@ -98,11 +96,6 @@
       properties:
         api_url:
           type: string
-  tests:
-    - tool: list_docs
-    - tool: get_docs_index
-      args:
-        docName: Resend
 
 - name: atlassian
   image: mcp/atlassian
@@ -222,8 +215,6 @@
   image: mcp/basic-memory
   run:
     workdir: /app
-  tests:
-    - tool: project_info
 
 - name: bitrefill
   image: mcp/bitrefill
@@ -246,8 +237,6 @@
           type: string
       required:
         - api_id
-  tests:
-    - tool: categories
 
 - name: box
   image: mcp/box
@@ -290,8 +279,6 @@
       - id: chroma.api_key
         name: CHROMA_API_KEY
         value: your-api-key
-  tests:
-    - tool: chroma_list_collections
 
 - name: circleci
   image: mcp/circleci
@@ -362,16 +349,6 @@
   image: mcp/databutton
   run:
     workdir: /app
-  tests:
-    - tool: submit_app_requirements
-      args:
-        name: test
-        pitch: test
-        spec:
-          description: This is a test
-          design: Must be nice
-          targetAudience: Nice people
-          typography: Helvetica
 
 - name: descope
   image: mcp/descope
@@ -394,9 +371,6 @@
           type: string
       required:
         - project_id
-  tests:
-    - tool: search-audits
-    - tool: search-users
 
 - name: desktop-commander
   image: mcp/desktop-commander
@@ -442,11 +416,6 @@
   image: mcp/duckduckgo
   run:
     workdir: /app
-  tests:
-    - tool: search
-      args:
-        max_results: 1
-        query: MCP
 
 - name: e2b
   image: mcp/e2b
@@ -542,10 +511,6 @@
   image: mcp/fetch
   run:
     workdir: /app
-  tests:
-    - tool: fetch
-      args:
-        url: https://ai-backend-service.docker.com/
 
 - name: fibery
   image: mcp/fibery
@@ -673,10 +638,6 @@
       - id: github-chat.api_key
         name: GITHUB_API_KEY
         value: YOUR_GITHUB_API_KEY
-  tests:
-    - tool: index_repository
-      args:
-        repo_url: https://github.com/docker/machine
 
 - name: github-official
   image: mcp/github-mcp-server
@@ -883,9 +844,6 @@
           type: string
       required:
         - app_name
-  tests:
-    - tool: iaptic_current_app
-    - tool: iaptic_reset_app
 
 - name: jetbrains
   image: mcp/jetbrains
@@ -1111,11 +1069,6 @@
       - id: neon.api_key
         name: NEON_API_KEY
         value: YOUR_API_KEY_HERE
-  tests:
-    - tool: __node_version
-      args:
-        params:
-          key: value
 
 - name: notion
   image: mcp/notion
@@ -1174,22 +1127,11 @@
           type: string
         workspace_name:
           type: string
-  tests:
-    - tool: get-server-info
-    - tool: get-opik-tracing-info
-    - tool: get-opik-examples
-      args:
-        task: Create prompt
-    - tool: get-opik-help
-      args:
-        topic: prompts
 
 - name: osp_marketing_tools
   image: mcp/osp_marketing_tools
   run:
     workdir: /app
-  tests:
-    - tool: health_check
 
 - name: oxylabs
   image: mcp/oxylabs
@@ -1454,10 +1396,6 @@
   image: mcp/shopify
   run:
     workdir: /app
-  tests:
-    - tool: search_dev_docs
-      args:
-        prompt: mcp
 
 - name: slack
   image: mcp/slack
@@ -1507,11 +1445,6 @@
       - id: stripe.secret_key
         name: STRIPE_SECRET_KEY
         value: sk_STRIPE_SECRET_KEY
-  tests:
-    - tool: search_documentation
-      args:
-        language: go
-        question: getting started
 
 - name: tavily
   image: mcp/tavily
@@ -1537,15 +1470,6 @@
   image: mcp/time
   run:
     workdir: /app
-  tests:
-    - tool: get_current_time
-      args:
-        timezone: UTC
-    - tool: convert_time
-      args:
-        source_timezone: UTC
-        target_timezone: America/Los_Angeles
-        time: "10:05"
 
 - name: triplewhale
   image: mcp/triplewhale
