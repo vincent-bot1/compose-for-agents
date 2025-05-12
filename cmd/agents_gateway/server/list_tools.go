@@ -13,13 +13,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig config.Registry, serverNames []string, toolsNames []string) ([]server.ServerTool, error) {
-	// Filter out tools
-	toolNeeded := map[string]bool{}
-	for _, tool := range toolsNames {
-		toolNeeded[strings.TrimSpace(tool)] = true
-	}
-
+func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig config.Registry, serverNames []string, toolNames []string) ([]server.ServerTool, error) {
 	var serverTools []server.ServerTool
 	var serverToolsLock sync.Mutex
 
@@ -36,7 +30,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			}
 
 			for _, tool := range tools {
-				if _, ok := toolNeeded[tool.Name]; !ok {
+				if !isToolEnabled(serverName, tool.Name, toolNames) {
 					continue
 				}
 
@@ -61,6 +55,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			continue
 		}
 
+		serverName := serverName
 		errs.Go(func() error {
 			client, err := startMCPClient(ctx, serverConfig, registryConfig)
 			if err != nil {
@@ -76,7 +71,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			}
 
 			for _, tool := range tools {
-				if _, ok := toolNeeded[tool.Name]; !ok {
+				if !isToolEnabled(serverName, tool.Name, toolNames) {
 					continue
 				}
 
@@ -95,4 +90,19 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 	}
 
 	return serverTools, errs.Wait()
+}
+
+func isToolEnabled(serverName string, toolName string, toolsNames []string) bool {
+	for _, enabled := range toolsNames {
+		if strings.EqualFold(enabled, toolName) ||
+			strings.EqualFold(enabled, serverName+":"+toolName) ||
+			strings.EqualFold(enabled, "mcp/"+serverName+":"+toolName) ||
+			strings.EqualFold(enabled, serverName+":*") ||
+			strings.EqualFold(enabled, "mcp/"+serverName+":*") ||
+			strings.EqualFold(enabled, "*") {
+			return true
+		}
+	}
+
+	return false
 }
