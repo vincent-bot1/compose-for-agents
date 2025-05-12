@@ -17,13 +17,13 @@ type Tile struct {
 	Config map[string]any `yaml:"config"`
 }
 
+// TODO(dga): I wanted to use the volume contents socket but in cloud mode, it isn't talking to the local Docker anymore.
 func ReadPromptFile(ctx context.Context, name string) (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
 
-	// TODO(dga): I wanted to use the volume contents socket but in cloud mode, it isn't talking to the local Docker anymore.
 	path := filepath.Join(home, "Library/Containers/com.docker.docker/Data/docker.raw.sock")
 	out, err := exec.CommandContext(ctx, "docker", "-H", "unix://"+path, "run", "--rm", "-v", "docker-prompts:/docker-prompts", "-w", "/docker-prompts", "busybox", "cat", name).Output()
 	if err != nil {

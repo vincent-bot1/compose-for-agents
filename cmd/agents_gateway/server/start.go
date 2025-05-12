@@ -7,10 +7,11 @@ import (
 	mcpclient "github.com/docker/compose-agents-demo/cmd/agents_gateway/mcp"
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/config"
+	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/docker/compose-agents-demo/pkg/eval"
 )
 
-func startMCPClient(ctx context.Context, server catalog.Server, registryConfig config.Registry) (*mcpclient.Client, error) {
+func (g *Gateway) startMCPClient(ctx context.Context, server catalog.Server, registryConfig config.Registry) (*mcpclient.Client, error) {
 	args := []string{"--security-opt", "no-new-privileges"}
 	if server.Run.Workdir != "" {
 		args = append(args, "--workdir", server.Run.Workdir)
@@ -18,6 +19,15 @@ func startMCPClient(ctx context.Context, server catalog.Server, registryConfig c
 
 	var env []string
 	for _, s := range server.Config.Secrets {
+		if g.Standalone {
+			value, err := docker.SecretValue(ctx, s.Id)
+			if err != nil {
+				return nil, fmt.Errorf("getting secret %s: %w", s.Name, err)
+			}
+
+			env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
+		}
+
 		args = append(args, "-e", s.Name)
 	}
 

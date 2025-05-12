@@ -3,14 +3,12 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"os/signal"
 	"strings"
 	"syscall"
 
 	"github.com/docker/compose-agents-demo/cmd/agents_gateway/server"
-	"github.com/docker/compose-agents-demo/pkg/config"
 )
 
 func main() {
@@ -22,16 +20,25 @@ func main() {
 	logCalls := flag.Bool("log_calls", false, "Log the tool calls")
 	scanSecrets := flag.Bool("scan_secrets", false, "Verify that secrets are not passed to tools")
 	verifySignatures := flag.Bool("verify_signatures", false, "Verify the image signatures")
-	flag.Parse()
+	port := flag.Int("port", 8811, "Port to listen on")
+	standalone := flag.Bool("standalone", true, "Are we running in standalone mode?")
 
 	// Parse flags and config
-	registryConfig, err := config.ParseConfig(*registryYaml)
-	if err != nil {
-		log.Fatalln(fmt.Errorf("reading configuration: %w", err))
+	flag.Parse()
+	if *standalone && len(*registryYaml) > 0 {
+		log.Fatalln("--registry_yaml is not supported in standalone mode")
 	}
-	toolNames := parseCommaSeparated(*tools)
 
-	if err := server.Run(ctx, registryConfig, toolNames, *logCalls, *scanSecrets, *verifySignatures); err != nil {
+	gateway := server.Gateway{
+		RegistryYaml:     *registryYaml,
+		ToolsNames:       parseCommaSeparated(*tools),
+		LogCalls:         *logCalls,
+		ScanSecrets:      *scanSecrets,
+		VerifySignatures: *verifySignatures,
+		Port:             *port,
+		Standalone:       *standalone,
+	}
+	if err := gateway.Run(ctx); err != nil {
 		log.Fatalln(err)
 	}
 }

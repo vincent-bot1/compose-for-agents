@@ -1,4 +1,4 @@
-package main
+package docker
 
 import (
 	"context"
@@ -6,6 +6,10 @@ import (
 	"os"
 	"path/filepath"
 )
+
+func dialVolumeContents(ctx context.Context) (net.Conn, error) {
+	return dial(ctx, "Library/Containers/com.docker.docker/Data/volume-contents.sock")
+}
 
 func dialJFS(ctx context.Context) (net.Conn, error) {
 	return dial(ctx, "Library/Containers/com.docker.docker/Data/jfs.sock")

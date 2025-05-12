@@ -72,7 +72,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		}
 
 		for _, s := range server.Config.Secrets {
-			value, err := secretValue(ctx, s.Id)
+			value, err := docker.SecretValue(ctx, s.Id)
 			if err != nil {
 				return fmt.Errorf("getting secret %s: %w", s.Name, err)
 			}
@@ -87,6 +87,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		"--log_calls=" + boolToString(flags.LogCallsEnabled()),
 		"--scan_secrets=" + boolToString(flags.ScanSecretsEnabled()),
 		"--verify_signatures=" + boolToString(flags.VerifySignaturesEnabled()),
+		"--standalone=false",
 	}
 
 	containerID := flags.ContainerName(serviceName)

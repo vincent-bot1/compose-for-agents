@@ -13,7 +13,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig config.Registry, serverNames []string, toolNames []string) ([]server.ServerTool, error) {
+func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig config.Registry, serverNames []string) ([]server.ServerTool, error) {
 	var serverTools []server.ServerTool
 	var serverToolsLock sync.Mutex
 
@@ -30,7 +30,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			}
 
 			for _, tool := range tools {
-				if !isToolEnabled(serverName, "", tool.Name, toolNames) {
+				if !isToolEnabled(serverName, "", tool.Name, g.ToolsNames) {
 					continue
 				}
 
@@ -57,7 +57,7 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 
 		serverName := serverName
 		errs.Go(func() error {
-			client, err := startMCPClient(ctx, serverConfig, registryConfig)
+			client, err := g.startMCPClient(ctx, serverConfig, registryConfig)
 			if err != nil {
 				fmt.Println("Can't start MCP server:", err)
 				return nil
@@ -71,13 +71,13 @@ func listTools(ctx context.Context, mcpCatalog catalog.Catalog, registryConfig c
 			}
 
 			for _, tool := range tools {
-				if !isToolEnabled(serverName, serverConfig.Image, tool.Name, toolNames) {
+				if !isToolEnabled(serverName, serverConfig.Image, tool.Name, g.ToolsNames) {
 					continue
 				}
 
 				serverTool := server.ServerTool{
 					Tool:    tool,
-					Handler: mcpServerHandler(serverConfig, registryConfig, tool),
+					Handler: g.mcpServerHandler(serverConfig, registryConfig, tool),
 				}
 
 				serverToolsLock.Lock()

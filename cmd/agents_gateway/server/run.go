@@ -4,23 +4,59 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/config"
+	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"golang.org/x/sync/errgroup"
 )
 
-func Run(ctx context.Context, registryConfig config.Registry, toolsNames []string, logCalls, scanSecrets, verifySignatures bool) error {
+type Gateway struct {
+	RegistryYaml     string
+	ToolsNames       []string
+	LogCalls         bool
+	ScanSecrets      bool
+	VerifySignatures bool
+	Port             int
+	Standalone       bool
+}
+
+func (g *Gateway) Run(ctx context.Context) error {
+	start := time.Now()
+
 	// Listen as early as possible to not lose client connections.
-	var lc net.ListenConfig
-	ln, err := lc.Listen(ctx, "tcp", ":8811")
+	var ln net.Listener
+	if !g.Standalone {
+		var (
+			lc  net.ListenConfig
+			err error
+		)
+		ln, err = lc.Listen(ctx, "tcp", fmt.Sprintf(":%d", g.Port))
+		if err != nil {
+			return err
+		}
+	}
+
+	// In standalone, ignore the registry.yaml passed on the command line
+	// and read it from the docker volume.
+	if g.Standalone {
+		var err error
+		g.RegistryYaml, err = docker.ReadPromptFile(ctx, "registry.yaml")
+		if err != nil {
+			return err
+		}
+	}
+
+	registryConfig, err := config.ParseConfig(g.RegistryYaml)
 	if err != nil {
-		return err
+		return fmt.Errorf("reading configuration: %w", err)
 	}
 
 	// Read the MCP catalog.
@@ -86,7 +122,7 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 	fmt.Println("Docker images pulled")
 
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
-	if verifySignatures {
+	if g.VerifySignatures {
 		fmt.Println("Verifying docker images", mcpImages)
 		args := []string{"verify"}
 		args = append(args, mcpImages...)
@@ -102,14 +138,26 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 	}
 
 	// List all the available tools.
-	serverTools, err := listTools(ctx, mcpCatalog, registryConfig, serverNames, toolsNames)
+	serverTools, err := g.listTools(ctx, mcpCatalog, registryConfig, serverNames)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
 
-	toolCallbacks := callbacks(logCalls, scanSecrets)
+	toolCallbacks := callbacks(g.LogCalls, g.ScanSecrets)
 
-	// Server connections.
+	newStdioServer := func() *server.StdioServer {
+		mcpServer := server.NewMCPServer("Docker AI MCP Gateway", "1.0.1", server.WithToolHandlerMiddleware(toolCallbacks))
+		mcpServer.SetTools(serverTools...)
+		return server.NewStdioServer(mcpServer)
+	}
+
+	fmt.Println("Initialized MCP server in", time.Since(start))
+
+	// Start the server
+	if g.Standalone {
+		return newStdioServer().Listen(ctx, os.Stdin, os.Stdout)
+	}
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -127,11 +175,7 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 			go func() {
 				defer conn.Close()
 
-				mcpServer := server.NewMCPServer("Docker AI MCP Gateway", "1.0.1", server.WithToolHandlerMiddleware(toolCallbacks))
-				mcpServer.SetTools(serverTools...)
-				stdioServer := server.NewStdioServer(mcpServer)
-
-				if err := stdioServer.Listen(ctx, conn, conn); err != nil {
+				if err := newStdioServer().Listen(ctx, conn, conn); err != nil {
 					fmt.Printf("Error listening: %v\n", err)
 				}
 			}()
@@ -139,9 +183,9 @@ func Run(ctx context.Context, registryConfig config.Registry, toolsNames []strin
 	}
 }
 
-func mcpServerHandler(server catalog.Server, registryConfig config.Registry, tool mcp.Tool) server.ToolHandlerFunc {
+func (g *Gateway) mcpServerHandler(server catalog.Server, registryConfig config.Registry, tool mcp.Tool) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		client, err := startMCPClient(ctx, server, registryConfig)
+		client, err := g.startMCPClient(ctx, server, registryConfig)
 		if err != nil {
 			return nil, err
 		}
