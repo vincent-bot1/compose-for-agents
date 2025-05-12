@@ -95,22 +95,24 @@ func (g *Gateway) Run(ctx context.Context) error {
 
 		fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
 	}
-	var dockerImages []string
+
+	var (
+		dockerImages []string
+		mcpImages    []string
+	)
 	for image := range uniqueDockerImages {
 		dockerImages = append(dockerImages, image)
+		if strings.HasPrefix(image, "mcp/") {
+			mcpImages = append(mcpImages, image)
+		}
 	}
 
 	// Pull docker images first
 	startPull := time.Now()
 	fmt.Fprintln(os.Stderr, "Pulling docker images", dockerImages)
-	var mcpImages []string
 	errs, ctxPull := errgroup.WithContext(ctx)
 	errs.SetLimit(runtime.NumCPU())
 	for _, dockerImage := range dockerImages {
-		if strings.HasPrefix(dockerImage, "mcp/") {
-			mcpImages = append(mcpImages, dockerImage)
-		}
-
 		errs.Go(func() error {
 			cmd := exec.CommandContext(ctxPull, "docker", "pull", dockerImage)
 			if err := cmd.Run(); err != nil {

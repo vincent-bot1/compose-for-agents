@@ -41,7 +41,7 @@ func stopContainer(ctx context.Context, containerID string) error {
 		return err
 	}
 
-	exists, _, err := client.Exists(ctx, containerID)
+	exists, _, err := client.ContainerExists(ctx, containerID)
 	if err != nil {
 		return err
 	}

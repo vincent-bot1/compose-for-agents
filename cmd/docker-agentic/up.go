@@ -63,7 +63,7 @@ func startAgents(ctx context.Context, client *docker.Client, serviceName string,
 	cmd := []string{"/agents.yaml"}
 
 	containerID := flags.AgentsContainerName(serviceName)
-	exists, inspect, err := client.Exists(ctx, containerID)
+	exists, inspect, err := client.ContainerExists(ctx, containerID)
 	if err != nil {
 		return err
 	}
@@ -155,7 +155,7 @@ func startAgents(ctx context.Context, client *docker.Client, serviceName string,
 
 func startUI(ctx context.Context, client *docker.Client, serviceName string, flags *Flags) error {
 	containerID := flags.UIContainerName(serviceName)
-	exists, inspect, err := client.Exists(ctx, containerID)
+	exists, inspect, err := client.ContainerExists(ctx, containerID)
 	if err != nil {
 		return err
 	}

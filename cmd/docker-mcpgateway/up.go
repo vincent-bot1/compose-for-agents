@@ -91,7 +91,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	containerID := flags.ContainerName(serviceName)
-	exists, inspect, err := client.Exists(ctx, containerID)
+	exists, inspect, err := client.ContainerExists(ctx, containerID)
 	if err != nil {
 		return err
 	}
