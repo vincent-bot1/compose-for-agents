@@ -6,7 +6,6 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -16,7 +15,6 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
-	"golang.org/x/sync/errgroup"
 )
 
 type Gateway struct {
@@ -43,6 +41,12 @@ func (g *Gateway) Run(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	// Create docker client.
+	client, err := docker.NewClient(ctx)
+	if err != nil {
+		return err
 	}
 
 	// In standalone, ignore the registry.yaml passed on the command line
@@ -110,18 +114,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 	// Pull docker images first
 	startPull := time.Now()
 	fmt.Fprintln(os.Stderr, "Pulling docker images", dockerImages)
-	errs, ctxPull := errgroup.WithContext(ctx)
-	errs.SetLimit(runtime.NumCPU())
-	for _, dockerImage := range dockerImages {
-		errs.Go(func() error {
-			cmd := exec.CommandContext(ctxPull, "docker", "pull", dockerImage)
-			if err := cmd.Run(); err != nil {
-				return fmt.Errorf("pulling docker image %s: %w", dockerImage, err)
-			}
-			return nil
-		})
-	}
-	if err := errs.Wait(); err != nil {
+	if err := client.PullImages(ctx, dockerImages...); err != nil {
 		return fmt.Errorf("pulling docker images: %w", err)
 	}
 	fmt.Fprintln(os.Stderr, "Docker images pulled in", time.Since(startPull))
