@@ -59,7 +59,7 @@ async def run_server(config) -> None:
         tools: list[Toolkit] = []
         tools_list = agent_data.get("tools", [])
         if len(tools_list) > 0:
-            tool_names = [name.split(".", 1)[1] for name in tools_list]
+            tool_names = [name.split(":", 1)[1] for name in tools_list]
             t = MCPTools(
                 command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}",
                 include_tools=tool_names,
