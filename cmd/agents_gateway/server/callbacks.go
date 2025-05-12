@@ -16,16 +16,16 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 			tool := request.Params.Name
 			arguments := argumentsToString(request.Params.Arguments)
 
+			if logCalls {
+				fmt.Printf("Calling tool %s with arguments: %s\n", tool, arguments)
+			}
+
 			if scanSecrets {
 				fmt.Printf("Scanning tool call arguments for secrets...\n")
 				if secrets.ContainsSecrets(arguments) {
 					return nil, fmt.Errorf("a secret is being passed to tool %s", tool)
 				}
 				fmt.Printf("No secret found in arguments.\n")
-			}
-
-			if logCalls {
-				fmt.Printf("Calling tool %s with arguments: %s\n", tool, arguments)
 			}
 
 			result, err := next(ctx, request)
