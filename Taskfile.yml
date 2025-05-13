@@ -21,8 +21,8 @@ tasks:
   build-compose:
     desc: Build docker-compose from the source
     cmds:
-      - docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./out https://github.com/fiam/compose.git#alberto/plugin-output
-      - /bin/ln -sf "{{.TASKFILE_DIR}}/out/docker-compose" "{{.HOME}}/.docker/cli-plugins/docker-compose"
+      - docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
+      - /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/docker-compose"
 
   build-docker-agentic:
     desc: Build the docker-agentic binary
