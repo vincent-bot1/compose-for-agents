@@ -30,27 +30,23 @@ tasks:
 
   build-docker-mcpgateway:
     desc: Build the docker-mcpgateway binary
-    cmds:
-      - go build -o bin/docker-mcpgateway ./cmd/docker-mcpgateway
+    cmd: go build -o bin/docker-mcpgateway ./cmd/docker-mcpgateway
 
   build-gateway-image:
     desc: Build the gateway docker image
-    cmd: docker build -t docker/agents_gateway --target=agents_gateway .
+    cmd: docker buildx bake gateway
 
   build-agents-runner-image:
     desc: Build the agent runner image
-    cmd: docker buildx build -t demo/agents agent
+    cmd: docker buildx bake agents-runner
 
   build-agents-ui-image:
     desc: Build the agent UI image
-    cmd: docker buildx build -t demo/ui agent-ui
+    cmd: docker buildx bake agents-ui
 
   build-images:
     desc: Build all docker images
-    deps:
-      - build-gateway-image
-      - build-agents-runner-image
-      - build-agents-ui-image
+    cmd: docker buildx bake
 
   build:
     desc: Build all binaries and images
@@ -60,11 +56,13 @@ tasks:
       - build-docker-mcpgateway
 
   install-docker-agentic:
+    desc: Install the docker-agentic binary
     cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
     deps:
       - build-docker-agentic
 
   install-docker-mcpgateway:
+    desc: Install the docker-mcpgateway binary
     cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
     deps:
       - build-docker-mcpgateway
