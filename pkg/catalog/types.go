@@ -115,6 +115,7 @@ type Properties map[string]Property
 type Property struct {
 	Type        string `yaml:"type" json:"type"`
 	Description string `yaml:"description" json:"description"`
+	Items       *Items `yaml:"items,omitempty" json:"items,omitempty"`
 }
 
 type Container struct {
@@ -127,10 +128,19 @@ func (p *Properties) ToMap() map[string]any {
 	m := map[string]any{}
 
 	for k, v := range *p {
-		m[k] = map[string]any{
+		propMap := map[string]any{
 			"type":        v.Type,
 			"description": v.Description,
 		}
+
+		// Include items property for arrays
+		if v.Type == "array" && v.Items != nil {
+			propMap["items"] = map[string]any{
+				"type": v.Items.Type,
+			}
+		}
+
+		m[k] = propMap
 	}
 
 	return m
