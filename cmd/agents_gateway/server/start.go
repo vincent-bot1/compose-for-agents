@@ -11,28 +11,28 @@ import (
 )
 
 func (g *Gateway) startMCPClient(ctx context.Context, server catalog.Server, serverConfig map[string]any) (*mcpclient.Client, error) {
-	args, env, err := g.buildArgsAndEnv(ctx, server, serverConfig)
+	image := server.Image
+	command := eval.Expressions(server.Run.Command, serverConfig)
+	args, env, err := g.argsAndEnv(ctx, server, serverConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	command := eval.Expressions(server.Run.Command, serverConfig)
-
 	if len(command) == 0 {
-		log("Starting server", server.Image, "with args", args)
+		log("Starting server", image, "with args", args)
 	} else {
-		log("Starting server", server.Image, "with args", args, "and command", command)
+		log("Starting server", image, "with args", args, "and command", command)
 	}
 
-	client := mcpclient.NewClientArgs(server.Image, false, env, args, command)
+	client := mcpclient.NewClientArgs(image, false, env, args, command)
 	if err := client.Start(ctx); err != nil {
-		return nil, fmt.Errorf("failed to start server %s: %w", server.Image, err)
+		return nil, fmt.Errorf("failed to start server %s: %w", image, err)
 	}
 
 	return client, nil
 }
 
-func (g *Gateway) buildArgsAndEnv(ctx context.Context, serverSpec catalog.Server, serverConfig map[string]any) ([]string, []string, error) {
+func (g *Gateway) argsAndEnv(ctx context.Context, serverSpec catalog.Server, serverConfig map[string]any) ([]string, []string, error) {
 	args := []string{"--security-opt", "no-new-privileges"}
 
 	var env []string

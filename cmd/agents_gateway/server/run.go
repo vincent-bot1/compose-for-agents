@@ -11,6 +11,7 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/docker/compose-agents-demo/pkg/docker"
+	"github.com/docker/compose-agents-demo/pkg/signatures"
 	"github.com/docker/compose-agents-demo/pkg/sockets"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -95,19 +96,28 @@ func (g *Gateway) Run(ctx context.Context) error {
 		}
 	}
 
-	// Pull docker images first
-	startPull := time.Now()
-	log("Pulling docker images", dockerImages)
-	if err := client.PullImages(ctx, dockerImages...); err != nil {
-		return fmt.Errorf("pulling docker images: %w", err)
+	// Pull docker images first.
+	{
+		start := time.Now()
+		log("Pulling images", dockerImages)
+
+		if err := client.PullImages(ctx, dockerImages...); err != nil {
+			return fmt.Errorf("pulling docker images: %w", err)
+		}
+
+		log("Images pulled in", time.Since(start))
 	}
-	log("Docker images pulled in", time.Since(startPull))
 
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
 	if g.VerifySignatures {
-		if err := VerifySignatures(ctx, mcpImages); err != nil {
+		start := time.Now()
+		log("Verifying images", mcpImages)
+
+		if err := signatures.Verify(ctx, mcpImages); err != nil {
 			return fmt.Errorf("verifying docker images: %w", err)
 		}
+
+		log("Images verified in", time.Since(start))
 	}
 
 	// List all the available tools.
