@@ -12,6 +12,7 @@ import (
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/config"
 	"github.com/docker/compose-agents-demo/pkg/docker"
+	"github.com/docker/compose-agents-demo/pkg/sockets"
 	"github.com/mark3labs/mcp-go/server"
 )
 
@@ -148,7 +149,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		default:
-			conn, err := acceptWithContext(ctx, ln)
+			conn, err := sockets.AcceptWithContext(ctx, ln)
 			if err != nil {
 				if ctx.Err() != nil {
 					return ctx.Err()

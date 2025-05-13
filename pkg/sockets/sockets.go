@@ -1,12 +1,12 @@
-package server
+package sockets
 
 import (
 	"context"
 	"net"
 )
 
-// acceptWithContext accepts a connection or returns an error if the context is done. Note the caller still owns the listener and is responsible for closing it.
-func acceptWithContext(ctx context.Context, l net.Listener) (net.Conn, error) {
+// AcceptWithContext accepts a connection or returns an error if the context is done. Note the caller still owns the listener and is responsible for closing it.
+func AcceptWithContext(ctx context.Context, l net.Listener) (net.Conn, error) {
 	accepted := make(chan bool, 1)
 	go func() {
 		select {
