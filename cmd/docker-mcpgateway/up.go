@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -56,27 +55,21 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	if err != nil {
 		return fmt.Errorf("reading configuration: %w", err)
 	}
-
-	var serverNames []string
-	for serverName := range registryConfig.Servers {
-		serverNames = append(serverNames, serverName)
-	}
-	sort.Strings(serverNames)
+	serverNames := registryConfig.ServerNames()
 
 	var env []string
 	for _, serverName := range serverNames {
-		server, ok := mcpCatalog.Servers[serverName]
-		if !ok {
-			continue
-		}
+		serverConfig, _, _ := mcpCatalog.Find(serverName)
 
-		for _, s := range server.Config.Secrets {
-			value, err := docker.SecretValue(ctx, s.Id)
-			if err != nil {
-				return fmt.Errorf("getting secret %s: %w", s.Name, err)
+		if serverConfig != nil {
+			for _, s := range serverConfig.Config.Secrets {
+				value, err := docker.SecretValue(ctx, s.Id)
+				if err != nil {
+					return fmt.Errorf("getting secret %s: %w", s.Name, err)
+				}
+
+				env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
 			}
-
-			env = append(env, fmt.Sprintf("%s=%s", s.Name, value))
 		}
 	}
 

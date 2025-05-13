@@ -22,17 +22,48 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 	errs, ctx := errgroup.WithContext(ctx)
 	errs.SetLimit(runtime.NumCPU())
 	for _, serverName := range serverNames {
-		// Is it an MCP Server?
-		serverConfig, ok := mcpCatalog.Servers[serverName]
-		if !ok {
-			// Is it a tool group?
-			tools, ok := mcpCatalog.Tools[serverName]
-			if !ok {
-				fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
-				continue
-			}
+		serverConfig, tools, found := mcpCatalog.Find(serverName)
 
-			for _, tool := range tools {
+		switch {
+		case !found:
+			fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
+
+		case serverConfig != nil:
+			serverName := serverName
+			errs.Go(func() error {
+				client, err := g.startMCPClient(ctx, *serverConfig, registryConfig)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "Can't start MCP server:", err)
+					return nil
+				}
+
+				tools, err := client.ListTools(ctx)
+				client.Close() // Close early
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "Can't list tools:", err)
+					return nil
+				}
+
+				for _, tool := range tools {
+					if !isToolEnabled(serverName, serverConfig.Image, tool.Name, g.ToolsNames) {
+						continue
+					}
+
+					serverTool := server.ServerTool{
+						Tool:    tool,
+						Handler: g.mcpServerHandler(*serverConfig, registryConfig, tool.Name),
+					}
+
+					serverToolsLock.Lock()
+					serverTools = append(serverTools, serverTool)
+					serverToolsLock.Unlock()
+				}
+
+				return nil
+			})
+
+		case tools != nil:
+			for _, tool := range *tools {
 				if !isToolEnabled(serverName, "", tool.Name, g.ToolsNames) {
 					continue
 				}
@@ -58,42 +89,7 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 				serverTools = append(serverTools, serverTool)
 				serverToolsLock.Unlock()
 			}
-
-			continue
 		}
-
-		serverName := serverName
-		errs.Go(func() error {
-			client, err := g.startMCPClient(ctx, serverConfig, registryConfig)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "Can't start MCP server:", err)
-				return nil
-			}
-
-			tools, err := client.ListTools(ctx)
-			client.Close() // Close early
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "Can't list tools:", err)
-				return nil
-			}
-
-			for _, tool := range tools {
-				if !isToolEnabled(serverName, serverConfig.Image, tool.Name, g.ToolsNames) {
-					continue
-				}
-
-				serverTool := server.ServerTool{
-					Tool:    tool,
-					Handler: g.mcpServerHandler(serverConfig, registryConfig, tool.Name),
-				}
-
-				serverToolsLock.Lock()
-				serverTools = append(serverTools, serverTool)
-				serverToolsLock.Unlock()
-			}
-
-			return nil
-		})
 	}
 
 	return serverTools, errs.Wait()

@@ -6,7 +6,6 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"sort"
 	"strings"
 	"time"
 
@@ -61,39 +60,28 @@ func (g *Gateway) Run(ctx context.Context) error {
 		}
 	}
 
+	// Which servers are enabled in the registry.yaml?
 	registryConfig, err := config.ParseConfig(g.RegistryYaml)
 	if err != nil {
 		return fmt.Errorf("reading configuration: %w", err)
 	}
-
-	// Which servers are enabled in the registry.yaml?
-	var serverNames []string
-	for serverName := range registryConfig.Servers {
-		serverNames = append(serverNames, serverName)
-	}
-	sort.Strings(serverNames)
+	serverNames := registryConfig.ServerNames()
 
 	// Detect which docker images are used.
 	uniqueDockerImages := map[string]bool{}
 	for _, serverName := range serverNames {
-		// Is it an MCP Server?
-		server, ok := mcpCatalog.Servers[serverName]
-		if ok {
-			uniqueDockerImages[server.Image] = true
-			continue
+		serverConfig, tools, found := mcpCatalog.Find(serverName)
 
-		}
-
-		// Is it a tool group?
-		tools, ok := mcpCatalog.Tools[serverName]
-		if ok {
-			for _, tool := range tools {
+		switch {
+		case !found:
+			fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
+		case serverConfig != nil:
+			uniqueDockerImages[serverConfig.Image] = true
+		case tools != nil:
+			for _, tool := range *tools {
 				uniqueDockerImages[tool.Container.Image] = true
 			}
-			continue
 		}
-
-		fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
 	}
 
 	var (

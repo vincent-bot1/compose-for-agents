@@ -5,12 +5,24 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 
 	"gopkg.in/yaml.v3"
 )
 
 type Registry struct {
 	Servers map[string]Tile `yaml:"registry"`
+}
+
+func (r *Registry) ServerNames() []string {
+	var names []string
+
+	for name := range r.Servers {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+
+	return names
 }
 
 type Tile struct {
