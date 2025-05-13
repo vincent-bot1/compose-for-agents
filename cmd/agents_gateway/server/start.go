@@ -33,7 +33,7 @@ func (g *Gateway) startMCPClient(ctx context.Context, server catalog.Server, ser
 }
 
 func (g *Gateway) argsAndEnv(ctx context.Context, serverSpec catalog.Server, serverConfig map[string]any) ([]string, []string, error) {
-	args := []string{"--security-opt", "no-new-privileges"}
+	args := []string{"--security-opt", "no-new-privileges", "--cpus", "1", "--memory", "2Gb"}
 
 	var env []string
 	for _, s := range serverSpec.Config.Secrets {
