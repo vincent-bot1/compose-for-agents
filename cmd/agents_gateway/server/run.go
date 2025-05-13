@@ -71,13 +71,13 @@ func (g *Gateway) Run(ctx context.Context) error {
 	// Detect which docker images are used.
 	uniqueDockerImages := map[string]bool{}
 	for _, serverName := range serverNames {
-		serverConfig, tools, found := mcpCatalog.Find(serverName)
+		serverSpec, tools, found := mcpCatalog.Find(serverName)
 
 		switch {
 		case !found:
 			fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
-		case serverConfig != nil:
-			uniqueDockerImages[serverConfig.Image] = true
+		case serverSpec != nil:
+			uniqueDockerImages[serverSpec.Image] = true
 		case tools != nil:
 			for _, tool := range *tools {
 				uniqueDockerImages[tool.Container.Image] = true

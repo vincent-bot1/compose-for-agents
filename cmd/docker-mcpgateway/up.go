@@ -59,10 +59,10 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 
 	var env []string
 	for _, serverName := range serverNames {
-		serverConfig, _, _ := mcpCatalog.Find(serverName)
+		serverSpec, _, _ := mcpCatalog.Find(serverName)
 
-		if serverConfig != nil {
-			for _, s := range serverConfig.Config.Secrets {
+		if serverSpec != nil {
+			for _, s := range serverSpec.Config.Secrets {
 				value, err := docker.SecretValue(ctx, s.Id)
 				if err != nil {
 					return fmt.Errorf("getting secret %s: %w", s.Name, err)

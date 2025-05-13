@@ -22,16 +22,18 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 	errs, ctx := errgroup.WithContext(ctx)
 	errs.SetLimit(runtime.NumCPU())
 	for _, serverName := range serverNames {
-		serverConfig, tools, found := mcpCatalog.Find(serverName)
+		serverSpec, tools, found := mcpCatalog.Find(serverName)
 
 		switch {
 		case !found:
 			fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
 
-		case serverConfig != nil:
+		case serverSpec != nil:
 			serverName := serverName
 			errs.Go(func() error {
-				client, err := g.startMCPClient(ctx, *serverConfig, registryConfig)
+				serverConfig := registryConfig.Servers[serverName].Config
+
+				client, err := g.startMCPClient(ctx, *serverSpec, serverConfig)
 				if err != nil {
 					fmt.Fprintln(os.Stderr, "Can't start MCP server:", err)
 					return nil
@@ -45,13 +47,13 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 				}
 
 				for _, tool := range tools {
-					if !isToolEnabled(serverName, serverConfig.Image, tool.Name, g.ToolsNames) {
+					if !isToolEnabled(serverName, serverSpec.Image, tool.Name, g.ToolsNames) {
 						continue
 					}
 
 					serverTool := server.ServerTool{
 						Tool:    tool,
-						Handler: g.mcpServerHandler(*serverConfig, registryConfig, tool.Name),
+						Handler: g.mcpServerHandler(*serverSpec, serverConfig, tool.Name),
 					}
 
 					serverToolsLock.Lock()
