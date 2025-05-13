@@ -48,6 +48,10 @@ tasks:
     desc: Build all docker images
     cmd: docker buildx bake
 
+  build-push-gateway-image:
+    desc: Build and push the gateway docker image
+    cmd: docker buildx bake --set '*.attest=type=sbom' --set '*.attest=type=provenance,mode=max' --set '*.platform=linux/arm64,linux/amd64' --push gateway
+
   build:
     desc: Build all binaries and images
     deps:
