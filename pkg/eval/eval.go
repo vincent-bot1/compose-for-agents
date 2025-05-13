@@ -12,7 +12,7 @@ func Expression(expression string, config map[string]any) any {
 
 	parts := strings.Split(expression[2:len(expression)-2], "|")
 
-	return fmt.Sprintf("%s", dig(parts[0], config))
+	return dig(parts[0], config)
 }
 
 func Expressions(expressions []string, arguments map[string]any) []string {
