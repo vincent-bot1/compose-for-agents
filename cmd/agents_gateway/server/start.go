@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"os"
 
 	mcpclient "github.com/docker/compose-agents-demo/cmd/agents_gateway/mcp"
 	"github.com/docker/compose-agents-demo/pkg/catalog"
@@ -20,9 +19,9 @@ func (g *Gateway) startMCPClient(ctx context.Context, server catalog.Server, ser
 	command := eval.Expressions(server.Run.Command, serverConfig)
 
 	if len(command) == 0 {
-		fmt.Fprintln(os.Stderr, "Starting server", server.Image, "with args", args)
+		log("Starting server", server.Image, "with args", args)
 	} else {
-		fmt.Fprintln(os.Stderr, "Starting server", server.Image, "with args", args, "and command", command)
+		log("Starting server", server.Image, "with args", args, "and command", command)
 	}
 
 	client := mcpclient.NewClientArgs(server.Image, false, env, args, command)

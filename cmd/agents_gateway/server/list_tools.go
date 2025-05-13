@@ -2,8 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"runtime"
 	"strings"
 	"sync"
@@ -26,7 +24,7 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 
 		switch {
 		case !found:
-			fmt.Fprintln(os.Stderr, "MCP server not found:", serverName)
+			log("MCP server not found:", serverName)
 
 		case serverSpec != nil:
 			serverName := serverName
@@ -35,14 +33,14 @@ func (g *Gateway) listTools(ctx context.Context, mcpCatalog catalog.Catalog, reg
 
 				client, err := g.startMCPClient(ctx, *serverSpec, serverConfig)
 				if err != nil {
-					fmt.Fprintln(os.Stderr, "Can't start MCP server:", err)
+					log("Can't start MCP server:", err)
 					return nil
 				}
 
 				tools, err := client.ListTools(ctx)
 				client.Close() // Close early
 				if err != nil {
-					fmt.Fprintln(os.Stderr, "Can't list tools:", err)
+					log("Can't list tools:", err)
 					return nil
 				}
 

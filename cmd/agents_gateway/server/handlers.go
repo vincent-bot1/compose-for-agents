@@ -6,6 +6,7 @@ import (
 
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/eval"
+	responses "github.com/docker/compose-agents-demo/pkg/mcp"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -35,9 +36,9 @@ func mcpToolHandler(tool catalog.Tool) server.ToolHandlerFunc {
 		cmd := exec.CommandContext(ctx, "docker", args...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			return toolError(string(out)), nil
+			return responses.ToolError(string(out)), nil
 		}
 
-		return toolResult(string(out)), nil
+		return responses.ToolResult(string(out)), nil
 	}
 }
