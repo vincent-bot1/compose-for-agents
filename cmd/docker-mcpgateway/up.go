@@ -38,10 +38,14 @@ func NewUpCmd(flags *Flags) *cobra.Command {
 }
 
 func startGateway(ctx context.Context, serviceName string, flags Flags) error {
+	// Create docker client.
 	client, err := docker.NewClient(ctx)
 	if err != nil {
 		return err
 	}
+
+	// Read the MCP catalog.
+	mcpCatalog := catalog.Get()
 
 	registryConfigYaml, err := config.ReadPromptFile(ctx, "registry.yaml")
 	if err != nil {
@@ -58,11 +62,6 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		serverNames = append(serverNames, serverName)
 	}
 	sort.Strings(serverNames)
-
-	mcpCatalog, err := catalog.Get()
-	if err != nil {
-		return fmt.Errorf("listing servers: %w", err)
-	}
 
 	var env []string
 	for _, serverName := range serverNames {
@@ -97,7 +96,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	// Make sure to restart the gateway if the config changes.
-	configStr := string(catalog.McpServersYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ")
+	configStr := string(catalog.McpServersYAML) + ":" + string(catalog.ToolsYAML) + ":" + strings.Join(cmd, ", ") + ":" + strings.Join(env, ", ")
 	configHash := fmt.Sprintf("%x", sha256.Sum256([]byte(configStr)))
 	if exists {
 		if inspect.State.Running && inspect.Config.Labels[compose.LabelNames.ConfigHash] == configHash {

@@ -2,7 +2,6 @@ package catalog
 
 import (
 	_ "embed"
-	"fmt"
 
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +12,11 @@ var McpServersYAML []byte
 //go:embed mcp-tools.yaml
 var ToolsYAML []byte
 
-func Get() (Catalog, error) {
+func Get() Catalog {
+	// Guaranteed to parse, because we embed the yaml and have a test
 	var servers []Server
 	if err := yaml.Unmarshal(McpServersYAML, &servers); err != nil {
-		return Catalog{}, fmt.Errorf("reading servers catalog: %w", err)
+		panic(err)
 	}
 
 	serversByName := make(map[string]Server)
@@ -24,9 +24,10 @@ func Get() (Catalog, error) {
 		serversByName[server.Name] = server
 	}
 
+	// Guaranteed to parse, because we embed the yaml and have a test
 	var toolGroups []ToolGroup
 	if err := yaml.Unmarshal(ToolsYAML, &toolGroups); err != nil {
-		return Catalog{}, fmt.Errorf("reading tools catalog: %w", err)
+		panic(err)
 	}
 
 	toolsByName := make(map[string]map[string]Tool)
@@ -40,5 +41,5 @@ func Get() (Catalog, error) {
 	return Catalog{
 		Servers: serversByName,
 		Tools:   toolsByName,
-	}, nil
+	}
 }

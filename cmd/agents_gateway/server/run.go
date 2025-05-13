@@ -48,6 +48,9 @@ func (g *Gateway) Run(ctx context.Context) error {
 		return err
 	}
 
+	// Read the MCP catalog.
+	mcpCatalog := catalog.Get()
+
 	// In standalone, ignore the registry.yaml passed on the command line
 	// and read it from the docker volume.
 	if g.Standalone {
@@ -61,12 +64,6 @@ func (g *Gateway) Run(ctx context.Context) error {
 	registryConfig, err := config.ParseConfig(g.RegistryYaml)
 	if err != nil {
 		return fmt.Errorf("reading configuration: %w", err)
-	}
-
-	// Read the MCP catalog.
-	mcpCatalog, err := catalog.Get()
-	if err != nil {
-		return fmt.Errorf("listing catalog: %w", err)
 	}
 
 	// Which servers are enabled in the registry.yaml?
