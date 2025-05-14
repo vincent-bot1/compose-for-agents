@@ -10,10 +10,6 @@ type Secret struct {
 }
 
 func SecretValue(ctx context.Context, id string) (string, error) {
-	var secret Secret
-	if err := get(ctx, httpClient(dialJFS), "/secrets/"+id, &secret); err != nil {
-		return "", err
-	}
-
-	return secret.Value, nil
+	// Make sure to always talk to Docker Desktop directly in order to read the secrets used by the MCP Toolkit extension.
+	return RunOnDockerDesktop(ctx, "-l", "x-secret:"+id+"=/secret", "busybox", "cat", "/secret")
 }

@@ -2,12 +2,9 @@ package config
 
 import (
 	"context"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"runtime"
 	"sort"
 
+	"github.com/docker/compose-agents-demo/pkg/docker"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,23 +27,9 @@ type Tile struct {
 	Config map[string]any `yaml:"config"`
 }
 
-// TODO(dga): I wanted to use the volume contents socket but in cloud mode, it isn't talking to the local Docker anymore.
 func ReadPromptFile(ctx context.Context, name string) (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	path := "unix://" + filepath.Join(home, "Library/Containers/com.docker.docker/Data/docker.raw.sock")
-	if runtime.GOOS == "windows" {
-		path = "npipe:////./pipe/docker_engine_linux"
-	}
-	out, err := exec.CommandContext(ctx, "docker", "-H", path, "run", "--rm", "-v", "docker-prompts:/docker-prompts", "-w", "/docker-prompts", "busybox", "cat", name).Output()
-	if err != nil {
-		return "", err
-	}
-
-	return string(out), nil
+	// Make sure to always talk to Docker Desktop directly in order to read the "local" volumes, those used by the MCP Toolkit extension.
+	return docker.RunOnDockerDesktop(ctx, "-v", "docker-prompts:/docker-prompts", "-w", "/docker-prompts", "busybox", "cat", name)
 }
 
 func ParseConfig(registryYaml string) (Registry, error) {

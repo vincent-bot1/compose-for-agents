@@ -45,7 +45,10 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	// Hack to be able to read the secrets.
-	_ = exec.CommandContext(ctx, "docker", "mcp", "policy", "set", "* allows any-process").Run()
+	err = exec.CommandContext(ctx, "docker", "mcp", "policy", "set", "* allows any-process").Run()
+	if err != nil {
+		return fmt.Errorf("setting policy: %w", err)
+	}
 
 	// Read the MCP catalog.
 	mcpCatalog := catalog.Get()
@@ -104,6 +107,28 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 		}
 	}
 
+	mounts := []mount.Mount{
+		{
+			Type:   mount.TypeBind,
+			Source: "/var/run/docker.sock",
+			Target: "/var/run/docker.sock",
+		},
+	}
+
+	out, err := exec.CommandContext(ctx, "docker", "context", "show").CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("getting docker context: %w", err)
+	}
+	dockerContext := strings.TrimSpace(string(out))
+
+	if dockerContext != "docker-cloud" {
+		mounts = append(mounts, mount.Mount{
+			Type:   mount.TypeBind,
+			Source: "/run/host-services/backend.sock",
+			Target: "/run/host-services/backend.sock",
+		})
+	}
+
 	return client.StartContainer(ctx, containerID, container.Config{
 		Image: flags.Image,
 		Cmd:   cmd,
@@ -118,18 +143,7 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}, container.HostConfig{
 		NetworkMode: container.NetworkMode(flags.NetworkName()),
 		Init:        &trueValue,
-		Mounts: []mount.Mount{
-			{
-				Type:   mount.TypeBind,
-				Source: "/var/run/docker.sock",
-				Target: "/var/run/docker.sock",
-			},
-			{
-				Type:   mount.TypeBind,
-				Source: "/run/host-services/backend.sock",
-				Target: "/run/host-services/backend.sock",
-			},
-		},
+		Mounts:      mounts,
 	})
 }
 
