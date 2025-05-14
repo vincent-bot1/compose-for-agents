@@ -19,7 +19,7 @@ class CustomAgent(Agent):
     def is_streamable(self) -> bool:
         if self.stream is not None:
             return self.stream
-        return super(self).is_streamable
+        return super().is_streamable
 
 
 def create_model(model_name: str, provider: str) -> OpenAIChat:
