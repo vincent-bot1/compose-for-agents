@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/docker/cli/cli-plugins/manager"
@@ -10,6 +12,10 @@ import (
 )
 
 func main() {
+	if plugin.RunningStandalone() {
+		os.Args = append([]string{os.Args[0], "compose"}, os.Args[1:]...)
+	}
+
 	plugin.Run(func(command.Cli) *cobra.Command {
 		cmd := &cobra.Command{
 			Use: "compose",
