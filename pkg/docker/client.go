@@ -24,6 +24,7 @@ func NewClient(ctx context.Context) (*Client, error) {
 	}
 
 	currentContext := cli.CurrentContext()
+	// TODO(windows?)
 	host := "/var/run/docker.sock"
 
 	contexts, _ := cli.ContextStore().List()
