@@ -25,7 +25,7 @@ tasks:
         platforms: [darwin]
       - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
         platforms: [darwin]
-      - cmd: docker buildx build --target=binary-windows --platform=windows/am64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
+      - cmd: docker buildx build --target=binary-windows --platform=windows/amd64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
         platforms: [windows]
       - cmd: mkdir -p "{{.USERPROFILE}}/.docker/cli-plugins"
         platforms: [windows]
