@@ -69,13 +69,21 @@ tasks:
 
   install-docker-agentic:
     desc: Install the docker-agentic binary
-    cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
+    cmds:
+      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
+        platforms: [darwin]
+      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.USERPROFILE}}/.docker/cli-plugins/docker-agentic"
+        platforms: [windows]
     deps:
       - build-docker-agentic
 
   install-docker-mcpgateway:
     desc: Install the docker-mcpgateway binary
-    cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+    cmds:
+      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+        platforms: [darwin]
+      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.USERPROFILE}}/.docker/cli-plugins/docker-mcpgateway"
+        platforms: [windows]
     deps:
       - build-docker-mcpgateway
 
@@ -90,5 +98,7 @@ tasks:
   uninstall:
     desc: Remove all installed files
     cmds:
-      - /bin/rm -f "{{.HOME}}/.docker/cli-plugins/docker-agentic"
-      - /bin/rm -f "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+      - cmd: /bin/rm -f "{{.HOME}}/.docker/cli-plugins/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+        platforms: [darwin]
+      - cmd: /bin/rm -f "{{.USERPROFILE}}/.docker/cli-plugins/docker-agentic" "{{.USERPROFILE}}/.docker/cli-plugins/docker-mcpgateway"
+        platforms: [windows]
