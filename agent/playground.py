@@ -14,6 +14,13 @@ from fastapi.middleware.cors import CORSMiddleware
 # Allow nested event loops
 nest_asyncio.apply()
 
+class CustomAgent(Agent):
+    @property
+    def is_streamable(self) -> bool:
+        if self.stream is not None:
+            return self.stream
+        return super(self).is_streamable
+
 
 def create_model(model_name: str, provider: str) -> OpenAIChat:
     """Create a model instance based on the model name and provider."""
@@ -66,12 +73,13 @@ async def run_server(config) -> None:
             )
             mcp_tools = await t.__aenter__()
             tools = [mcp_tools]
-        agent = Agent(
+        agent = CustomAgent(
             name=agent_data["name"],
             role=agent_data.get("role", ""),
             description=agent_data.get("description", ""),
             tools=tools,  # type: ignore,
             model=model,
+            stream=agent_data.get("stream", True),
             markdown=markdown,
         )
         agents_by_id[agent_id] = agent
