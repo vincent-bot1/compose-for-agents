@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"os/exec"
 
 	mcpclient "github.com/docker/compose-agents-demo/cmd/agents_gateway/mcp"
 	"github.com/docker/compose-agents-demo/pkg/catalog"
@@ -50,8 +51,23 @@ func (g *Gateway) argsAndEnv(ctx context.Context, serverSpec catalog.Server, ser
 	}
 
 	for _, e := range serverSpec.Config.Env {
+		args = append(args, "-e", e.Name)
+
 		value := eval.Expression(e.Expression, serverConfig)
 		env = append(env, fmt.Sprintf("%s=%s", e.Name, value))
+	}
+
+	for name, expression := range serverSpec.Run.Env {
+		args = append(args, "-e", name)
+
+		cmd := exec.CommandContext(ctx, "/bin/sh", "-c", "echo \""+expression+"\"")
+		cmd.Env = env
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			return nil, nil, fmt.Errorf("evaluation %s: %w", name, err)
+		}
+
+		env = append(env, fmt.Sprintf("%s=%s", name, string(out)))
 	}
 
 	for _, mount := range eval.Expressions(serverSpec.Run.Volumes, serverConfig) {
