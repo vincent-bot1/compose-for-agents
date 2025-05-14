@@ -41,7 +41,7 @@ func (cl *Client) Start(ctx context.Context) error {
 		}
 	}
 
-	args := []string{"run", "--rm", "-i", "--init"}
+	args := []string{"run", "--rm", "-i", "--init", "--pull", "never"}
 	args = append(args, cl.args...)
 	args = append(args, cl.image)
 	c := NewMCPClient("docker", cl.env, args...)
