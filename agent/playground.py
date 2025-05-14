@@ -1,20 +1,23 @@
 import asyncio
 import os
 import sys
+from typing import Optional
 
 import nest_asyncio
 import yaml
-from agno.agent import Agent
+
+from agno import agent, team
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
-from agno.team import Team
 from agno.tools.mcp import MCPTools, Toolkit
 from fastapi.middleware.cors import CORSMiddleware
 
 # Allow nested event loops
 nest_asyncio.apply()
 
-class CustomAgent(Agent):
+DOCKER_MODEL_PROVIDER = "docker"
+
+class Agent(agent.Agent):
     @property
     def is_streamable(self) -> bool:
         if self.stream is not None:
@@ -22,9 +25,30 @@ class CustomAgent(Agent):
         return super().is_streamable
 
 
+class Team(team.Team):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stream = None
+
+    @property
+    def is_streamable(self) -> bool:
+        if self.stream is not None:
+            return self.stream
+        return super().is_streamable
+
+
+def should_stream(model_provider: str, tools: list[Toolkit]) -> Optional[bool]:
+    """Returns whether a model with the given provider and tools can stream"""
+    if model_provider == DOCKER_MODEL_PROVIDER and len(tools) > 0:
+        # DMR doesn't yet support tools with streaming
+        return False
+    # Let the model/options decide
+    return None
+
+
 def create_model(model_name: str, provider: str) -> OpenAIChat:
     """Create a model instance based on the model name and provider."""
-    if provider == "docker":
+    if provider == DOCKER_MODEL_PROVIDER:
         base_url = os.getenv("AI_RUNNER_URL")
         if base_url is None:
             base_url = "http://model-runner.docker.internal/engines/llama.cpp/v1"
@@ -73,13 +97,13 @@ async def run_server(config) -> None:
             )
             mcp_tools = await t.__aenter__()
             tools = [mcp_tools]
-        agent = CustomAgent(
+        agent = Agent(
             name=agent_data["name"],
             role=agent_data.get("role", ""),
             description=agent_data.get("description", ""),
             tools=tools,  # type: ignore,
             model=model,
-            stream=agent_data.get("stream", True),
+            stream=should_stream(provider, tools),
             markdown=markdown,
         )
         agents_by_id[agent_id] = agent
@@ -120,11 +144,12 @@ async def run_server(config) -> None:
             model=model,
             markdown=markdown,
         )
+        team.stream = should_stream(provider, team_tools)
         teams_by_id[team_id] = team
         if team_data.get("chat", True):
             teams.append(team)
 
-    playground = Playground(agents=agents, teams=teams)
+    playground = Playground(agents=agents, teams=teams) # type: ignore
 
     app = playground.get_app()
     app.add_middleware(
