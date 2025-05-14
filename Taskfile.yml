@@ -23,13 +23,13 @@ tasks:
     cmds:
       - cmd: docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
         platforms: [darwin]
-      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
         platforms: [darwin]
       - cmd: docker buildx build --target=binary-windows --platform=windows/amd64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
         platforms: [windows]
       - cmd: mkdir -p "{{.USERPROFILE}}/.docker/cli-plugins"
         platforms: [windows]
-      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
         platforms: [windows]
 
   build-docker-agentic:
@@ -70,9 +70,9 @@ tasks:
   install-docker-agentic:
     desc: Install the docker-agentic binary
     cmds:
-      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
         platforms: [darwin]
-      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.USERPROFILE}}/.docker/cli-plugins/docker-agentic"
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.USERPROFILE}}/.docker/cli-plugins/docker-agentic"
         platforms: [windows]
     deps:
       - build-docker-agentic
@@ -80,9 +80,9 @@ tasks:
   install-docker-mcpgateway:
     desc: Install the docker-mcpgateway binary
     cmds:
-      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/docker-mcpgateway"
         platforms: [darwin]
-      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.USERPROFILE}}/.docker/cli-plugins/docker-mcpgateway"
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.USERPROFILE}}/.docker/cli-plugins/docker-mcpgateway"
         platforms: [windows]
     deps:
       - build-docker-mcpgateway
