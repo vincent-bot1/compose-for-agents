@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"net"
-	"os"
 	"runtime"
 
 	"github.com/docker/docker/api/types/image"
@@ -23,9 +21,9 @@ func (c *Client) ImageExists(ctx context.Context, name string) (bool, error) {
 }
 
 func (c *Client) PullImages(ctx context.Context, names ...string) error {
-	token, err := getJWT(ctx)
+	registryAuth, err := getRegistryAuth(ctx)
 	if err != nil {
-		return fmt.Errorf("getting auth token: %w", err)
+		return fmt.Errorf("getting registryAuth: %w", err)
 	}
 
 	errs, ctx := errgroup.WithContext(ctx)
@@ -33,24 +31,24 @@ func (c *Client) PullImages(ctx context.Context, names ...string) error {
 
 	for _, name := range names {
 		errs.Go(func() error {
-			return c.PullImage(ctx, name, token)
+			return c.PullImage(ctx, name, registryAuth)
 		})
 	}
 
 	return errs.Wait()
 }
 
-func (c *Client) PullImage(ctx context.Context, name, token string) error {
-	if token == "" {
+func (c *Client) PullImage(ctx context.Context, name, registryAuth string) error {
+	if registryAuth == "" {
 		var err error
-		token, err = getJWT(ctx)
+		registryAuth, err = getRegistryAuth(ctx)
 		if err != nil {
-			return fmt.Errorf("getting auth token: %w", err)
+			return fmt.Errorf("getting registryAuth: %w", err)
 		}
 	}
 
 	pullOptions := image.PullOptions{
-		RegistryAuth: token,
+		RegistryAuth: registryAuth,
 	}
 	response, err := c.client.ImagePull(ctx, name, pullOptions)
 	if err != nil {
@@ -62,21 +60,4 @@ func (c *Client) PullImage(ctx context.Context, name, token string) error {
 	}
 
 	return nil
-}
-
-func getJWT(ctx context.Context) (string, error) {
-	if _, err := os.Stat("/run/host-services/backend.sock"); err != nil {
-		return "", nil
-	}
-
-	var token string
-	if err := get(ctx, httpClient(dialHostSideBackend), "/registry/token", &token); err != nil {
-		return "", fmt.Errorf("getting auth token: %w", err)
-	}
-	return token, nil
-}
-
-func dialHostSideBackend(ctx context.Context) (net.Conn, error) {
-	dialer := net.Dialer{}
-	return dialer.DialContext(ctx, "unix", "/run/host-services/backend.sock")
 }
