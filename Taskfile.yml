@@ -21,11 +21,11 @@ tasks:
   build-compose:
     desc: Build docker-compose from the source
     cmds:
-      - cmd: docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
+      - cmd: docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git
         platforms: [darwin]
       - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
         platforms: [darwin]
-      - cmd: docker buildx build --target=binary-windows --platform=windows/amd64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
+      - cmd: docker buildx build --target=binary-windows --platform=windows/amd64 --output type=local,dest=./bin https://github.com/fiam/compose.git
         platforms: [windows]
       - cmd: mkdir -p "{{.USERPROFILE}}/.docker/cli-plugins"
         platforms: [windows]
