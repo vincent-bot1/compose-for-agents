@@ -74,6 +74,7 @@ tasks:
   install:
     desc: Install all binaries
     deps:
+      - build-compose
       - build # To build images too
       - install-docker-agentic
       - install-docker-mcpgateway

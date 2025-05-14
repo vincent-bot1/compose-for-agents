@@ -2,13 +2,7 @@
 
 Requirements:
 
-Build and install `docker compose` from `main`:
-
-```console
-$ task build-compose
-```
-
-Build the all the binaries and images, install the plugins:
+Build and install `docker compose` from `main` and build the all the binaries and images, install the plugins:
 
 ```console
 $ task install
