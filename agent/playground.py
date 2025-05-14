@@ -18,10 +18,10 @@ nest_asyncio.apply()
 def create_model(model_name: str, provider: str) -> OpenAIChat:
     """Create a model instance based on the model name and provider."""
     if provider == "docker":
-        model = OpenAIChat(
-            id="ai/" + model_name,
-            base_url="http://model-runner.docker.internal/engines/llama.cpp/v1",
-        )
+        base_url = os.getenv("AI_RUNNER_URL")
+        if base_url is None:
+            base_url = "http://model-runner.docker.internal/engines/llama.cpp/v1"
+        model = OpenAIChat(id="ai/" + model_name, base_url=base_url)
         model.role_map = {
             "system": "system",
             "user": "user",
