@@ -32,10 +32,6 @@ tasks:
       - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
         platforms: [windows]
 
-  build-docker-agentic:
-    desc: Build the docker-agentic binary
-    cmd: go build -o bin/docker-agentic ./cmd/docker-agentic
-
   build-docker-mcpgateway:
     desc: Build the docker-mcpgateway binary
     cmd: go build -o bin/docker-mcpgateway ./cmd/docker-mcpgateway
@@ -64,18 +60,7 @@ tasks:
     desc: Build all binaries and images
     deps:
       - build-images
-      - build-docker-agentic
       - build-docker-mcpgateway
-
-  install-docker-agentic:
-    desc: Install the docker-agentic binary
-    cmds:
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.HOME}}/.docker/cli-plugins/docker-agentic"
-        platforms: [darwin]
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-agentic" "{{.USERPROFILE}}/.docker/cli-plugins/docker-agentic"
-        platforms: [windows]
-    deps:
-      - build-docker-agentic
 
   install-docker-mcpgateway:
     desc: Install the docker-mcpgateway binary
@@ -92,13 +77,4 @@ tasks:
     deps:
       - build-compose
       - build # To build images too
-      - install-docker-agentic
       - install-docker-mcpgateway
-
-  uninstall:
-    desc: Remove all installed files
-    cmds:
-      - cmd: /bin/rm -f "{{.HOME}}/.docker/cli-plugins/docker-agentic" "{{.HOME}}/.docker/cli-plugins/"
-        platforms: [darwin]
-      - cmd: /bin/rm -f "{{.USERPROFILE}}/.docker/cli-plugins/docker-agentic.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
-        platforms: [windows]

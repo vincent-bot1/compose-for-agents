@@ -132,7 +132,7 @@ async def run_server(config) -> None:
 
 
 def main():
-    config_filename = sys.argv[1]
+    config_filename = sys.argv[1] if len(sys.argv) > 1 else "/agents.yaml"
     with open(config_filename, "r") as f:
         config = yaml.safe_load(f)
 
