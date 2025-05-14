@@ -120,6 +120,11 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 				Source: "/var/run/docker.sock",
 				Target: "/var/run/docker.sock",
 			},
+			{
+				Type:   mount.TypeBind,
+				Source: "/run/host-services/backend.sock",
+				Target: "/run/host-services/backend.sock",
+			},
 		},
 	})
 }

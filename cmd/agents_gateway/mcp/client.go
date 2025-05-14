@@ -3,9 +3,9 @@ package mcp
 import (
 	"context"
 	"fmt"
-	"os/exec"
 	"time"
 
+	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -35,9 +35,13 @@ func (cl *Client) Start(ctx context.Context) error {
 	}
 
 	if cl.pull {
-		output, err := exec.CommandContext(ctx, "docker", "pull", cl.image).CombinedOutput()
+		dockerClient, err := docker.NewClient(ctx)
 		if err != nil {
-			return fmt.Errorf("pulling image %s: %w (%s)", cl.image, err, string(output))
+			return err
+		}
+
+		if err := dockerClient.PullImage(ctx, cl.image, ""); err != nil {
+			return fmt.Errorf("pulling image %s: %w", cl.image, err)
 		}
 	}
 
