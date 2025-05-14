@@ -45,10 +45,10 @@ func startGateway(ctx context.Context, serviceName string, flags Flags) error {
 	}
 
 	// Hack to be able to read the secrets.
-	err = exec.CommandContext(ctx, "docker", "mcp", "policy", "set", "* allows any-process").Run()
-	if err != nil {
-		return fmt.Errorf("setting policy: %w", err)
-	}
+	// err = exec.CommandContext(ctx, "docker", "mcp", "policy", "set", "* allows any-process").Run()
+	// if err != nil {
+	// 	return fmt.Errorf("setting policy: %w", err)
+	// }
 
 	// Read the MCP catalog.
 	mcpCatalog := catalog.Get()
