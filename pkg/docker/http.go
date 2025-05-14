@@ -3,11 +3,9 @@ package docker
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net"
 	"net/http"
-	"os"
 )
 
 func httpClient(dial func(context.Context) (net.Conn, error)) *http.Client {
@@ -37,8 +35,6 @@ func get(ctx context.Context, httpClient *http.Client, endpoint string, v any) e
 	if err != nil {
 		return err
 	}
-
-	fmt.Fprintln(os.Stderr, "Response:", string(buf))
 
 	if err := json.Unmarshal(buf, &v); err != nil {
 		return err
