@@ -21,8 +21,16 @@ tasks:
   build-compose:
     desc: Build docker-compose from the source
     cmds:
-      - docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
-      - /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/docker-compose"
+      - cmd: docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
+        platforms: [darwin]
+      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
+        platforms: [darwin]
+      - cmd: docker buildx build --target=binary-windows --platform=windows/am64 --output type=local,dest=./bin https://github.com/fiam/compose.git#alberto/plugin-output
+        platforms: [windows]
+      - cmd: mkdir -p "{{.USERPROFILE}}/.docker/cli-plugins"
+        platforms: [windows]
+      - cmd: /bin/ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
+        platforms: [windows]
 
   build-docker-agentic:
     desc: Build the docker-agentic binary
@@ -34,23 +42,23 @@ tasks:
 
   build-gateway-image:
     desc: Build the gateway docker image
-    cmd: docker buildx bake gateway
+    cmd: docker buildx bake --file docker-bake.hcl gateway
 
   build-agents-runner-image:
     desc: Build the agent runner image
-    cmd: docker buildx bake agents-runner
+    cmd: docker buildx bake --file docker-bake.hcl agents-runner
 
   build-agents-ui-image:
     desc: Build the agent UI image
-    cmd: docker buildx bake agents-ui
+    cmd: docker buildx bake --file docker-bake.hcl agents-ui
 
   build-images:
     desc: Build all docker images
-    cmd: docker buildx bake
+    cmd: docker buildx bake --file docker-bake.hcl
 
   push-gateway-image:
     desc: Build and push the gateway docker image
-    cmd: docker buildx bake --sbom="generator=docker/scout-sbom-indexer:1" --provenance=mode=max --set='*.platform=linux/arm64,linux/amd64' --push gateway
+    cmd: docker buildx bake --file docker-bake.hcl --sbom="generator=docker/scout-sbom-indexer:1" --provenance=mode=max --set='*.platform=linux/arm64,linux/amd64' --push gateway
 
   build:
     desc: Build all binaries and images
