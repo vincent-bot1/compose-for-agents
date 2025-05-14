@@ -8,9 +8,9 @@ import (
 )
 
 func dialVolumeContents(ctx context.Context) (net.Conn, error) {
-	return winio.DialPipeContext(ctx, "dockerVolumeContents")
+	return winio.DialPipeContext(ctx, `\\.\pipe\dockerVolumeContents`)
 }
 
 func dialJFS(ctx context.Context) (net.Conn, error) {
-	return winio.DialPipeContext(ctx, "dockerJfs")
+	return winio.DialPipeContext(ctx, `\\.\pipe\dockerJfs`)
 }
