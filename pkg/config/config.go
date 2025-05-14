@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 
 	"gopkg.in/yaml.v3"
@@ -36,8 +37,11 @@ func ReadPromptFile(ctx context.Context, name string) (string, error) {
 		return "", err
 	}
 
-	path := filepath.Join(home, "Library/Containers/com.docker.docker/Data/docker.raw.sock")
-	out, err := exec.CommandContext(ctx, "docker", "-H", "unix://"+path, "run", "--rm", "-v", "docker-prompts:/docker-prompts", "-w", "/docker-prompts", "busybox", "cat", name).Output()
+	path := "unix://" + filepath.Join(home, "Library/Containers/com.docker.docker/Data/docker.raw.sock")
+	if runtime.GOOS == "windows" {
+		path = "npipe:////./pipe/docker_engine_linux"
+	}
+	out, err := exec.CommandContext(ctx, "docker", "-H", path, "run", "--rm", "-v", "docker-prompts:/docker-prompts", "-w", "/docker-prompts", "busybox", "cat", name).Output()
 	if err != nil {
 		return "", err
 	}
