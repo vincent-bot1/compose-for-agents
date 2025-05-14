@@ -14,11 +14,13 @@ services:
       - "7777:7777"
     environment:
       - OPENAI_API_KEY=$OPENAI_API_KEY
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ./agents.yaml:/agents.yaml
     depends_on:
       - mcpgateway
-      - gemma
+      - llm
 
   agents-ui:
     image: demo/ui
@@ -29,7 +31,7 @@ services:
     depends_on:
       - agents
 
-  gemma:
+  llm:
     provider:
       type: model
       options:
