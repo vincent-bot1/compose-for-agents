@@ -58,9 +58,6 @@ target docker-mcpgateway {
   inherits = ["_base"]
   target = "docker-mcpgateway"
   output = ["./bin"]
-  platforms = [
-    "darwin/arm64",
-  ]
 }
 
 target docker-mcpgateway-darwin {
