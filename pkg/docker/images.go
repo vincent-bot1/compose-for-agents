@@ -31,7 +31,8 @@ func (c *Client) PullImages(ctx context.Context, names ...string) error {
 
 	for _, name := range names {
 		errs.Go(func() error {
-			return c.pullImage(ctx, name, registryAuth)
+			_, err := c.pullImage(ctx, name, registryAuth)
+			return err
 		})
 	}
 
@@ -44,21 +45,23 @@ func (c *Client) PullImage(ctx context.Context, name string) error {
 		return fmt.Errorf("getting registryAuth: %w", err)
 	}
 
-	return c.pullImage(ctx, name, registryAuth)
+	_, err = c.pullImage(ctx, name, registryAuth)
+	return err
 }
 
-func (c *Client) pullImage(ctx context.Context, name, registryAuth string) error {
+func (c *Client) pullImage(ctx context.Context, imageName, registryAuth string) (string, error) {
 	pullOptions := image.PullOptions{
 		RegistryAuth: registryAuth,
 	}
-	response, err := c.client.ImagePull(ctx, name, pullOptions)
+
+	response, err := c.client.ImagePull(ctx, imageName, pullOptions)
 	if err != nil {
-		return fmt.Errorf("pulling docker image %s: %w", name, err)
+		return "", fmt.Errorf("pulling docker image %s: %w", imageName, err)
 	}
 
 	if _, err := io.Copy(io.Discard, response); err != nil {
-		return fmt.Errorf("pulling docker image %s: %w", name, err)
+		return "", fmt.Errorf("pulling docker image %s: %w", imageName, err)
 	}
 
-	return nil
+	return "", nil
 }
