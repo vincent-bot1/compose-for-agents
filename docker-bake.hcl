@@ -54,24 +54,16 @@ target gateway {
   tags = ["docker/agents_gateway"]
 }
 
-target docker-mcpgateway {
+target docker-mcpgateway-darwin {
   inherits = ["_base"]
-  target = "docker-mcpgateway"
+  target = "build_docker-mcpgateway-darwin"
   output = ["./bin"]
 }
 
-target docker-mcpgateway-darwin {
-  inherits = ["docker-mcpgateway"]
-  args = {
-    TARGET = "darwin"
-  }
-}
-
 target docker-mcpgateway-windows {
-  inherits = ["docker-mcpgateway"]
-  args = {
-    TARGET = "windows"
-  }
+  inherits = ["_base"]
+  target = "build_docker-mcpgateway-windows"
+  output = ["./bin"]
 }
 
 target docker-compose {
