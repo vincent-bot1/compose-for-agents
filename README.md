@@ -25,7 +25,7 @@ On Windows:
 
 ```console
 docker buildx bake --file docker-bake.hcl windows
-mkdir -p "%USERPROFILE%/.docker/cli-plugins"
+mkdir "%USERPROFILE%/.docker/cli-plugins"
 ln -sf ./bin/docker-compose.exe "%USERPROFILE%/.docker/cli-plugins/"
 ln -sf ./bin/docker-mcpgateway.exe "%USERPROFILE%/.docker/cli-plugins/"
 ```
