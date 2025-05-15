@@ -50,6 +50,17 @@ func (c *Client) PullImage(ctx context.Context, name string) error {
 }
 
 func (c *Client) pullImage(ctx context.Context, imageName, registryAuth string) (string, error) {
+	inspect, err := c.client.ImageInspect(ctx, imageName)
+	if err != nil && !client.IsErrNotFound(err) {
+		return "", fmt.Errorf("inspecting docker image %s: %w", imageName, err)
+	}
+
+	if len(inspect.RepoDigests) > 0 {
+		if inspect.RepoDigests[0] == imageName {
+			return "", nil
+		}
+	}
+
 	pullOptions := image.PullOptions{
 		RegistryAuth: registryAuth,
 	}
