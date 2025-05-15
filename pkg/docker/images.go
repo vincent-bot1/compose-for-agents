@@ -31,22 +31,23 @@ func (c *Client) PullImages(ctx context.Context, names ...string) error {
 
 	for _, name := range names {
 		errs.Go(func() error {
-			return c.PullImage(ctx, name, registryAuth)
+			return c.pullImage(ctx, name, registryAuth)
 		})
 	}
 
 	return errs.Wait()
 }
 
-func (c *Client) PullImage(ctx context.Context, name, registryAuth string) error {
-	if registryAuth == "" {
-		var err error
-		registryAuth, err = getRegistryAuth(ctx)
-		if err != nil {
-			return fmt.Errorf("getting registryAuth: %w", err)
-		}
+func (c *Client) PullImage(ctx context.Context, name string) error {
+	registryAuth, err := getRegistryAuth(ctx)
+	if err != nil {
+		return fmt.Errorf("getting registryAuth: %w", err)
 	}
 
+	return c.pullImage(ctx, name, registryAuth)
+}
+
+func (c *Client) pullImage(ctx context.Context, name, registryAuth string) error {
 	pullOptions := image.PullOptions{
 		RegistryAuth: registryAuth,
 	}

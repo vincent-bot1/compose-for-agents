@@ -40,7 +40,7 @@ func (cl *Client) Start(ctx context.Context) error {
 			return err
 		}
 
-		if err := dockerClient.PullImage(ctx, cl.image, ""); err != nil {
+		if err := dockerClient.PullImage(ctx, cl.image); err != nil {
 			return fmt.Errorf("pulling image %s: %w", cl.image, err)
 		}
 	}
