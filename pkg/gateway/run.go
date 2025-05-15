@@ -99,7 +99,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 	// Pull docker images first.
 	{
 		start := time.Now()
-		log("- Pulling images", dockerImages)
+		log("- Pulling images", imageBaseNames(dockerImages))
 
 		if err := client.PullImages(ctx, dockerImages...); err != nil {
 			return fmt.Errorf("pulling docker images: %w", err)
@@ -111,7 +111,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
 	if g.VerifySignatures {
 		start := time.Now()
-		log("- Verifying images", mcpImages)
+		log("- Verifying images", imageBaseNames(mcpImages))
 
 		if err := signatures.Verify(ctx, mcpImages); err != nil {
 			return fmt.Errorf("verifying docker images: %w", err)
@@ -167,4 +167,23 @@ func (g *Gateway) Run(ctx context.Context) error {
 			}()
 		}
 	}
+}
+
+func imageBaseNames(names []string) []string {
+	baseNames := make([]string, len(names))
+
+	for i, name := range names {
+		baseNames[i] = imageBaseName(name)
+	}
+
+	return baseNames
+}
+
+func imageBaseName(name string) string {
+	before, _, found := strings.Cut(name, "@sha256:")
+	if found {
+		return before
+	}
+
+	return name
 }

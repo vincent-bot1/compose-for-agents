@@ -11,7 +11,7 @@
             items:
               type: string
       container:
-        image: docker:latest
+        image: docker@sha256:3a861ec98623bd6014610291123751dc19e0c6d474ac3b38767771791ac0eb5e
         command:
           - "{{args|into}}"
         volumes:
@@ -28,7 +28,7 @@
             type: string
             description: SELECT SQL query to execute
       container: &sqlite-container
-        image: &sqlite-image vonwig/sqlite:latest
+        image: &sqlite-image vonwig/sqlite@sha256:c3b7f2dd5cb3ec2cf3789ff2303406fa6130b6ffe7844877ef0e251721957cd7
         command:
           - &db "/mcp/test1.db"
           - "{{query|safe}}"
@@ -89,7 +89,7 @@
             type: string
             description: Business insight discovered from data analysis
       container:
-        image: vonwig/bash_alpine
+        image: vonwig/bash_alpine@sha256:8641ba06905e61694fef75adedc071b1abfc11f2edb94a744de98ea643f55ad1
         command:
           - "-c"
           - "echo '{{insight|safe}}' >> /thread/insights.txt"
