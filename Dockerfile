@@ -20,7 +20,6 @@ RUN --mount=type=cache,target=/root/.cache/go-build,id=agents_gateway \
 
 FROM alpine:3.21@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS agents_gateway
 RUN apk add --no-cache docker-cli
-COPY --from=ghcr.io/sigstore/cosign/cosign:v2.5.0 /ko-app/cosign /usr/bin/
 ENTRYPOINT ["/agents_gateway"]
 COPY --from=build_agents_gateway /agents_gateway /
 
