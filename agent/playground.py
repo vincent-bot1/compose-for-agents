@@ -110,6 +110,7 @@ async def run_server(config) -> None:
             stream=should_stream(provider, tools),
             add_datetime_to_instructions=True,
             markdown=markdown,
+            debug_mode=True,
         )
         agents_by_id[agent_id] = agent
         # Append only agents that we want to chat with
@@ -155,6 +156,7 @@ async def run_server(config) -> None:
             # show_tool_calls=True,
             markdown=markdown,
             add_datetime_to_instructions=True,
+            debug_mode=True,
         )
         team.stream = should_stream(provider, team_tools)
         teams_by_id[team_id] = team
