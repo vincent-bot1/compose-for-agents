@@ -46,7 +46,7 @@ tasks:
 
   build-agents-runner-image:
     desc: Build the agent runner image
-    cmd: docker buildx bake --file docker-bake.hcl agents-runner
+    cmd: docker buildx bake --file docker-bake.hcl agents
 
   build-agents-ui-image:
     desc: Build the agent UI image

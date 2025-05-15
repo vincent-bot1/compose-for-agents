@@ -6,7 +6,7 @@ group default {
 
 group all {
   targets = [
-    "agents-runner",
+    "agents",
     "agents-ui",
     "gateway",
   ]
@@ -20,7 +20,7 @@ target _base {
   output = ["type=docker"]
 }
 
-target agents-runner {
+target agents {
   inherits = ["_base"]
   context = "agent"
   tags = ["demo/agents"]
