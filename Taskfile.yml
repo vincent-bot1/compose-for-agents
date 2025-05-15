@@ -6,7 +6,7 @@ tasks:
   default:
     cmds:
       - task: up
-
+      
   up:
     preconditions:
       - sh: '[ -n "$OPENAI_API_KEY" ]'
@@ -18,67 +18,39 @@ tasks:
     desc: Stop the demo Compose Stack
     cmd: docker compose down --remove-orphans
 
-  build-compose:
-    desc: Build docker-compose from the source
-    cmds:
-      - cmd: docker buildx build --target=binary-darwin --platform=darwin/arm64 --output type=local,dest=./bin https://github.com/fiam/compose.git
-        platforms: [darwin]
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
-        platforms: [darwin]
-      - cmd: docker buildx build --target=binary-windows --platform=windows/amd64 --output type=local,dest=./bin https://github.com/fiam/compose.git
-        platforms: [windows]
-      - cmd: mkdir -p "{{.USERPROFILE}}/.docker/cli-plugins"
-        platforms: [windows]
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
-        platforms: [windows]
-
-  build-docker-mcpgateway:
-    desc: Build the docker-mcpgateway binary
-    cmds:
-      - cmd: docker buildx bake --file docker-bake.hcl --set='*.platform=darwin/arm64' docker-mcpgateway
-        platforms: [darwin]
-      - cmd: docker buildx bake --file docker-bake.hcl --set='*.platform=windows/amd64' docker-mcpgateway
-        platforms: [windows]
-
-  build-gateway-image:
-    desc: Build the gateway docker image
-    cmd: docker buildx bake --file docker-bake.hcl gateway
-
-  build-agents-runner-image:
-    desc: Build the agent runner image
-    cmd: docker buildx bake --file docker-bake.hcl agents
-
-  build-agents-ui-image:
-    desc: Build the agent UI image
-    cmd: docker buildx bake --file docker-bake.hcl agents-ui
-
-  build-images:
-    desc: Build all docker images
-    cmd: docker buildx bake --file docker-bake.hcl
-
   push-gateway-image:
     desc: Build and push the gateway docker image
     cmd: docker buildx bake --file docker-bake.hcl --sbom="generator=docker/scout-sbom-indexer:1" --provenance=mode=max --set='*.platform=linux/arm64,linux/amd64' --push gateway
 
   build:
     desc: Build all binaries and images
-    deps:
-      - build-images
-      - build-docker-mcpgateway
+    cmds:
+      - cmd: docker buildx bake --file docker-bake.hcl darwin
+        platforms: [darwin]
+      - cmd: docker buildx bake --file docker-bake.hcl windows
+        platforms: [windows]
 
   install-docker-mcpgateway:
-    desc: Install the docker-mcpgateway binary
+    desc: Install the docker-mcpgateway CLI plugin
     cmds:
       - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/"
         platforms: [darwin]
       - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
         platforms: [windows]
-    deps:
-      - build-docker-mcpgateway
+
+  install-docker-compose:
+    desc: Install the docker-compose CLI plugin
+    cmds:
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
+        platforms: [darwin]
+      - cmd: mkdir -p "{{.USERPROFILE}}/.docker/cli-plugins"
+        platforms: [windows]
+      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
+        platforms: [windows]
 
   install:
     desc: Install all binaries
     deps:
-      - build-compose
-      - build # To build images too
+      - build
+      - install-docker-compose
       - install-docker-mcpgateway

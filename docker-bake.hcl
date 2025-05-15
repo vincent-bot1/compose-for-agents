@@ -4,12 +4,27 @@ group default {
   ]
 }
 
-group all {
+group images {
   targets = [
     "agents",
     "agents-ui",
     "gateway",
-    "docker-mcpgateway",
+  ]
+}
+
+group darwin {
+  targets = [
+    "images",
+    "docker-compose-darwin",
+    "docker-mcpgateway-darwin",
+  ]
+}
+
+group windows {
+  targets = [
+    "images",
+    "docker-compose-windows",
+    "docker-mcpgateway-windows",
   ]
 }
 
@@ -42,5 +57,35 @@ target gateway {
 target docker-mcpgateway {
   inherits = ["_base"]
   target = "docker-mcpgateway"
-  output = [ "./bin" ]
+  output = ["./bin"]
+  platforms = [
+    "darwin/arm64",
+  ]
+}
+
+target docker-mcpgateway-darwin {
+  inherits = ["docker-mcpgateway"]
+  platforms = ["darwin/arm64"]
+}
+
+target docker-mcpgateway-windows {
+  inherits = ["docker-mcpgateway"]
+  platforms = ["windows/amd64"]
+}
+
+target docker-compose {
+  context = "https://github.com/fiam/compose.git"
+  output = ["./bin"]
+}
+
+target docker-compose-darwin {
+  inherits = ["docker-compose"]
+  platforms = ["darwin/arm64"]
+  target = "binary-darwin"
+}
+
+target docker-compose-windows {
+  inherits = ["docker-compose"]
+  platforms = ["windows/amd64"]
+  target = "binary-windows"
 }
