@@ -1,17 +1,26 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.24-alpine3.21@sha256:ef18ee7117463ac1055f5a370ed18b8750f01589f13ea0b48642f5792b234044 AS build_gateway
+
+# Build the client image (not used in the main demo)
+FROM golang:1.24-alpine3.21@sha256:ef18ee7117463ac1055f5a370ed18b8750f01589f13ea0b48642f5792b234044 AS build_client
 WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=source=.,target=. \
-    go build -o / ./cmd/client/ ./cmd/agents_gateway/
+    go build -o / ./cmd/client/
 
 FROM scratch AS client
 ENTRYPOINT ["/client"]
-COPY --from=build_gateway /client /
+COPY --from=build_client /client /
+
+# Build the agents_gateway image
+FROM golang:1.24-alpine3.21@sha256:ef18ee7117463ac1055f5a370ed18b8750f01589f13ea0b48642f5792b234044 AS build_agents_gateway
+WORKDIR /app
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=source=.,target=. \
+    go build -o / ./cmd/agents_gateway/
 
 FROM alpine:3.21@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS agents_gateway
 RUN apk add --no-cache docker-cli
 COPY --from=ghcr.io/sigstore/cosign/cosign:v2.5.0 /ko-app/cosign /usr/bin/
 ENTRYPOINT ["/agents_gateway"]
-COPY --from=build_gateway /agents_gateway /
+COPY --from=build_agents_gateway /agents_gateway /
