@@ -23,7 +23,6 @@ func main() {
 	port := flag.Int("port", 8811, "Port to listen on")
 	standalone := flag.Bool("standalone", true, "Are we running in standalone mode?")
 
-	// Parse flags and config
 	flag.Parse()
 	if *standalone && len(*registryYaml) > 0 {
 		log.Fatalln("--registry_yaml is not supported in standalone mode")
