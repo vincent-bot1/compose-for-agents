@@ -26,13 +26,13 @@ COPY --from=build_agents_gateway /agents_gateway /
 # Build the docker-mcpgateway compose provider
 FROM --platform=$BUILDPLATFORM golang:1.24-alpine3.21@sha256:ef18ee7117463ac1055f5a370ed18b8750f01589f13ea0b48642f5792b234044 AS build_docker-mcpgateway
 WORKDIR /app
-ARG TARGETPLATFORM
+ARG TARGET
 RUN --mount=type=cache,target=/root/.cache/go-build,id=docker-mcpgateway \
     --mount=source=.,target=. <<EOD
     set -e
-    if [ "$TARGETPLATFORM" == "darwin/arm64" ]; then
+    if [ "$TARGET" == "darwin" ]; then
         CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o /out/docker-mcpgateway ./cmd/docker-mcpgateway/
-    elif [ "$TARGETPLATFORM" == "windows/amd64" ]; then
+    elif [ "$TARGET" == "windows" ]; then
         CGO_ENABLED=0 GOOGS=windows GOARCH=amd64 go build -o /out/docker-mcpgateway.exe ./cmd/docker-mcpgateway/
     else
         exit 1

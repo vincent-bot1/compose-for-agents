@@ -65,12 +65,16 @@ target docker-mcpgateway {
 
 target docker-mcpgateway-darwin {
   inherits = ["docker-mcpgateway"]
-  platforms = ["darwin/arm64"]
+  args = {
+    TARGET = "darwin"
+  }
 }
 
 target docker-mcpgateway-windows {
   inherits = ["docker-mcpgateway"]
-  platforms = ["windows/amd64"]
+  args = {
+    TARGET = "windows"
+  }
 }
 
 target docker-compose {
