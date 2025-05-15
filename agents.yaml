@@ -35,34 +35,30 @@ agents:
     model: o3
     model_provider: openai
 
-  # summarizer:
-  #   name: Issue Summarizer
-  #   description: An agent that can summarize a list of GitHub issues.
-  #   instructions: |
-  #     Given a list of GitHub issues, summarize them in a concise manner. The summary should include the number of issues,
-  #     their titles, and a brief description of each issue. The summary should be in markdown format.
+  writer:
+    name: Writer
+    description: An agent that can summarize and categorize list of GitHub issues.
+    instructions: |
+      Given a list of GitHub issues, summarize them in a concise manner. The summary should include the number of issues,
+      their titles, and a brief description of each issue. The summary should be in markdown format.
 
-  #     If the list is empty, return "No issues found."
-  #   model: deepseek-r1-distill-llama
+      Additionally, classify the issues into categories such as "bug", "feature request",
+      or "documentation". If you create a Notion page, give me the link to it.
+
+    model: deepseek-r1-distill-llama
 
 teams:
   coordinator:
     name: Coordinator
     mode: coordinate
-    members: [notion, github]
+    members: [notion, github, writer]
     instructions: |
-      When given a GitHub repository, which will look like <owner>/<repo>, ask your teammates to read the open issues in it and then
-      create a Notion page with the current date and a summary of the open issues.
+      When given a GitHub repository, which will look like <owner>/<repo>:
 
-      The Notion page title should follow the format <owner/repo> GitHub Open Issues Summary - <date>
-
-      Make sure to include the issue title, link, description, and all the issue labels.
-
-      Additionally, classify the issues into categories such as "bug", "feature request",
-      or "documentation". If you create a Notion page, give me the link to it.
+      - Ask your team mate to find the issues that are open
+      - Tell the writer the summarize them
+      - Create a Notion page with the current date and an emoji represent the sentiment as title.
 
       Use your team mates to perform all the required tasks, coordinate between them.
     model_provider: openai
-    model: gpt-4o
-    temperature: 0.5
-#    model: qwq
+    model: o3
