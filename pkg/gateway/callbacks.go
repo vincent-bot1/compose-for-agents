@@ -27,7 +27,7 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 				if secretsscan.ContainsSecrets(arguments) {
 					return nil, fmt.Errorf("a secret is being passed to tool %s", tool)
 				}
-				fmt.Printf("  -> No secret found in arguments.\n")
+				fmt.Printf("  > No secret found in arguments.\n")
 			}
 
 			result, err := next(ctx, request)
@@ -47,11 +47,11 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 				if secretsscan.ContainsSecrets(contents) {
 					return nil, fmt.Errorf("a secret is being returned by the tool %s", tool)
 				}
-				fmt.Printf("  -> No secret found in response.\n")
+				fmt.Printf("  > No secret found in response.\n")
 			}
 
 			if logCalls {
-				fmt.Printf("-> Calling tool %s took: %s\n", tool, time.Since(start))
+				fmt.Printf("> Calling tool %s took: %s\n", tool, time.Since(start))
 			}
 
 			return result, nil

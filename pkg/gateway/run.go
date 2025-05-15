@@ -105,7 +105,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 			return fmt.Errorf("pulling docker images: %w", err)
 		}
 
-		log("-> Images pulled in", time.Since(start))
+		log("> Images pulled in", time.Since(start))
 	}
 
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
@@ -117,7 +117,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 			return fmt.Errorf("verifying docker images: %w", err)
 		}
 
-		log("-> Images verified in", time.Since(start))
+		log("> Images verified in", time.Since(start))
 	}
 
 	// List all the available tools.
@@ -127,7 +127,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
-	log("->", len(serverTools), "MCP tools listed in", time.Since(startList))
+	log(">", len(serverTools), "tools listed in", time.Since(startList))
 
 	toolCallbacks := callbacks(g.LogCalls, g.ScanSecrets)
 
