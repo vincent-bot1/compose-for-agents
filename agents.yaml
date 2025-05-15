@@ -17,6 +17,7 @@ agents:
     model: gpt-4.1-mini
     model_provider: openai
     temperature: 0
+
   notion:
     name: Notion Page Creator
     description: An agent that can create a Notion page given a title and its contents
@@ -45,6 +46,8 @@ agents:
       Additionally, classify the issues into categories such as "bug", "feature request",
       or "documentation". If you create a Notion page, give me the link to it.
 
+    # This seems to produce better results, but it takes a very long time
+    # model: gemma3-qat:12B-Q4_K_M
     model: deepseek-r1-distill-llama
 
 teams:
