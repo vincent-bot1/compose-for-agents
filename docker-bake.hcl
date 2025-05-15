@@ -9,6 +9,7 @@ group all {
     "agents",
     "agents-ui",
     "gateway",
+    "docker-mcpgateway",
   ]
 }
 
@@ -36,4 +37,10 @@ target gateway {
   inherits = ["_base"]
   target = "agents_gateway"
   tags = ["docker/agents_gateway"]
+}
+
+target docker-mcpgateway {
+  inherits = ["_base"]
+  target = "docker-mcpgateway"
+  output = [ "./bin" ]
 }

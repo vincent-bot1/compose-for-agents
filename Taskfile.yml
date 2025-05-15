@@ -35,10 +35,10 @@ tasks:
   build-docker-mcpgateway:
     desc: Build the docker-mcpgateway binary
     cmds:
-       - cmd: go build -o bin/docker-mcpgateway ./cmd/docker-mcpgateway
-         platforms: [darwin]
-       - cmd: go build -o bin/docker-mcpgateway.exe ./cmd/docker-mcpgateway
-         platforms: [windows]
+      - cmd: docker buildx bake --file docker-bake.hcl --set='*.platform=darwin/arm64' docker-mcpgateway
+        platforms: [darwin]
+      - cmd: docker buildx bake --file docker-bake.hcl --set='*.platform=windows/amd64' docker-mcpgateway
+        platforms: [windows]
 
   build-gateway-image:
     desc: Build the gateway docker image
