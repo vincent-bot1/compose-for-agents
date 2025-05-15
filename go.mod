@@ -2,7 +2,7 @@ module github.com/docker/compose-agents-demo
 
 go 1.24.0
 
-replace github.com/mark3labs/mcp-go => github.com/dgageot/mcp-go v0.0.0-20250508120730-d67869ffb572
+replace github.com/mark3labs/mcp-go => github.com/dgageot/mcp-go v0.0.0-20250515170329-e87d48cee0c7
 
 require (
 	github.com/Microsoft/go-winio v0.6.2

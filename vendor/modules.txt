@@ -653,7 +653,7 @@ github.com/letsencrypt/boulder/strictyaml
 github.com/mailru/easyjson/buffer
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
-# github.com/mark3labs/mcp-go v0.25.0 => github.com/dgageot/mcp-go v0.0.0-20250508120730-d67869ffb572
+# github.com/mark3labs/mcp-go v0.25.0 => github.com/dgageot/mcp-go v0.0.0-20250515170329-e87d48cee0c7
 ## explicit; go 1.23
 github.com/mark3labs/mcp-go/client
 github.com/mark3labs/mcp-go/client/transport
@@ -1643,4 +1643,4 @@ sigs.k8s.io/structured-merge-diff/v4/value
 ## explicit; go 1.12
 sigs.k8s.io/yaml
 sigs.k8s.io/yaml/goyaml.v2
-# github.com/mark3labs/mcp-go => github.com/dgageot/mcp-go v0.0.0-20250508120730-d67869ffb572
+# github.com/mark3labs/mcp-go => github.com/dgageot/mcp-go v0.0.0-20250515170329-e87d48cee0c7
