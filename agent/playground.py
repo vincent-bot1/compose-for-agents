@@ -42,13 +42,14 @@ def should_stream(model_provider: str, tools: list[Toolkit]) -> Optional[bool]:
     return None
 
 
-def create_model(model_name: str, provider: str) -> OpenAIChat:
+def create_model(model_name: str, provider: str, temperature: float) -> OpenAIChat:
     """Create a model instance based on the model name and provider."""
+    print(f"creating model {model_name} with provider {provider} and temperature {temperature}")
     if provider == DOCKER_MODEL_PROVIDER:
         base_url = os.getenv("LLM_URL")
         if base_url is None:
             base_url = "http://model-runner.docker.internal/engines/llama.cpp/v1"
-        model = OpenAIChat(id="ai/" + model_name, base_url=base_url)
+        model = OpenAIChat(id="ai/" + model_name, base_url=base_url, temperature=temperature)
         model.role_map = {
             "system": "system",
             "user": "user",
@@ -63,7 +64,7 @@ def create_model(model_name: str, provider: str) -> OpenAIChat:
             raise ValueError(
                 "OPENAI_API_KEY environment variable not set for OpenAI model"
             )
-        return OpenAIChat(model_name)
+        return OpenAIChat(model_name, temperature=temperature)
 
     raise ValueError(f"Unknown agent model provider: {provider}")
 
@@ -80,8 +81,9 @@ async def run_server(config) -> None:
         model_name = agent_data.get("model")
         if not model_name:
             raise ValueError(f"Model name not specified for agent {agent_id}")
+        temperature = agent_data.get("temperature", None)
         provider = agent_data.get("model_provider", "docker")
-        model = create_model(model_name, provider)
+        model = create_model(model_name, provider, temperature)
         markdown = agent_data.get("markdown", False)
         tools: list[Toolkit] = []
         tools_list = agent_data.get("tools", [])
@@ -100,7 +102,9 @@ async def run_server(config) -> None:
             instructions=agent_data.get("instructions"),
             tools=tools,  # type: ignore,
             model=model,
+            show_tool_calls=True,
             stream=should_stream(provider, tools),
+            add_datetime_to_instructions=True,
             markdown=markdown,
         )
         agents_by_id[agent_id] = agent
@@ -109,11 +113,12 @@ async def run_server(config) -> None:
             agents.append(agent)
 
     for team_id, team_data in config.get("teams", {}).items():
-        model_name = agent_data.get("model")
+        model_name = team_data.get("model")
         if not model_name:
             raise ValueError(f"Model name not specified for team {team_id}")
-        provider = agent_data.get("model_provider", "docker")
-        model = create_model(model_name, provider)
+        provider = team_data.get("model_provider", "docker")
+        temperature = team_data.get("temperature", None)
+        model = create_model(model_name, provider, temperature)
         team_agents: list[Agent | Team] = []
         for agent_id in team_data.get("members", []):
             try:
@@ -140,7 +145,10 @@ async def run_server(config) -> None:
             instructions=team_data.get("instructions"),
             tools=team_tools,  # type: ignore,
             model=model,
+            # show_members_responses=True,
+            # show_tool_calls=True,
             markdown=markdown,
+            add_datetime_to_instructions=True,
         )
         team.stream = should_stream(provider, team_tools)
         teams_by_id[team_id] = team
