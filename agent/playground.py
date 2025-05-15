@@ -36,7 +36,6 @@ class Team(team.Team):
 
 
 def should_stream(model_provider: str, tools: list[Toolkit]) -> Optional[bool]:
-    return False
     """Returns whether a model with the given provider and tools can stream"""
     if model_provider == DOCKER_MODEL_PROVIDER and len(tools) > 0:
         # DMR doesn't yet support tools with streaming
