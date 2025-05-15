@@ -30,6 +30,12 @@ ln -sf ./bin/docker-compose.exe "%USERPROFILE%/.docker/cli-plugins/"
 ln -sf ./bin/docker-mcpgateway.exe "%USERPROFILE%/.docker/cli-plugins/"
 ```
 
+## Prepare Notion
+
+The Notion Page Creator agent will create the pages under another page
+titled "Updates". Create this page in the Notion workspace and give access
+to the integration (via the ... menu at the top right).
+
 ## Prepare for the run
 
 Add your OpenAI API key to your environment:
