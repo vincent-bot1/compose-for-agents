@@ -26,10 +26,6 @@ class Agent(agent.Agent):
 
 
 class Team(team.Team):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.stream = None
-
     @property
     def is_streamable(self) -> bool:
         if self.stream is not None:
@@ -100,7 +96,8 @@ async def run_server(config) -> None:
         agent = Agent(
             name=agent_data["name"],
             role=agent_data.get("role", ""),
-            description=agent_data.get("description", ""),
+            description=agent_data.get("description"),
+            instructions=agent_data.get("instructions"),
             tools=tools,  # type: ignore,
             model=model,
             stream=should_stream(provider, tools),
@@ -138,8 +135,9 @@ async def run_server(config) -> None:
         team = Team(
             name=team_data.get("name", ""),
             mode=team_data.get("mode", "coordinate"),
-            members=team_agents,
-            instructions=team_data.get("instructions", ""),
+            members=team_agents, # type: ignore
+            description=team_data.get("description"),
+            instructions=team_data.get("instructions"),
             tools=team_tools,  # type: ignore,
             model=model,
             markdown=markdown,
