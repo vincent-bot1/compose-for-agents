@@ -131,11 +131,11 @@ async def run_server(config) -> None:
             except KeyError:
                 raise ValueError(f"Agent {agent_id} not found in agents")
             team_agents.append(agent)
-        markdown = agent_data.get("markdown", False)
+        markdown = team_data.get("markdown", False)
         team_tools: list[Toolkit] = [
 #            ReasoningTools(think=True, analyze=True)
         ]
-        tools_list = agent_data.get("tools", [])
+        tools_list = team_data.get("tools", [])
         if len(tools_list) > 0:
             tool_names = [name.split(":", 1)[1] for name in tools_list]
             t = MCPTools(
