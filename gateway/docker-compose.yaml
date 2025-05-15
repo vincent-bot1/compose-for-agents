@@ -3,7 +3,7 @@ services:
     image: demo/client
     build:
       context: ..
-      target: client_gateway
+      target: client
     command:
       - call
       - get_me
