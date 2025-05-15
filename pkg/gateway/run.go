@@ -99,35 +99,35 @@ func (g *Gateway) Run(ctx context.Context) error {
 	// Pull docker images first.
 	{
 		start := time.Now()
-		log("Pulling images", dockerImages)
+		log("- Pulling images", dockerImages)
 
 		if err := client.PullImages(ctx, dockerImages...); err != nil {
 			return fmt.Errorf("pulling docker images: %w", err)
 		}
 
-		log("Images pulled in", time.Since(start))
+		log("-> Images pulled in", time.Since(start))
 	}
 
 	// Then verify them. (TODO: should we check them, get the digest and pull that digest instead?)
 	if g.VerifySignatures {
 		start := time.Now()
-		log("Verifying images", mcpImages)
+		log("- Verifying images", mcpImages)
 
 		if err := signatures.Verify(ctx, mcpImages); err != nil {
 			return fmt.Errorf("verifying docker images: %w", err)
 		}
 
-		log("Images verified in", time.Since(start))
+		log("-> Images verified in", time.Since(start))
 	}
 
 	// List all the available tools.
 	startList := time.Now()
-	log("Listing MCP tools...")
+	log("- Listing MCP tools...")
 	serverTools, err := g.listTools(ctx, mcpCatalog, registryConfig, serverNames)
 	if err != nil {
 		return fmt.Errorf("listing tools: %w", err)
 	}
-	log(len(serverTools), "MCP tools listed in", time.Since(startList))
+	log("->", len(serverTools), "MCP tools listed in", time.Since(startList))
 
 	toolCallbacks := callbacks(g.LogCalls, g.ScanSecrets)
 
@@ -137,7 +137,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 		return server.NewStdioServer(mcpServer)
 	}
 
-	log("Initialized MCP server in", time.Since(start))
+	log("- Initialized MCP server in", time.Since(start))
 
 	// Start the server
 	if g.Standalone {

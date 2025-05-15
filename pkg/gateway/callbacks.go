@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/docker/compose-agents-demo/pkg/secretsscan"
 	"github.com/mark3labs/mcp-go/mcp"
@@ -13,19 +14,20 @@ import (
 func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 	return func(next server.ToolHandlerFunc) server.ToolHandlerFunc {
 		return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			start := time.Now()
 			tool := request.Params.Name
 			arguments := argumentsToString(request.Params.Arguments)
 
 			if logCalls {
-				fmt.Printf("Calling tool %s with arguments: %s\n", tool, arguments)
+				fmt.Printf("- Calling tool %s with arguments: %s\n", tool, arguments)
 			}
 
 			if scanSecrets {
-				fmt.Printf("Scanning tool call arguments for secrets...\n")
+				fmt.Printf("  - Scanning tool call arguments for secrets...\n")
 				if secretsscan.ContainsSecrets(arguments) {
 					return nil, fmt.Errorf("a secret is being passed to tool %s", tool)
 				}
-				fmt.Printf("No secret found in arguments.\n")
+				fmt.Printf("  -> No secret found in arguments.\n")
 			}
 
 			result, err := next(ctx, request)
@@ -34,7 +36,7 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 			}
 
 			if scanSecrets {
-				fmt.Printf("Scanning tool call response for secrets...\n")
+				fmt.Printf("  - Scanning tool call response for secrets...\n")
 				var contents string
 				for _, content := range result.Content {
 					if text, ok := content.(*mcp.TextContent); ok {
@@ -45,7 +47,11 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 				if secretsscan.ContainsSecrets(contents) {
 					return nil, fmt.Errorf("a secret is being returned by the tool %s", tool)
 				}
-				fmt.Printf("No secret found in response.\n")
+				fmt.Printf("  -> No secret found in response.\n")
+			}
+
+			if logCalls {
+				fmt.Printf("-> Calling tool %s took: %s\n", tool, time.Since(start))
 			}
 
 			return result, nil

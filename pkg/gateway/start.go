@@ -20,9 +20,9 @@ func (g *Gateway) startMCPClient(ctx context.Context, server catalog.Server, ser
 	}
 
 	if len(command) == 0 {
-		log("Starting server", image, "with args", args)
+		log("- Starting server", image, "with args", args)
 	} else {
-		log("Starting server", image, "with args", args, "and command", command)
+		log("- Starting server", image, "with args", args, "and command", command)
 	}
 
 	client := mcpclient.NewClientArgs(image, false, env, args, command)
