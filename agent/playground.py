@@ -10,6 +10,7 @@ from agno import agent, team
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
 from agno.tools.mcp import MCPTools, Toolkit
+from agno.tools.reasoning import ReasoningTools
 from fastapi.middleware.cors import CORSMiddleware
 
 # Allow nested event loops
@@ -28,12 +29,14 @@ class Agent(agent.Agent):
 class Team(team.Team):
     @property
     def is_streamable(self) -> bool:
-        if self.stream is not None:
-            return self.stream
+        stream = getattr(self, "stream")
+        if stream is not None:
+            return stream
         return super().is_streamable
 
 
 def should_stream(model_provider: str, tools: list[Toolkit]) -> Optional[bool]:
+    return False
     """Returns whether a model with the given provider and tools can stream"""
     if model_provider == DOCKER_MODEL_PROVIDER and len(tools) > 0:
         # DMR doesn't yet support tools with streaming
@@ -85,7 +88,9 @@ async def run_server(config) -> None:
         provider = agent_data.get("model_provider", "docker")
         model = create_model(model_name, provider, temperature)
         markdown = agent_data.get("markdown", False)
-        tools: list[Toolkit] = []
+        tools: list[Toolkit] = [
+#            ReasoningTools(think=True, analyze=True)
+        ]
         tools_list = agent_data.get("tools", [])
         if len(tools_list) > 0:
             tool_names = [name.split(":", 1)[1] for name in tools_list]
@@ -127,7 +132,9 @@ async def run_server(config) -> None:
                 raise ValueError(f"Agent {agent_id} not found in agents")
             team_agents.append(agent)
         markdown = agent_data.get("markdown", False)
-        team_tools: list[Toolkit] = []
+        team_tools: list[Toolkit] = [
+#            ReasoningTools(think=True, analyze=True)
+        ]
         tools_list = agent_data.get("tools", [])
         if len(tools_list) > 0:
             tool_names = [name.split(":", 1)[1] for name in tools_list]

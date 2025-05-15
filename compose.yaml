@@ -3,10 +3,16 @@ services:
     provider:
       type: mcpgateway
       options:
-        tools: get_me, mcp/duckduckgo:*, SQLite:list-tables, notion:*
+        tools: get_me, list_issues, mcp/duckduckgo:*, SQLite:list-tables, notion:*
         log_calls: yes
         scan_secrets: yes
         verify_signatures: yes
+
+  llm:
+    provider:
+      type: model
+      options:
+        model: ai/gemma3
 
   agents:
     image: demo/agents
@@ -18,6 +24,7 @@ services:
       - host.docker.internal:host-gateway
     volumes:
       - ./agents.yaml:/agents.yaml
+#      - ./agents_with_tools.yaml:/agents.yaml
     depends_on:
       - mcpgateway
       - llm
@@ -30,9 +37,3 @@ services:
       - AGENTS_URL=http://localhost:7777
     depends_on:
       - agents
-
-  llm:
-    provider:
-      type: model
-      options:
-        model: ai/gemma3

@@ -1,35 +1,68 @@
 agents:
-  writer:
-    name: Writer
-    role: Expert at writing clear, engaging content
-    model: gemma3 # uses Docker Model Runner
-    chat: false # Defaults to true?
-
-  researcher:
-    name: Researcher
-    role: Expert at finding information
-    tools:
-      - mcp/duckduckgo:search
-      - mcp/duckduckgo:fetch_content
-      - mcp/github-mcp-server:get_me
-    model_provider: openai
-    model: gpt-4o
-    chat: false # Defaults to true?
 
   github:
-    name: Github Agent
-    description: A specialized agent for GitHub tasks
+    name: Github Issue Retriever
+    description: An agent that can retrieve GitHub issues given a repository like <owner>/<name>
+    instructions: |
+      Given a GitHub repository in the form of <owner>/<name>, retrieve the list of open issues including
+      all their attributes like title, number, link, body, labels, and number of comments.
+      Make sure to not confuse issues with pull requests, omit pull requests entirely.
+      When listing issues, call your tools no more than once.
+
+      Return as many issues as you can with a single call to the tool. Do not call the tool with different labels.
+
+      If you don't know the value for a parameter when calling a tool, just omit it.
     tools:
-      - mcp/github-mcp-server:get_me
+      - mcp/github-mcp-server:list_issues
+    model: gpt-4.1-mini
     model_provider: openai
-    model: gpt-4o
+    temperature: 0
+  notion:
+    name: Notion Page Creator
+    description: An agent that can create a Notion page given a title and its contents
+    instructions: |
+      When asked to create a Notion page, always create it under the "Updates" page.
+
+      - Use the search to find the "Updates" page_id.
+      - You can omit the values for direction and start_cursor when looking for that page.
+      - When creating the page, the "children" argument should be an array of block objects.
+        For example, this is how it looks like for a page with a single block of text
+        `[{"paragraph":{"rich_text":[{"text":{"content":"bar"},"type":"text"}]},"type":"paragraph"}]`
+
+    tools:
+      - mcp/notion:API-post-page
+      - mcp/notion:API-post-search
+    model: o3
+    model_provider: openai
+
+  # summarizer:
+  #   name: Issue Summarizer
+  #   description: An agent that can summarize a list of GitHub issues.
+  #   instructions: |
+  #     Given a list of GitHub issues, summarize them in a concise manner. The summary should include the number of issues,
+  #     their titles, and a brief description of each issue. The summary should be in markdown format.
+
+  #     If the list is empty, return "No issues found."
+  #   model: deepseek-r1-distill-llama
 
 teams:
-  content_team:
-    name: Content Team
+  coordinator:
+    name: Coordinator
     mode: coordinate
-    members: [researcher, writer]
-    markdown: true
-    instructions: You are a team of researchers and writers that work together to create high-quality content. Use your tools to find information before writing content.
+    members: [notion, github]
+    instructions: |
+      When given a GitHub repository, which will look like <owner>/<repo>, ask your teammates to read the open issues in it and then
+      create a Notion page with the current date and a summary of the open issues.
+
+      The Notion page title should follow the format <owner/repo> GitHub Open Issues Summary - <date>
+
+      Make sure to include the issue title, link, description, and all the issue labels.
+
+      Additionally, classify the issues into categories such as "bug", "feature request",
+      or "documentation". If you create a Notion page, give me the link to it.
+
+      Use your team mates to perform all the required tasks, coordinate between them.
     model_provider: openai
     model: gpt-4o
+    temperature: 0.5
+#    model: qwq
