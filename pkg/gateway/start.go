@@ -1,14 +1,14 @@
-package server
+package gateway
 
 import (
 	"context"
 	"fmt"
 	"os/exec"
 
-	mcpclient "github.com/docker/compose-agents-demo/cmd/agents_gateway/mcp"
 	"github.com/docker/compose-agents-demo/pkg/catalog"
 	"github.com/docker/compose-agents-demo/pkg/docker"
 	"github.com/docker/compose-agents-demo/pkg/eval"
+	mcpclient "github.com/docker/compose-agents-demo/pkg/mcp"
 )
 
 func (g *Gateway) startMCPClient(ctx context.Context, server catalog.Server, serverConfig map[string]any) (*mcpclient.Client, error) {

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/docker/compose-agents-demo/cmd/agents_gateway/server"
+	"github.com/docker/compose-agents-demo/pkg/gateway"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 		log.Fatalln("--registry_yaml is not supported in standalone mode")
 	}
 
-	gateway := server.Gateway{
+	gateway := gateway.Gateway{
 		RegistryYaml:     *registryYaml,
 		ToolsNames:       parseCommaSeparated(*tools),
 		LogCalls:         *logCalls,

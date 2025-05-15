@@ -1,11 +1,11 @@
-package server
+package gateway
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 
-	"github.com/docker/compose-agents-demo/cmd/agents_gateway/secrets"
+	"github.com/docker/compose-agents-demo/pkg/secretsscan"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -22,7 +22,7 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 
 			if scanSecrets {
 				fmt.Printf("Scanning tool call arguments for secrets...\n")
-				if secrets.ContainsSecrets(arguments) {
+				if secretsscan.ContainsSecrets(arguments) {
 					return nil, fmt.Errorf("a secret is being passed to tool %s", tool)
 				}
 				fmt.Printf("No secret found in arguments.\n")
@@ -42,7 +42,7 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 					}
 				}
 
-				if secrets.ContainsSecrets(contents) {
+				if secretsscan.ContainsSecrets(contents) {
 					return nil, fmt.Errorf("a secret is being returned by the tool %s", tool)
 				}
 				fmt.Printf("No secret found in response.\n")
