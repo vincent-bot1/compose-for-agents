@@ -24,7 +24,6 @@ services:
       - host.docker.internal:host-gateway
     volumes:
       - ./agents.yaml:/agents.yaml
-#      - ./agents_with_tools.yaml:/agents.yaml
     depends_on:
       - mcpgateway
       - llm
