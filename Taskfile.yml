@@ -35,9 +35,7 @@ tasks:
     cmds:
       - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/"
         platforms: [darwin]
-      - cmd: mkdir "{{.USERPROFILE}}/.docker/cli-plugins"
-        platforms: [windows]
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
+      - cmd: powershell -Command "New-Item -ItemType SymbolicLink -Path '{{.USERPROFILE}}/.docker/cli-plugins/docker-mcpgateway.exe' -Target '{{.TASKFILE_DIR}}/bin/docker-mcpgateway.exe'" 
         platforms: [windows]
 
   install-docker-compose:
@@ -45,9 +43,7 @@ tasks:
     cmds:
       - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
         platforms: [darwin]
-      - cmd: mkdir "{{.USERPROFILE}}/.docker/cli-plugins"
-        platforms: [windows]
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose.exe" "{{.USERPROFILE}}/.docker/cli-plugins/"
+      - cmd: powershell -Command "New-Item -ItemType SymbolicLink -Path '{{.USERPROFILE}}/.docker/cli-plugins/docker-compose.exe' -Target '{{.TASKFILE_DIR}}/bin/docker-compose.exe'" 
         platforms: [windows]
 
   install:
