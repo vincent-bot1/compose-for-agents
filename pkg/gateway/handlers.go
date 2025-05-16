@@ -33,6 +33,8 @@ func mcpToolHandler(tool catalog.Tool) server.ToolHandlerFunc {
 		args = append(args, tool.Container.Image)
 		args = append(args, eval.Expressions(tool.Container.Command, request.Params.Arguments)...)
 
+		log("- Running container", tool.Container.Image, "with args", args)
+
 		cmd := exec.CommandContext(ctx, "docker", args...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {

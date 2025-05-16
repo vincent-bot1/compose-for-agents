@@ -30,3 +30,10 @@ func TestEvaluateUnknown(t *testing.T) {
 func TestAtlassian(t *testing.T) {
 	assert.Equal(t, "URL", Expression("{{atlassian.jira.url}}", map[string]any{"atlassian": map[string]any{"jira": map[string]any{"url": "URL", "username": "USERNAME"}}}))
 }
+
+func TestVolumes(t *testing.T) {
+	assert.Equal(t, "/var/run/docker.sock:/var/run/docker.sock", Expression("/var/run/docker.sock:/var/run/docker.sock", nil))
+	assert.Equal(t, []string{"/var/run/docker.sock:/var/run/docker.sock"}, Expressions([]string{"/var/run/docker.sock:/var/run/docker.sock"}, nil))
+	assert.Equal(t, []string{"path1:path1", "path2:path2"}, Expressions([]string{"{{paths|volume|into}}"}, map[string]any{"paths": []string{"path1", "path2"}}))
+	assert.Equal(t, []string{"path1", "path2"}, Expressions([]string{"{{paths|volume-targe|into}}"}, map[string]any{"paths": []string{"path1", "path2"}}))
+}
