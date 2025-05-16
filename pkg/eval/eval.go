@@ -18,25 +18,29 @@ func Expression(expression string, config map[string]any) any {
 	}
 
 	for f := range strings.SplitSeq(rest, "|") {
-		f := strings.TrimSpace(f)
-
-		switch f {
+		switch strings.TrimSpace(f) {
 		case "volume":
-			v := reflect.ValueOf(value)
-			if v.Kind() == reflect.Slice {
-				list := make([]string, v.Len())
-				for i := range len(list) {
-					list[i] = fmt.Sprintf("%[1]v:%[1]v", v.Index(i).Interface())
-				}
-				value = list
-			} else {
-				value = fmt.Sprintf("%[1]s:%[1]s", v.String())
-			}
-		case "safe", "into", "volume-target":
+			value = evaluate(value, volume)
+		case "volume-target":
+			value = evaluate(value, volumeTarget)
+		case "safe", "into":
 		}
 	}
 
 	return value
+}
+
+func evaluate(value any, fn func(v any) string) any {
+	v := reflect.ValueOf(value)
+	if v.Kind() == reflect.Slice {
+		list := make([]string, v.Len())
+		for i := range len(list) {
+			list[i] = fn(v.Index(i).Interface())
+		}
+		return list
+	}
+
+	return fn(v)
 }
 
 func Expressions(expressions []string, arguments map[string]any) []string {

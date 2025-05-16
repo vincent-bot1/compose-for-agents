@@ -36,4 +36,17 @@ func TestVolumes(t *testing.T) {
 	assert.Equal(t, []string{"/var/run/docker.sock:/var/run/docker.sock"}, Expressions([]string{"/var/run/docker.sock:/var/run/docker.sock"}, nil))
 	assert.Equal(t, []string{"path1:path1", "path2:path2"}, Expressions([]string{"{{paths|volume|into}}"}, map[string]any{"paths": []string{"path1", "path2"}}))
 	assert.Equal(t, []string{"path1", "path2"}, Expressions([]string{"{{paths|volume-targe|into}}"}, map[string]any{"paths": []string{"path1", "path2"}}))
+
+	assert.Equal(t, "v:v", volume("v"))
+	assert.Equal(t, `C:\test\folder:/C/test/folder`, volume(`C:\test\folder`))
+	assert.Equal(t, []string{"v:v", "w:w"}, evaluate([]string{"v", "w"}, volume))
+}
+
+func TestVolumeTarget(t *testing.T) {
+	assert.Equal(t, "path", Expression("{{paths|volume-target}}", map[string]any{"paths": "path"}))
+	assert.Equal(t, "/var/run/docker.sock", Expression("{{paths|volume-target}}", map[string]any{"paths": "/var/run/docker.sock"}))
+	assert.Equal(t, "/file", Expression("{{paths|volume-target}}", map[string]any{"paths": "/file"}))
+
+	assert.Equal(t, `/C/file`, Expression("{{paths|volume-target}}", map[string]any{"paths": `C:\file`}))
+	assert.Equal(t, `/D/parent/file`, Expression("{{paths|volume-target}}", map[string]any{"paths": `D:\parent\file`}))
 }
