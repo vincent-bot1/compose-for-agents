@@ -56,13 +56,13 @@ target gateway {
 
 target docker-mcpgateway-darwin {
   inherits = ["_base"]
-  target = "build_docker-mcpgateway-darwin"
+  target = "docker-mcpgateway-darwin"
   output = ["./bin"]
 }
 
 target docker-mcpgateway-windows {
   inherits = ["_base"]
-  target = "build_docker-mcpgateway-windows"
+  target = "docker-mcpgateway-windows"
   output = ["./bin"]
 }
 
