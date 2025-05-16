@@ -1,16 +1,49 @@
 # Compose agents demo
 
-## Requirements:
+## Prerequisites
 
-+ Install Docker Desktop `4.41` or a recent `4.42 nightly`.
-+ Install the MCP Toolkit extension (version `1.0.0` on DD `4.41` or version `1.0.1` on `4.42`).
-+ Configure 3 or 4 MCP Servers in the extension
-  + `GitHub Official` <-- needs a token
-  + `DuckDuckGo`
-  + `SQLite`
-  + (`Notion` <-- needs a token)
++ Install Docker Desktop `4.41` or a recent `4.42 nightly`
++ If using 4.41, install the MCP Toolkit extension (version `1.0.0`)
++ If using a 4.42 nightly, use the MCP Toolkit in the left nav
 
-## Build images and docker CLI plugins
+## OpenAI API Key
+
+1. Generate a key by navigating to https://platform.openai.com/api-keys
+1. Create a `.env` file and add your OpenAI API key to it:
+```console
+OPENAI_API_KEY=<KEY>
+```
+
+## Configure MCP Servers
+
++ Configure the following MCP Servers in the Docker Desktop extension (Desktop 4.41) or MCP Toolkit left nav (Desktop 4.42 nightly):
+  + Notion
+  + GitHub Official
+
+### Notion
+
+1. Create a new Notion account using a non-company email address
+1. Create a new integration by navigating to https://www.notion.so/my-integrations
+1. Follow the creation flow enabling write access
+1. Add the Notion MCP Server in Docker Desktop
+![Notion MCP extension](./img/notion-mcp-server.png)
+1. Copy the integration token into Desktop's MCP server configuration
+![Notion token](./img/notion-token.png)
+![Notion MCP config](./img/notion-mcp-config.png)
+1. Create a page named "Updates" in your workspace
+1. Give your integration access to the page by clicking on the ... menu on the top right of the updates page, clicking "Connections" and selecting it
+![Notion page perms](./img/notion-page-perms.png)
+
+### GitHub Official
+
+1. Create a fine grained personal access token: https://github.com/settings/personal-access-tokens
+1. Give it read access to public repos
+![GitHub token perms](./img/github-perms.png)
+1. Add the "GitHub Official" MCP server
+![GitHub MCP server](./img/github-mcp-server.png)
+1. Add your token to it
+
+## Build Images and Docker CLI Plugins
 
 Either with `task install` or manually:
 
@@ -29,32 +62,18 @@ Copy-Item -Path ./bin/docker-compose.exe -Destination "$env:USERPROFILE\.docker\
 Copy-Item -Path ./bin/docker-mcpgateway.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"
 ```
 
-## Prepare Notion
+## And Run!
 
-The Notion Page Creator agent will create the pages under another page
-titled "Updates". Create this page in the Notion workspace and give access
-to the integration (via the ... menu at the top right).
-
-## Prepare for the run
-
-Add your OpenAI API key to your environment:
+Start the application:
 
 ```console
-export OPENAI_API_KEY=<KEY>
-```
-
-## And run!
-
-Start the compose file:
-
-```console
-docker compose up
+docker compose up --build
 docker compose down --remove-orphans
 ```
 
 **You can then see the agent UI on http://localhost:3000**
 
-As an alternative, you can also use`task`
+As an alternative, you can also use `task`
 
 ```console
 task up
