@@ -12,7 +12,7 @@ services:
     provider:
       type: model
       options:
-        model: ai/gemma3
+        model: ai/deepseek-r1-distill-llama
 
   agents:
     image: demo/agents
