@@ -70,9 +70,8 @@ func (g *Gateway) argsAndEnv(ctx context.Context, serverSpec catalog.Server, ser
 		env = append(env, fmt.Sprintf("%s=%s", name, string(out)))
 	}
 
-	// TODO(dga): handle {{|volume}} and {{|volume-target}} mounts
 	for _, mount := range eval.Expressions(serverSpec.Run.Volumes, serverConfig) {
-		args = append(args, "-v", mount+":"+mount)
+		args = append(args, "-v", mount)
 	}
 
 	return args, env, nil
