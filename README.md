@@ -25,8 +25,8 @@ On Windows:
 
 ```console
 docker buildx bake --file docker-bake.hcl windows
-cp .\bin\docker-compose.exe "~/.docker/cli-plugins"
-cp .\bin\docker-mcpgateway.exe "~/.docker/cli-plugins"
+Copy-Item -Path .\bin\docker-compose.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"
+Copy-Item -Path .\bin\docker-mcpgateway.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"
 ```
 
 ## Prepare Notion
