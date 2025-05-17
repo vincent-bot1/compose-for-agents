@@ -18,7 +18,7 @@ On Mac:
 
 ```console
 docker buildx bake --file docker-bake.hcl darwin
-ln -sf ./bin/docker-compose ./bin/docker-mcpgateway ~/.docker/cli-plugins/
+ln -sf $(pwd)/bin/docker-compose $(pwd)/bin/docker-mcpgateway ~/.docker/cli-plugins/
 ```
 
 On Windows:
