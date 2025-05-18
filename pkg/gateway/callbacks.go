@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	responses "github.com/docker/compose-agents-demo/pkg/mcp"
 	"github.com/docker/compose-agents-demo/pkg/secretsscan"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -49,7 +50,8 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 				}
 
 				if secretsscan.ContainsSecrets(contents) {
-					return nil, fmt.Errorf("a secret is being returned by the %s tool", tool)
+					return responses.ToolError(fmt.Sprintf("a secret is being returned by the %s tool", tool)), nil
+					// return nil, fmt.Errorf("a secret is being returned by the %s tool", tool)
 				}
 				fmt.Printf("  > No secret found in response.\n")
 			}
