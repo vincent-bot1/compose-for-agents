@@ -50,6 +50,17 @@ agents:
     # model: gemma3-qat:12B-Q4_K_M
     model: deepseek-r1-distill-llama
 
+  githubcontentreader:
+    name: GitHub Content Reader
+    instructions: |
+      Fetch the content of a GitHub file using the url with the format
+        `https://raw.githubusercontent.com/<owner>/<repo>/refs/heads/main/<path>`
+      Then summarize the content
+    tools:
+      - mcp/fetch:fetch
+    model: o3
+    model_provider: openai
+
 teams:
   coordinator:
     name: Coordinator
@@ -70,5 +81,13 @@ teams:
       even if it is imperfect. If it needs correction, do it yourself.
 
       Use your team mates to perform all the required tasks, coordinate between them.
+    model_provider: openai
+    model: o3
+  githubteam:
+    name: GitHub Team
+    mode: coordinate
+    members: [githubcontentreader]
+    instructions: |
+      When given a github repository and a path to a file, fetch the content and summarize it.
     model_provider: openai
     model: o3
