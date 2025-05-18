@@ -37,15 +37,19 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 
 			if scanSecrets {
 				fmt.Printf("  - Scanning tool call response for secrets...\n")
+
 				var contents string
 				for _, content := range result.Content {
-					if text, ok := content.(*mcp.TextContent); ok {
-						contents += text.Text
+					switch c := content.(type) {
+					case mcp.TextContent:
+						contents += c.Text
+					case *mcp.TextContent:
+						contents += c.Text
 					}
 				}
 
 				if secretsscan.ContainsSecrets(contents) {
-					return nil, fmt.Errorf("a secret is being returned by the tool %s", tool)
+					return nil, fmt.Errorf("a secret is being returned by the %s tool", tool)
 				}
 				fmt.Printf("  > No secret found in response.\n")
 			}
