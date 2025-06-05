@@ -39,7 +39,7 @@ def should_stream(model_provider: str, tools: list[Toolkit]) -> Optional[bool]:
     """Returns whether a model with the given provider and tools can stream"""
     if model_provider == DOCKER_MODEL_PROVIDER and len(tools) > 0:
         # DMR doesn't yet support tools with streaming
-        return False
+        return True
     # Let the model/options decide
     return None
 
@@ -51,7 +51,7 @@ def create_model(model_name: str, provider: str, temperature: float) -> OpenAICh
         base_url = os.getenv("LLM_URL")
         if base_url is None:
             base_url = "http://model-runner.docker.internal/engines/llama.cpp/v1"
-        model = OpenAIChat(id="ai/" + model_name, base_url=base_url, temperature=temperature)
+        model = OpenAIChat(id=model_name, base_url=base_url, temperature=temperature)
         model.role_map = {
             "system": "system",
             "user": "user",

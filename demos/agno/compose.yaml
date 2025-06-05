@@ -12,10 +12,12 @@ services:
     provider:
       type: model
       options:
-        model: ai/deepseek-r1-distill-llama
+        model: olegselajev241/qwen3:14B-Q6_K
 
   agents:
     image: demo/agents
+    build:
+      context: agent
     ports:
       - "7777:7777"
     environment:
@@ -30,6 +32,8 @@ services:
 
   agents-ui:
     image: demo/ui
+    build:
+      context: agent-ui
     ports:
       - "3000:3000"
     environment:

@@ -2,21 +2,14 @@ version: "3"
 
 dotenv: ['.env']
 
+includes:
+  agno: demos/agno/Taskfile.yml
+
 tasks:
   default:
     cmds:
-      - task: up
+      - task: build
       
-  agno-up:
-    preconditions:
-      - sh: '[ -n "$OPENAI_API_KEY" ]'
-        msg: "OPENAI_API_KEY must be set and non-empty"
-    desc: Start the Agno demo Compose Stack
-    cmd: docker compose -f demos/agno/compose.yaml up --build
-
-  agno-down:
-    desc: Stop the Agno demo Compose Stack
-    cmd: docker compose -f  demos/agno/compose.yaml down --remove-orphans
 
   push-gateway-image:
     desc: Build and push the gateway docker image
