@@ -36,16 +36,30 @@ tasks:
         fi
 
   test:
-    desc: Test the Writer agent with a simple message (always detached)
+    desc: Run all agent tests
     preconditions:
       - sh: '[ -n "$OPENAI_API_KEY" ]'
         msg: "OPENAI_API_KEY must be set and non-empty"
+    cmds:
+      - task: test-writer-agent
+      - task: test-github-issue-retriever-agent
+
+  test-writer-agent:
+    desc: Test the Writer agent with a simple message
     deps:
       - task: up
         vars:
           TEST_MODE: "true"
     cmds:
-      - defer: task agno:down
+      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+      - ./demos/agno/test-writer-agent.sh
+
+  test-github-issue-retriever-agent:
+    desc: Test the Github Issue Retriever agent
+    deps:
+      - task: up
         vars:
           TEST_MODE: "true"
-      - ./demos/agno/test-writer-agent.sh
+    cmds:
+      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+      - ./demos/agno/test-github-issue-retriever-agent.sh
