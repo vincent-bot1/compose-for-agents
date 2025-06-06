@@ -93,8 +93,26 @@ async def run_server(config) -> None:
         tools_list = agent_data.get("tools", [])
         if len(tools_list) > 0:
             tool_names = [name.split(":", 1)[1] for name in tools_list]
+
+            # Always use socat, but the endpoint can be different (mock vs real gateway)
+            endpoint = os.environ['MCPGATEWAY_ENDPOINT']
+            print(f"DEBUG: Connecting to MCP gateway at {endpoint}")
+
+            # Test TCP connection first
+            import socket
+            try:
+                host, port = endpoint.split(':')
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(5)
+                sock.connect((host, int(port)))
+                sock.close()
+                print(f"DEBUG: TCP connection to {endpoint} successful")
+            except Exception as e:
+                print(f"ERROR: TCP connection to {endpoint} failed: {e}")
+                raise
+
             t = MCPTools(
-                command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}",
+                command=f"socat STDIO TCP:{endpoint}",
                 include_tools=tool_names,
             )
             mcp_tools = await t.__aenter__()
@@ -138,8 +156,13 @@ async def run_server(config) -> None:
         tools_list = team_data.get("tools", [])
         if len(tools_list) > 0:
             tool_names = [name.split(":", 1)[1] for name in tools_list]
+
+            # Always use socat, but the endpoint can be different (mock vs real gateway)
+            endpoint = os.environ['MCPGATEWAY_ENDPOINT']
+            print(f"DEBUG: Team connecting to MCP gateway at {endpoint}")
+
             t = MCPTools(
-                command=f"socat STDIO TCP:{os.environ['MCPGATEWAY_ENDPOINT']}",
+                command=f"socat STDIO TCP:{endpoint}",
                 include_tools=tool_names,
             )
             mcp_tools = await t.__aenter__()

@@ -1,0 +1,14 @@
+{
+  "tool": "fetch",
+  "method": "fetch",
+  "response": {
+    "success": true,
+    "url": "https://raw.githubusercontent.com/example/repo/refs/heads/main/README.md",
+    "status": 200,
+    "headers": {
+      "content-type": "text/plain; charset=utf-8",
+      "content-length": "1234"
+    },
+    "content": "# Example Repository\n\nThis is a sample repository for testing purposes.\n\n## Features\n\n- Feature 1: Basic functionality\n- Feature 2: Advanced options\n- Feature 3: Integration capabilities\n\n## Installation\n\n```bash\nnpm install example-repo\n```\n\n## Usage\n\n```javascript\nconst example = require('example-repo');\nexample.run();\n```\n\n## Contributing\n\nPlease read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.\n\n## License\n\nThis project is licensed under the MIT License - see the LICENSE file for details."
+  }
+}

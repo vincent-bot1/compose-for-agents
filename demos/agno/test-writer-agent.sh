@@ -75,4 +75,4 @@ echo ""
 echo "Agent response:"
 echo "$CONTENT"
 echo ""
-echo "🎉 Test completed successfully!
+echo "🎉 Test completed successfully!"

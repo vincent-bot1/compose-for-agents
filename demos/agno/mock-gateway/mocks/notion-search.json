@@ -1,0 +1,60 @@
+{
+  "tool": "notion",
+  "method": "API-post-search",
+  "response": {
+    "object": "list",
+    "results": [
+      {
+        "object": "page",
+        "id": "12345678-1234-1234-1234-123456789abc",
+        "created_time": "2024-01-01T00:00:00.000Z",
+        "last_edited_time": "2024-01-15T10:30:00.000Z",
+        "created_by": {
+          "object": "user",
+          "id": "user-123"
+        },
+        "last_edited_by": {
+          "object": "user",
+          "id": "user-123"
+        },
+        "cover": null,
+        "icon": null,
+        "parent": {
+          "type": "workspace",
+          "workspace": true
+        },
+        "archived": false,
+        "properties": {
+          "title": {
+            "id": "title",
+            "type": "title",
+            "title": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Updates",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Updates",
+                "href": null
+              }
+            ]
+          }
+        },
+        "url": "https://www.notion.so/Updates-12345678123412341234123456789abc"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false,
+    "type": "page_or_database",
+    "page_or_database": {}
+  }
+}
