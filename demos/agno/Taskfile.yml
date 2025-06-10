@@ -41,6 +41,28 @@ tasks:
       - sh: '[ -n "$OPENAI_API_KEY" ]'
         msg: "OPENAI_API_KEY must be set and non-empty"
     cmds:
+      - task: test-go
+      - task: test-shell
+
+  test-go:
+    desc: Run Go tests
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ]'
+        msg: "OPENAI_API_KEY must be set and non-empty"
+    deps:
+      - task: up
+        vars:
+          TEST_MODE: "true"
+    cmds:
+      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+      - cd demos/agno/tests && go test -v ./...
+
+  test-shell:
+    desc: Run shell-based tests
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ]'
+        msg: "OPENAI_API_KEY must be set and non-empty"
+    cmds:
       - task: test-writer-agent
       - task: test-github-issue-retriever-agent
 

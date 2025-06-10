@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/docker/compose-agents-demo/pkg/secretsscan"
@@ -52,6 +53,10 @@ func callbacks(logCalls, scanSecrets bool) server.ToolHandlerMiddleware {
 					return nil, fmt.Errorf("a secret is being returned by the %s tool", tool)
 				}
 				fmt.Printf("  > No secret found in response.\n")
+				if logCalls {
+					fmt.Printf("  > Writing tool call response to file...\n")
+					os.WriteFile("tool-content.txt", []byte(contents), 0644)
+				}
 			}
 
 			if logCalls {
