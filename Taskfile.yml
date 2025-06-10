@@ -5,43 +5,4 @@ dotenv: ['.env']
 includes:
   agno: demos/agno/Taskfile.yml
 
-tasks:
-  default:
-    cmds:
-      - task: build
-      
 
-  push-gateway-image:
-    desc: Build and push the gateway docker image
-    cmd: docker buildx bake --file docker-bake.hcl --sbom="generator=docker/scout-sbom-indexer:1" --provenance=mode=max --set='*.platform=linux/arm64,linux/amd64' --push gateway
-
-  build:
-    desc: Build all binaries and images
-    cmds:
-      - cmd: docker buildx bake --file docker-bake.hcl darwin
-        platforms: [darwin]
-      - cmd: docker buildx bake --file docker-bake.hcl windows
-        platforms: [windows]
-
-  install-docker-mcpgateway:
-    desc: Install the docker-mcpgateway CLI plugin
-    cmds:
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-mcpgateway" "{{.HOME}}/.docker/cli-plugins/"
-        platforms: [darwin]
-      - cmd: powershell -Command 'Copy-Item -Path ./bin/docker-mcpgateway.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"'
-        platforms: [windows]
-
-  install-docker-compose:
-    desc: Install the docker-compose CLI plugin
-    cmds:
-      - cmd: ln -sf "{{.TASKFILE_DIR}}/bin/docker-compose" "{{.HOME}}/.docker/cli-plugins/"
-        platforms: [darwin]
-      - cmd: powershell -Command 'Copy-Item -Path ./bin/docker-compose.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"'
-        platforms: [windows]
-
-  install:
-    desc: Install all binaries
-    deps:
-      - build
-      - install-docker-compose
-      - install-docker-mcpgateway
