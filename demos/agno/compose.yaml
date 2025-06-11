@@ -1,13 +1,4 @@
 services:
-  # mcpgateway:
-  #   provider:
-  #     type: mcpgateway
-  #     options:
-  #       tools: get_me, list_issues, mcp/duckduckgo:*, SQLite:list-tables, notion:*, fetch
-  #       log_calls: yes
-  #       scan_secrets: yes
-  #       verify_signatures: yes
-
   mcp-gateway:
     image: docker/agents_gateway:v2
     ports:
@@ -17,18 +8,21 @@ services:
       - --block-secrets=true
       - --log-calls=true
       - --verify-signatures=true
-      - --secrets=/.env
+      - --secrets=/run/secrets/mcp_secret
       - --transport=stdio
       - --verbose
       - --tools=*
       - --servers=github-official
+      - --servers=notion
+      - --servers=fetch
       - --catalog=http://desktop.docker.com/mcp/catalog/v2/catalog.yaml
       - --config=/.config.yaml
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - .env:/.env
       - ~/.docker/mcp/config.yaml:/.config.yaml
-
+    secrets:
+      - mcp_secret
+  
   llm:
     provider:
       type: model
@@ -45,13 +39,14 @@ services:
       - "7777:7777"
     environment:
       - OPENAI_API_KEY=$OPENAI_API_KEY
-      - MCPGATEWAY_ENDPOINT=mcp-gateway:8811
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     extra_hosts:
       - host.docker.internal:host-gateway
     volumes:
       - ./agents.yaml:/agents.yaml
     depends_on:
       - llm
+      - mcp-gateway
 
   agents-ui:
     image: demo/ui
@@ -63,3 +58,7 @@ services:
       - AGENTS_URL=http://localhost:7777
     depends_on:
       - agents
+
+secrets:
+  mcp_secret:
+    file: ./.mcp.env

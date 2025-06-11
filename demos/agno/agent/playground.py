@@ -98,21 +98,35 @@ async def run_server(config) -> None:
             endpoint = os.environ['MCPGATEWAY_ENDPOINT']
             print(f"DEBUG: Connecting to MCP gateway at {endpoint}")
 
-            # Test TCP connection first
+            # Parse endpoint to extract host and port
             import socket
+            from urllib.parse import urlparse
+
             try:
-                host, port = endpoint.split(':')
+                # Handle both URL format (http://host:port/path) and host:port format
+                if endpoint.startswith('http://') or endpoint.startswith('https://'):
+                    parsed = urlparse(endpoint)
+                    host = parsed.hostname
+                    port = parsed.port
+                    tcp_endpoint = f"{host}:{port}"
+                else:
+                    # Legacy host:port format
+                    host, port = endpoint.split(':')
+                    port = int(port)
+                    tcp_endpoint = endpoint
+
+                # Test TCP connection first
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.settimeout(5)
-                sock.connect((host, int(port)))
+                sock.connect((host, port))
                 sock.close()
-                print(f"DEBUG: TCP connection to {endpoint} successful")
+                print(f"DEBUG: TCP connection to {host}:{port} successful")
             except Exception as e:
                 print(f"ERROR: TCP connection to {endpoint} failed: {e}")
                 raise
 
             t = MCPTools(
-                command=f"socat STDIO TCP:{endpoint}",
+                command=f"socat STDIO TCP:{tcp_endpoint}",
                 include_tools=tool_names,
             )
             mcp_tools = await t.__aenter__()
@@ -161,8 +175,21 @@ async def run_server(config) -> None:
             endpoint = os.environ['MCPGATEWAY_ENDPOINT']
             print(f"DEBUG: Team connecting to MCP gateway at {endpoint}")
 
+            # Parse endpoint to extract host and port
+            from urllib.parse import urlparse
+
+            # Handle both URL format (http://host:port/path) and host:port format
+            if endpoint.startswith('http://') or endpoint.startswith('https://'):
+                parsed = urlparse(endpoint)
+                host = parsed.hostname
+                port = parsed.port
+                tcp_endpoint = f"{host}:{port}"
+            else:
+                # Legacy host:port format
+                tcp_endpoint = endpoint
+
             t = MCPTools(
-                command=f"socat STDIO TCP:{endpoint}",
+                command=f"socat STDIO TCP:{tcp_endpoint}",
                 include_tools=tool_names,
             )
             mcp_tools = await t.__aenter__()
