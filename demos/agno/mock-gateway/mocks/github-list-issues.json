@@ -1,0 +1,79 @@
+{
+  "tool": "github-mcp-server",
+  "method": "list_issues",
+  "response": {
+    "issues": [
+      {
+        "number": 20,
+        "state": "open",
+        "locked": false,
+        "title": "Feature Request: Add a sleep mode that tells bedtime stories",
+        "body": "A sleep mode that narrates bedtime stories to help users relax after long coding sessions would be a charming addition.",
+        "author_association": "MEMBER",
+        "user": {
+          "login": "fiam"
+        },
+        "comments": 0,
+        "created_at": "2025-05-15T22:37:00Z",
+        "updated_at": "2025-05-15T22:37:00Z"
+      },
+      {
+        "number": 19,
+        "state": "open",
+        "locked": false,
+        "title": "Bug: Turboencabulator randomly orders pizza instead of running tasks",
+        "body": "Instead of executing tasks, the device sometimes orders pizza online. This is both funny and problematic.",
+        "author_association": "MEMBER",
+        "user": {
+          "login": "fiam"
+        },
+        "comments": 0,
+        "created_at": "2025-05-15T22:37:00Z",
+        "updated_at": "2025-05-15T22:37:00Z"
+      },
+      {
+        "number": 18,
+        "state": "open",
+        "locked": false,
+        "title": "Support: Device makes weird noises when processing large files",
+        "body": "The turboencabulator emits strange mechanical noises when handling large datasets. Is this normal?",
+        "author_association": "MEMBER",
+        "user": {
+          "login": "fiam"
+        },
+        "comments": 0,
+        "created_at": "2025-05-15T22:36:59Z",
+        "updated_at": "2025-05-15T22:36:59Z"
+      },
+      {
+        "number": 17,
+        "state": "open",
+        "locked": false,
+        "title": "Feature Request: Add a feature to translate data into pirate speak",
+        "body": "It would be hilarious if the turboencabulator could translate all data output into pirate speak for fun presentations.",
+        "author_association": "MEMBER",
+        "user": {
+          "login": "fiam"
+        },
+        "comments": 0,
+        "created_at": "2025-05-15T22:36:58Z",
+        "updated_at": "2025-05-15T22:36:58Z"
+      },
+      {
+        "number": 16,
+        "state": "open",
+        "locked": false,
+        "title": "Bug: Turboencabulator's screen displays only emojis",
+        "body": "The display is stuck showing only emojis, making it hard to read error messages or data.",
+        "author_association": "MEMBER",
+        "user": {
+          "login": "fiam"
+        },
+        "comments": 0,
+        "created_at": "2025-05-15T22:36:58Z",
+        "updated_at": "2025-05-15T22:36:58Z"
+      }
+    ],
+    "total_count": 5
+  }
+}

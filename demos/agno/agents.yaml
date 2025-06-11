@@ -14,27 +14,28 @@ agents:
       If you don't know the value for a parameter when calling a tool, just omit it.
     tools:
       - mcp/github-mcp-server:list_issues
-    model: gpt-4.1-mini
-    model_provider: openai
+    model: olegselajev241/qwen3:14B-Q6_K
     temperature: 0
 
   notion:
     name: Notion Page Creator
     description: An agent that can create a Notion page given a title and its contents
     instructions: |
+      You are calling a tool named Notion. You generate only valid json.
       When asked to create a Notion page, always create it under the "Updates" page.
 
-      - Use the search to find the "Updates" page_id.
+      - Use the search to find the "Updates" page_id. sort parameter must bet set to {"direction":"ascending","timestamp":"last_edited_time"}.
       - You can omit the values for direction and start_cursor when looking for that page.
-      - When creating the page, the "children" argument should be an array of block objects.
-        For example, this is how it looks like for a page with a single block of text
-        `[{"paragraph":{"rich_text":[{"text":{"content":"bar"},"type":"text"}]},"type":"paragraph"}]`
+      - When creating the page, the "children" argument must be an array. The items in this array MUST be objects, not a string.
+        This is how it looks like for a page with a single block of text
+        [{"paragraph":{"rich_text":[{"text":{"content":"bar"},"type":"text"}]},"type":"paragraph"}]
+        You must not put quotes around this object.
 
     tools:
       - mcp/notion:API-post-page
       - mcp/notion:API-post-search
-    model: gpt-4.1-mini
-    model_provider: openai
+    model: olegselajev241/qwen3:14B-Q6_K
+    temperature: 0
 
   writer:
     name: Writer
@@ -48,7 +49,7 @@ agents:
 
     # This seems to produce better results, but it takes a very long time
     # model: gemma3-qat:12B-Q4_K_M
-    model: deepseek-r1-distill-llama
+    model: olegselajev241/qwen3:14B-Q6_K
 
   githubcontentreader:
     name: GitHub Content Reader
@@ -58,8 +59,8 @@ agents:
       Then summarize the content
     tools:
       - mcp/fetch:fetch
-    model: o3
-    model_provider: openai
+    model: olegselajev241/qwen3:14B-Q6_K
+    temperature: 0
 
 teams:
   coordinator:

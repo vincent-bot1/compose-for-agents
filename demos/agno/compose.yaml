@@ -1,38 +1,64 @@
 services:
-  mcpgateway:
-    provider:
-      type: mcpgateway
-      options:
-        tools: get_me, list_issues, mcp/duckduckgo:*, SQLite:list-tables, notion:*, fetch
-        log_calls: yes
-        scan_secrets: yes
-        verify_signatures: yes
-
+  mcp-gateway:
+    image: docker/agents_gateway:v2
+    ports:
+      - "8811:8811"
+    command:
+      - --port=8811
+      - --block-secrets=true
+      - --log-calls=true
+      - --verify-signatures=true
+      - --secrets=/run/secrets/mcp_secret
+      - --transport=stdio
+      - --verbose
+      - --tools=*
+      - --servers=github-official
+      - --servers=notion
+      - --servers=fetch
+      - --catalog=http://desktop.docker.com/mcp/catalog/v2/catalog.yaml
+      - --config=/.config.yaml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/mcp/config.yaml:/.config.yaml
+    secrets:
+      - mcp_secret
+  
   llm:
     provider:
       type: model
       options:
-        model: ai/deepseek-r1-distill-llama
+        model: olegselajev241/qwen3:14B-Q6_K
+    environment:
+      - LLAMA_ARGS=--ctx-size 8000 --jinja -ngl 100
 
   agents:
     image: demo/agents
+    build:
+      context: agent
     ports:
       - "7777:7777"
     environment:
       - OPENAI_API_KEY=$OPENAI_API_KEY
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     extra_hosts:
       - host.docker.internal:host-gateway
     volumes:
       - ./agents.yaml:/agents.yaml
     depends_on:
-      - mcpgateway
       - llm
+      - mcp-gateway
 
   agents-ui:
     image: demo/ui
+    build:
+      context: agent-ui
     ports:
       - "3000:3000"
     environment:
       - AGENTS_URL=http://localhost:7777
     depends_on:
       - agents
+
+secrets:
+  mcp_secret:
+    file: ./.mcp.env

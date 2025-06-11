@@ -43,7 +43,7 @@ OPENAI_API_KEY=<KEY>
 ![GitHub MCP server](./img/github-mcp-server.png)
 1. Add your token to it
 
-## Build Images and Docker CLI Plugins
+## Build Docker CLI Plugin
 
 Either with `task install` or manually:
 
@@ -51,7 +51,7 @@ On Mac:
 
 ```console
 docker buildx bake --file docker-bake.hcl darwin
-ln -sf $(pwd)/bin/docker-compose $(pwd)/bin/docker-mcpgateway ~/.docker/cli-plugins/
+ln -sf $(pwd)/bin/docker-compose ~/.docker/cli-plugins/
 ```
 
 On Windows:
@@ -59,7 +59,6 @@ On Windows:
 ```console
 docker buildx bake --file docker-bake.hcl windows
 Copy-Item -Path ./bin/docker-compose.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"
-Copy-Item -Path ./bin/docker-mcpgateway.exe -Destination "$env:USERPROFILE\.docker\cli-plugins"
 ```
 
 ## And Run!
@@ -83,5 +82,5 @@ task down
 Cleanup:
 
 ```console
-task uninstall
+task down
 ```

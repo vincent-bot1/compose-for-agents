@@ -1,0 +1,87 @@
+version: "3"
+
+vars:
+  TEST_MODE: '{{.TEST_MODE | default "false"}}'
+
+tasks:
+  default:
+    cmds:
+      - task: up
+      
+  up:
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ]'
+        msg: "OPENAI_API_KEY must be set and non-empty"
+    desc: Start the Agno demo Compose Stack (use TEST_MODE=true for test environment)
+    cmds:
+      - |
+        if [ "{{.TEST_MODE}}" = "true" ]; then
+          echo "Starting test environment in detached mode..."
+          docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml up --build -d
+        else
+          echo "Starting in foreground mode..."
+          docker compose -f demos/agno/compose.yaml up --build
+        fi
+
+  down:
+    desc: Stop the Agno demo Compose Stack (use TEST_MODE=true for test environment)
+    cmds:
+      - |
+        if [ "{{.TEST_MODE}}" = "true" ]; then
+          echo "Stopping test environment..."
+          docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+        else
+          echo "Stopping normal environment..."
+          docker compose -f demos/agno/compose.yaml down --remove-orphans
+        fi
+
+  test:
+    desc: Run all agent tests
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ]'
+        msg: "OPENAI_API_KEY must be set and non-empty"
+    cmds:
+      - task: test-go
+      - task: test-shell
+
+  test-go:
+    desc: Run Go tests
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ]'
+        msg: "OPENAI_API_KEY must be set and non-empty"
+    deps:
+      - task: up
+        vars:
+          TEST_MODE: "true"
+    cmds:
+      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+      - cd demos/agno/tests && go test -v ./...
+
+  test-shell:
+    desc: Run shell-based tests
+    preconditions:
+      - sh: '[ -n "$OPENAI_API_KEY" ]'
+        msg: "OPENAI_API_KEY must be set and non-empty"
+    cmds:
+      - task: test-writer-agent
+      - task: test-github-issue-retriever-agent
+
+  test-writer-agent:
+    desc: Test the Writer agent with a simple message
+    deps:
+      - task: up
+        vars:
+          TEST_MODE: "true"
+    cmds:
+      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+      - ./demos/agno/test-writer-agent.sh
+
+  test-github-issue-retriever-agent:
+    desc: Test the Github Issue Retriever agent
+    deps:
+      - task: up
+        vars:
+          TEST_MODE: "true"
+    cmds:
+      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+      - ./demos/agno/test-github-issue-retriever-agent.sh
