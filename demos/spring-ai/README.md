@@ -27,10 +27,6 @@ When run, the application demonstrates the MCP client's capabilities by asking a
    ```
 
 3. Set up your API keys:
-   ```bash
-   export OPENAI_API_KEY='your-openai-api-key-here'
-   ```
-   
     Add the Brave Search API key to the `.env` file.
 
 4. Build the application:
