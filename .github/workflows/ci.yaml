@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/ci.yaml'
       - 'demos/a2a/**'
+    branches:
+      - main
   pull_request:
     paths:
       - '.github/workflows/ci.yaml'
