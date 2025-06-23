@@ -3,9 +3,11 @@ name: CI
 on:
   push:
     paths:
+      - '.github/workflows/ci.yaml'
       - 'demos/a2a/**'
   pull_request:
     paths:
+      - '.github/workflows/ci.yaml'
       - 'demos/a2a/**'
 
 jobs:
