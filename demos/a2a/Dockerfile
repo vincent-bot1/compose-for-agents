@@ -1,21 +1,17 @@
 ##### Base image
-FROM python:3.11-slim AS base
+FROM python:3.13-slim AS base
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    UV_COMPILE_BYTECODE=1 \
+    UV_NO_CACHE=1
 
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+RUN pip install uv
 
 WORKDIR /app
-
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
+COPY pyproject.toml uv.lock ./
+RUN uv pip install --system .
+COPY main.py src ./
+RUN python -m compileall -q .
 
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
@@ -25,6 +21,7 @@ USER app
 ##### Critic Agent
 FROM base AS critic-agent
 
-COPY critic/ ./critic/
+COPY --chown=app:app agents/critic.yaml /app/agent.yaml
+ENV AGENT_CONFIG=/app/agent.yaml
 EXPOSE 8001
-CMD ["python", "-m", "critic", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["python", "main.py", "--host", "0.0.0.0", "--port", "8001"]

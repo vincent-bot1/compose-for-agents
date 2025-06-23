@@ -6,8 +6,6 @@ services:
       - "8001:8001"
     environment:
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-    extra_hosts:
-      - host.docker.internal:host-gateway
     depends_on:
       # compose docker-model-runner provider injects environment variables
       - docker-model-runner

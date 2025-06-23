@@ -11,19 +11,37 @@ tasks:
     cmds:
       - task: up
 
+  format:
+    desc: Format the code using ruff
+    cmd: uv run ruff format .
+
+  check-format:
+    desc: Check the code formatting
+    cmd: uv run ruff check .
+
+  check-types:
+    desc: Check the code types using pyright
+    cmd: uv run pyright .
+
+  adk-web:
+    desc: Run the ADK web UI with the critic agent
+    cmd: uv run adk web src
+    env:
+      AGENT_CONFIG: agents/critic.yaml
+
   # Docker Compose commands
   up:
     desc: Start services with docker-compose
-    cmd: docker compose -f demos/a2a/compose.yml up --build --wait
+    cmd: docker compose up --build --wait
 
   down:
     desc: Stop and remove containers
-    cmd: docker compose -f demos/a2a/compose.yml down
+    cmd: docker compose down --remove-orphans
 
   test:
     desc: Test the Critic agent
     cmds:
-      - docker compose -f demos/a2a/compose.yml --verbose up -d --wait --build
+      - docker compose --verbose up -d --wait --build
       - >
         curl -X POST http://localhost:8001
         -H "Content-Type: application/json"
@@ -44,5 +62,5 @@ tasks:
             "skill": "fact_check_answer"
           }
         }' | jq
-      - docker compose -f demos/a2a/compose.yml logs mcp-gateway
-      - docker compose -f demos/a2a/compose.yml down
+      - docker compose logs mcp-gateway
+      - docker compose down --remove-orphans
