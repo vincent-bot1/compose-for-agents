@@ -1,6 +1,5 @@
 from typing import Optional, Union
 
-
 from a2a.types import AgentSkill
 from pydantic import BaseModel
 

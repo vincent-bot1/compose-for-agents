@@ -92,7 +92,5 @@ class ADKAgentExecutor(AgentExecutor):
             await updater.complete()
             break
 
-    async def cancel(
-        self, context: RequestContext, event_queue: EventQueue
-    ) -> None:
+    async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
         raise ServerError(error=UnsupportedOperationError())

@@ -13,11 +13,11 @@ tasks:
 
   format:
     desc: Format the code using ruff
-    cmd: uv run ruff format .
+    cmd: uv run ruff format 
 
   check-format:
     desc: Check the code formatting
-    cmd: uv run ruff check .
+    cmd: uv run ruff check
 
   check-types:
     desc: Check the code types using pyright

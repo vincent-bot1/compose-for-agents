@@ -1,29 +1,29 @@
 import os
 from typing import Any, AsyncIterable
+
 from a2a.server.apps import A2AStarletteApplication
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
 )
-from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.tasks import InMemoryTaskStore
-from starlette.applications import Starlette
-import yaml
-
 from google.adk.agents.llm_agent import LlmAgent
-from google.adk.models.base_llm import BaseLlm
-from google.adk.models.lite_llm import LiteLlm
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
+from google.adk.models.base_llm import BaseLlm
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
+from starlette.applications import Starlette
+import yaml
 
 from AgentKit.tools.mcp import create_mcp_toolsets
 
-from .config import AgentConfig
-from .base_agent import BaseAgent
 from ..executor import ADKAgentExecutor
+from .base_agent import BaseAgent
+from .config import AgentConfig
 
 SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
 
@@ -100,13 +100,13 @@ class Agent(BaseAgent):
 
     def build_agent(self) -> LlmAgent:
         """Builds the LLM agent."""
-        tools= create_mcp_toolsets(tools_cfg=self._config.tools or [])
+        tools = create_mcp_toolsets(tools_cfg=self._config.tools or [])
         return LlmAgent(
             model=self._build_model(),
             name=self._config.agent_id,
             description=self._config.description or "",
             instruction=self._config.instructions or "",
-            tools=tools, # type: ignore
+            tools=tools,  # type: ignore
         )
 
     async def stream(
@@ -144,8 +144,10 @@ class Agent(BaseAgent):
                     and any([True for p in event.content.parts if p.function_response])
                 ):
                     response = next(
-                        p.function_response.model_dump() for p in event.content.parts if p.function_response
-                    ) # type: ignore
+                        p.function_response.model_dump()
+                        for p in event.content.parts
+                        if p.function_response
+                    )  # type: ignore
                 yield {
                     "is_task_complete": True,
                     "content": response,
