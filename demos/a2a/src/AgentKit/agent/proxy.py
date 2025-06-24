@@ -4,15 +4,20 @@ This module provides a proxy agent that forwards requests to an A2A (Agent-to-Ag
 It acts as a bridge between the ADK framework and external A2A services.
 """
 
-from typing import AsyncGenerator, Optional, cast
+import logging
+from typing import AsyncGenerator, Optional
 import uuid
 
 from a2a.client import A2AClient
 from a2a.types import (
     AgentCard,
+    Message,
     MessageSendParams,
+    Part,
+    Role,
     SendMessageRequest,
     SendStreamingMessageRequest,
+    TextPart,
 )
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
@@ -21,6 +26,8 @@ from google.genai import types
 import httpx
 
 from .agent_id import make_agent_id
+
+logger = logging.getLogger(__name__)
 
 
 class A2AProxyAgent(BaseAgent):
@@ -73,27 +80,15 @@ class A2AProxyAgent(BaseAgent):
             raise RuntimeError("client did not properly initialize")
 
         # Get content to send
+        content_to_send: str = ""
         if ctx.user_content and ctx.user_content.parts:
-            content_to_send = ctx.user_content.parts[0].text
+            content_to_send = ctx.user_content.parts[0].text or ""
         else:
             content_to_send = self._get_input_from_state(ctx)
-
         try:
-            # Create the message payload based on the A2A example and your curl test
-            message_id = str(uuid.uuid4())
-            send_message_payload = {
-                "message": {
-                    "role": "user",
-                    "parts": [{"kind": "text", "text": content_to_send}],
-                    "messageId": message_id,
-                    "kind": "message",
-                },
-                "skill": "fact_check_answer",
-            }
-
             # Try streaming first, fallback to non-streaming if needed
             streaming_request = SendStreamingMessageRequest(
-                id=str(uuid.uuid4()), params=MessageSendParams(**send_message_payload)
+                id=str(uuid.uuid4()), params=make_message_send_params(content_to_send)
             )
 
             # Collect streaming response
@@ -106,64 +101,54 @@ class A2AProxyAgent(BaseAgent):
 
                     # Extract content from A2A streaming response
                     if (
-                        hasattr(chunk, "root")
-                        and chunk.root
-                        and hasattr(chunk.root, "result")
-                        and chunk.root.result
-                        and hasattr(chunk.root.result, "artifact")
-                        and chunk.root.result.artifact
+                        (root := getattr(chunk, "root", None))
+                        and (result := getattr(root, "result", None))
+                        and (artifact := getattr(result, "artifact", None))
                     ):
-                        artifact = chunk.root.result.artifact
-                        if hasattr(artifact, "parts") and artifact.parts:
-                            for part in artifact.parts:
-                                if (
-                                    hasattr(part, "root")
-                                    and part.root
-                                    and hasattr(part.root, "text")
-                                    and part.root.text
+                        if parts := getattr(artifact, "parts", None):
+                            for part in parts:
+                                if (root := getattr(part, "root", None)) and (
+                                    text := getattr(root, "text", None)
                                 ):
-                                    chunk_content = str(part.root.text)
+                                    chunk_content = str(text)
                                     break
-                                elif hasattr(part, "text") and part.text:
-                                    chunk_content = str(part.text)
+                                elif text := getattr(part, "text", None):
+                                    chunk_content = str(text)
                                     break
-                    elif hasattr(chunk, "result") and chunk.result:
-                        if hasattr(chunk.result, "content") and chunk.result.content:
-                            chunk_content = str(chunk.result.content)
-                        elif hasattr(chunk.result, "message") and chunk.result.message:
-                            if (
-                                hasattr(chunk.result.message, "content")
-                                and chunk.result.message.content
-                            ):
-                                chunk_content = str(chunk.result.message.content)
-                        elif hasattr(chunk.result, "text") and chunk.result.text:
-                            chunk_content = str(chunk.result.text)
-                    elif hasattr(chunk, "content") and chunk.content:
-                        chunk_content = str(chunk.content)
-                    elif hasattr(chunk, "text") and chunk.text:
-                        chunk_content = str(chunk.text)
+                    elif result := getattr(chunk, "result", None):
+                        if content := getattr(result, "content", None):
+                            chunk_content = str(content)
+                        elif message := getattr(result, "message", None):
+                            if content := getattr(message, "content", None):
+                                chunk_content = str(content)
+                        elif text := getattr(result, "text", None):
+                            chunk_content = str(text)
+                    elif content := getattr(chunk, "content", None):
+                        chunk_content = str(content)
+                    elif text := getattr(chunk, "text", None):
+                        chunk_content = str(text)
 
                     if chunk_content:
                         final_result += chunk_content
 
-            except Exception as streaming_error:
+            except Exception as e:
+                logger.warning("Streaming failed, falling back to non-streaming: %s", e)
                 # Fallback to non-streaming if streaming fails
                 request = SendMessageRequest(
                     id=str(uuid.uuid4()),
-                    params=MessageSendParams(**send_message_payload),
+                    params=make_message_send_params(content_to_send),
                 )
                 response = await self.client.send_message(request)
 
                 # Handle non-streaming response
-                if hasattr(response, "result") and response.result:
-                    if hasattr(response.result, "content"):
-                        final_result = response.result.content
-                    elif hasattr(response.result, "message") and hasattr(
-                        response.result.message, "content"
-                    ):
-                        final_result = response.result.message.content
+                if result := getattr(response, "result", None):
+                    if content := getattr(result, "content", None):
+                        final_result = content
+                    elif message := getattr(result, "message", None):
+                        if content := getattr(message, "content", None):
+                            final_result = content
                     else:
-                        final_result = str(response.result)
+                        final_result = str(result)
                 else:
                     final_result = str(response)
 
@@ -226,12 +211,12 @@ class A2AProxyAgent(BaseAgent):
         # Fallback: take original user message
         if ctx.session.events:
             for event in ctx.session.events:
-                if (
-                    event.content
-                    and event.content.role == "user"
-                    and len(event.content.parts or []) > 0
-                ):
-                    return cast(str, event.content.parts[0].text)
+                if not event.content or event.content.role != "user":
+                    continue
+                if parts := event.content.parts:
+                    for p in parts:
+                        if text := p.text:
+                            return text
 
         return "No input found"
 
@@ -239,3 +224,11 @@ class A2AProxyAgent(BaseAgent):
         """Clean up the httpx client"""
         if self.httpx_client:
             await self.httpx_client.aclose()
+
+
+def make_message_send_params(text: str) -> MessageSendParams:
+    # Create the message payload based on the A2A example and your curl test
+    message_id = str(uuid.uuid4())
+    part = Part(root=TextPart(text=text))
+    message = Message(role=Role.user, messageId=message_id, parts=[part])
+    return MessageSendParams(message=message)
