@@ -8,7 +8,7 @@ services:
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     depends_on:
       # compose docker-model-runner provider injects environment variables
-      - docker-model-runner
+      - docker_model_runner
       - mcp-gateway
 
   auditor-agent-a2a:
@@ -20,10 +20,10 @@ services:
       - CRITIC_AGENT_URL=http://critic-agent-a2a:8001
     depends_on:
       # compose docker-model-runner provider injects environment variables
-      - docker-model-runner
+      - docker_model_runner
       - mcp-gateway
 
-  docker-model-runner:
+  docker_model_runner:
     provider:
       type: model
       options:

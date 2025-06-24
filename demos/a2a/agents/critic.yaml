@@ -50,7 +50,7 @@ instructions: |
 
   Here is the question and answer you are going to double check:
 
-model: ai/gemma3-qat:27B-Q4_K_M
+model: ${LLM_AGENT_MODEL_NAME}
 tools:
   - mcp/duckduckgo:search
 skills:
