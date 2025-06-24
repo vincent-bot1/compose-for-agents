@@ -1,5 +1,6 @@
+from abc import abstractmethod
 import os
-from typing import Any, AsyncIterable
+from typing import Any, AsyncIterable, Callable, Sequence, Type, TypeVar
 
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
@@ -8,27 +9,28 @@ from a2a.types import (
     AgentCapabilities,
     AgentCard,
 )
-from google.adk.agents.llm_agent import LlmAgent
+from google.adk.agents.base_agent import BaseAgent as ADKBaseAgent
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
-from google.adk.models.base_llm import BaseLlm
-from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from starlette.applications import Starlette
 import yaml
 
-from AgentKit.tools.mcp import create_mcp_toolsets
-
 from ..executor import ADKAgentExecutor
 from .base_agent import BaseAgent
-from .config import AgentConfig
+from .config import AgentConfig, AgentType
+from .proxy import A2AProxyAgent
 
 SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
 
+T = TypeVar("T", bound="Agent")
 
-class Agent(BaseAgent):
+_agent_classes: dict[AgentType, Type["Agent"]] = {}
+
+
+class Agent(BaseAgent, ADKBaseAgent):
     """
     Base class for all agents.
     """
@@ -72,42 +74,19 @@ class Agent(BaseAgent):
         return server.build()
 
     def get_processing_message(self) -> str:
-        return "Processing the reimbursement request..."
+        return "Processing..."
 
-    def _build_model(self) -> BaseLlm:
-        """Builds the LLM model."""
-        provider: str | None
-        if isinstance(self._config.model, str):
-            provider = "docker"
-            name = self._config.model
-        else:
-            provider = self._config.model.provider
-            name = self._config.model.name
-
-        if not provider:
-            provider = "docker"
-
-        base_url = None
-        api_key: str | None = None
-        if provider == "docker":
-            api_key = "does_not_matter_but_cannot_be_empty"
-            base_url = "http://localhost:12434/engines/v1"
-        elif provider == "openai":
-            api_key = os.getenv("OPENAI_API_KEY")
-        else:
-            raise ValueError(f"unknown model provider {provider}")
-        return LiteLlm(model="openai/" + name, api_key=api_key, base_url=base_url)
-
-    def build_agent(self) -> LlmAgent:
-        """Builds the LLM agent."""
-        tools = create_mcp_toolsets(tools_cfg=self._config.tools or [])
-        return LlmAgent(
-            model=self._build_model(),
-            name=self._config.agent_id,
-            description=self._config.description or "",
-            instruction=self._config.instructions or "",
-            tools=tools,  # type: ignore
+    def build_agent(self) -> ADKBaseAgent:
+        sub_agents: Sequence[ADKBaseAgent] = (
+            [A2AProxyAgent(a2a_url=url) for url in self._config.sub_agents]
+            if self._config.sub_agents
+            else []
         )
+        return self._build_agent(list(sub_agents))
+
+    @abstractmethod
+    def _build_agent(self, sub_agents: list[ADKBaseAgent]) -> ADKBaseAgent:
+        pass
 
     async def stream(
         self, query: str, session_id: str
@@ -125,11 +104,12 @@ class Agent(BaseAgent):
                 state={},
                 session_id=session_id,
             )
+        accumulated_response = ""
         async for event in self._runner.run_async(
             user_id=self._user_id, session_id=session.id, new_message=content
         ):
             if event.is_final_response():
-                response = ""
+                response: str | dict[str, Any] = ""
                 if (
                     event.content
                     and event.content.parts
@@ -141,33 +121,70 @@ class Agent(BaseAgent):
                 elif (
                     event.content
                     and event.content.parts
-                    and any([True for p in event.content.parts if p.function_response])
+                    and any(p.function_response for p in event.content.parts)
                 ):
-                    response = next(
-                        p.function_response.model_dump()
-                        for p in event.content.parts
-                        if p.function_response
-                    )  # type: ignore
+                    # Find the first part with function_response
+                    for p in event.content.parts:
+                        if p.function_response:
+                            response = p.function_response.model_dump()
+                            break
+
+                # Use accumulated response if available, otherwise use final response
+                final_content = (
+                    accumulated_response if accumulated_response else response
+                )
                 yield {
                     "is_task_complete": True,
-                    "content": response,
+                    "content": final_content,
                 }
             else:
+                # Handle streaming content - accumulate partial responses
+                if event.content and event.content.parts:
+                    for part in event.content.parts:
+                        if part.text:
+                            accumulated_response += part.text
                 yield {
                     "is_task_complete": False,
                     "updates": self.get_processing_message(),
                 }
 
-    @classmethod
-    def from_yaml_filename(cls, filename: str) -> "Agent":
+    def __str__(self):
+        return f"Agent(name={self._config.name})"
+
+    @staticmethod
+    def from_yaml_filename(filename: str) -> "Agent":
         """
         Create an agent instance from a YAML configuration file.
         This method should be overridden by subclasses if they have specific configuration needs.
         """
-        with open(filename, "r") as file:
-            config_data = yaml.safe_load(file)
+        with open(filename, "r") as f:
+            expanded = os.path.expandvars(f.read())
+            config_data = yaml.safe_load(expanded)
         config = AgentConfig(**config_data)
-        return cls(config)
+        agent_type = config.type
+        if not agent_type:
+            agent_type = AgentType.LLM
+        agent_cls = _agent_classes.get(agent_type)
+        if not agent_cls:
+            raise ValueError(f"Unknown agent type: {config.type}")
+        return agent_cls(config)
 
-    def __str__(self):
-        return f"Agent(name={self._config.name})"
+    @staticmethod
+    def register(t: AgentType) -> Callable[[Type[T]], Type[T]]:
+        """
+        Register the agent type with the base agent class.
+        This method should be called in the subclass to register the agent type.
+
+        :param t: The agent type to associate with the class.
+        :return: A decorator that registers the class.
+        """
+
+        def decorator(cls: Type[T]) -> Type[T]:
+            if t in _agent_classes:
+                raise ValueError(
+                    f"class {_agent_classes[t]} is already registered for {cls}"
+                )
+            _agent_classes[t] = cls
+            return cls
+
+        return decorator

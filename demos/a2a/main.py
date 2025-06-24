@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 import sys
+import warnings
 
 import click
 import dotenv
@@ -11,6 +12,14 @@ sys.path.append(str(Path(__file__).parent / "src"))
 from AgentKit.agent import Agent
 
 root_agent = None
+
+# Suppress Pydantic serialization warnings from LiteLLMAdd commentMore actions
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic.main")
+logging.getLogger("google.adk").setLevel(logging.INFO)
+logging.getLogger("LiteLLM").setLevel(logging.WARNING)  # Much less verbose
+logging.getLogger("litellm").setLevel(logging.WARNING)  # Also reduce this
+logging.getLogger("httpx").setLevel(logging.WARNING)  # Reduce HTTP logs
+logging.getLogger("httpcore").setLevel(logging.WARNING)  # Reduce HTTP core logs
 
 
 @click.command()

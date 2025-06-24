@@ -11,6 +11,18 @@ services:
       - docker-model-runner
       - mcp-gateway
 
+  auditor-agent-a2a:
+    build:
+      target: auditor-agent
+    ports:
+      - "8002:8002"
+    environment:
+      - CRITIC_AGENT_URL=http://critic-agent-a2a:8001
+    depends_on:
+      # compose docker-model-runner provider injects environment variables
+      - docker-model-runner
+      - mcp-gateway
+
   docker-model-runner:
     provider:
       type: model
