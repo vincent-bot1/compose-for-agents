@@ -17,10 +17,10 @@ tasks:
       - |
         if [ "{{.TEST_MODE}}" = "true" ]; then
           echo "Starting test environment in detached mode..."
-          docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml up --build -d
+          docker compose -f agno/compose.yaml -f agno/compose.test.yaml up --build -d
         else
           echo "Starting in foreground mode..."
-          docker compose -f demos/agno/compose.yaml up --build
+          docker compose -f agno/compose.yaml up --build
         fi
 
   down:
@@ -29,10 +29,10 @@ tasks:
       - |
         if [ "{{.TEST_MODE}}" = "true" ]; then
           echo "Stopping test environment..."
-          docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
+          docker compose -f agno/compose.yaml -f agno/compose.test.yaml down --remove-orphans
         else
           echo "Stopping normal environment..."
-          docker compose -f demos/agno/compose.yaml down --remove-orphans
+          docker compose -f agno/compose.yaml down --remove-orphans
         fi
 
   test:
@@ -54,8 +54,8 @@ tasks:
         vars:
           TEST_MODE: "true"
     cmds:
-      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
-      - cd demos/agno/tests && go test -v ./...
+      - defer: docker compose -f agno/compose.yaml -f agno/compose.test.yaml down --remove-orphans
+      - cd agno/tests && go test -v ./...
 
   test-shell:
     desc: Run shell-based tests
@@ -73,8 +73,8 @@ tasks:
         vars:
           TEST_MODE: "true"
     cmds:
-      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
-      - ./demos/agno/test-writer-agent.sh
+      - defer: docker compose -f agno/compose.yaml -f agno/compose.test.yaml down --remove-orphans
+      - ./agno/test-writer-agent.sh
 
   test-github-issue-retriever-agent:
     desc: Test the Github Issue Retriever agent
@@ -83,5 +83,5 @@ tasks:
         vars:
           TEST_MODE: "true"
     cmds:
-      - defer: docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml down --remove-orphans
-      - ./demos/agno/test-github-issue-retriever-agent.sh
+      - defer: docker compose -f agno/compose.yaml -f agno/compose.test.yaml down --remove-orphans
+      - ./agno/test-github-issue-retriever-agent.sh

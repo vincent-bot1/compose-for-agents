@@ -104,7 +104,7 @@ fi
 # Check mock gateway logs to verify tool was called
 echo ""
 echo "🔍 Checking mock gateway logs..."
-GATEWAY_LOGS=$(docker compose -f demos/agno/compose.yaml -f demos/agno/compose.test.yaml logs mock-gateway 2>/dev/null || echo "")
+GATEWAY_LOGS=$(docker compose -f agno/compose.yaml -f agno/compose.test.yaml logs mock-gateway 2>/dev/null || echo "")
 
 if echo "$GATEWAY_LOGS" | grep -q "list_issues"; then
   echo "✅ Mock gateway received list_issues tool call"
