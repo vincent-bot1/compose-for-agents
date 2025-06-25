@@ -12,6 +12,9 @@ on:
       - '.github/workflows/langgraph.yaml'
       - 'langgraph/**'
 
+permissions:
+  contents: read
+
 jobs:
   check:
     name: Format & Type Check
