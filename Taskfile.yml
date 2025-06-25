@@ -1,6 +1,0 @@
-version: "3"
-
-includes:
-  agno: demos/agno/Taskfile.yml
-  adk: demos/adk/Taskfile.yml
-  a2a: demos/a2a/Taskfile.yml
