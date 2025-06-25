@@ -1,4 +1,4 @@
-module github.com/compose-agents-demo/demos/agno/tests
+module github.com/compose-agents-demo/agno/tests
 
 go 1.21
 
