@@ -65,7 +65,9 @@ async def main():
                 prompt=system_prompt,
             )
 
-            question = "Which sales agent made the most in sales in 2009?"
+            question = os.getenv("QUESTION")
+            if not question:
+                raise ValueError("Please set the QUESTION environment variable with your question.")
 
             async for step in agent.astream(
                 {"messages": [{"role": "user", "content": question}]},

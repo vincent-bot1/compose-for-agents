@@ -30,9 +30,9 @@ services:
     build:
       target: agent
     environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
       - MCP_SERVER_URL=http://mcp_gateway:8811/sse
       - DATABASE_DIALECT=PostgreSQL
+      - QUESTION="Which sales agent made the most in sales in 2009?"
     depends_on:
       - database
       - model_runner # Comment this out and provide an API key to use OpenAI
