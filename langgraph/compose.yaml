@@ -33,7 +33,7 @@ services:
       - QUESTION="Which sales agent made the most in sales in 2009?"
     depends_on:
       - database
-      - model_runner # Comment this out and provide an API key to use OpenAI
+      - model_runner
 
   mcp_gateway:
     image: docker/agents_gateway:v2
