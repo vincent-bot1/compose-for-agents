@@ -4,13 +4,13 @@ on:
   push:
     paths:
       - '.github/workflows/ci.yaml'
-      - 'demos/a2a/**'
+      - 'a2a/**'
     branches:
       - main
   pull_request:
     paths:
       - '.github/workflows/ci.yaml'
-      - 'demos/a2a/**'
+      - 'a2a/**'
 
 jobs:
   check:
@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: demos/a2a
+        working-directory: a2a
 
     steps:
       - name: Checkout repository
