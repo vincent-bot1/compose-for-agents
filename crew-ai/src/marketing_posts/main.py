@@ -12,6 +12,7 @@ input_yaml = os.path.join(os.path.dirname(__file__), "config", "input.yaml")
 
 logging.getLogger("LiteLLM").setLevel(logging.WARNING)
 
+
 def parse_input() -> dict[str, Any]:
     with open(input_yaml) as f:
         return yaml.safe_load(f)
