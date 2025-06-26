@@ -1,43 +1,144 @@
+# 🧠 CrewAI Marketing Team Demo
 
-# AI Crew for Marketing Strategy
-## Introduction
-This project demonstrates the use of the CrewAI framework to automate the creation of a marketing strategy. CrewAI orchestrates autonomous AI agents, enabling them to collaborate and execute complex tasks efficiently.
+This project showcases an autonomous, multi-agent **virtual marketing team** built with
+[CrewAI](https://github.com/joaomdmoura/crewAI). It automates the creation of a high-quality, end-to-end marketing strategy — from research to copywriting — using task delegation, web search, and creative synthesis.
 
-By [@joaomdmoura](https://x.com/joaomdmoura)
+> [!Tip]
+> ✨ No configuration needed — run it with a single command.
 
-- [CrewAI Framework](#crewai-framework)
-- [Running the script](#running-the-script)
-- [Details & Explanation](#details--explanation)
-- [Contributing](#contributing)
-- [Support and Contact](#support-and-contact)
-- [License](#license)
 
-## CrewAI Framework
-CrewAI is designed to facilitate the collaboration of role-playing AI agents. In this example, these agents work together to create a comprehensive marketing strategy and develop compelling marketing content.
+<p align="center">
+  <img src="path/to/demo.gif"
+       alt="CrewAI marketing agent demo"
+       width="500"
+       style="border: 1px solid #ccc; border-radius: 8px;" />
+</p>
 
-## Running the Script
-It uses GPT-4o by default so you should have access to that to run it.
+## 🚀 Getting Started
 
-***Disclaimer:** This will use gpt-4o unless you change it to use a different model, and by doing so it may incur in different costs.*
+### Requirements
 
-- **Configure Environment**: Copy `.env.example` and set up the environment variables for [OpenAI](https://platform.openai.com/api-keys) and other tools as needed, like [Serper](serper.dev).
-- **Install Dependencies**: Run `poetry lock && poetry install`.
-- **Customize**: Modify `src/marketing_posts/main.py` to add custom inputs for your agents and tasks.
-- **Customize Further**: Check `src/marketing_posts/config/agents.yaml` to update your agents and `src/marketing_posts/config/tasks.yaml` to update your tasks.
-- **Execute the Script**: Run `poetry run marketing_posts` and input your project details.
+- ✅ [Docker Desktop] **v4.43.0+**
 
-## Running the Script in Docker
-Run `docker compose up`. There's no need to configure any keys, by default the containerized script uses
-[Docker Model Runner](https://docs.docker.com/ai/model-runner/) and [Docker MCP Catalog](https://hub.docker.com/catalogs/mcp).
+### Run the Project
 
-## Details & Explanation
-- **Running the Script**: Execute `poetry run marketing_posts`. The script will leverage the CrewAI framework to generate a detailed marketing strategy.
-- **Key Components**:
-  - `src/marketing_posts/main.py`: Main script file.
-  - `src/marketing_posts/crew.py`: Main crew file where agents and tasks come together, and the main logic is executed.
-  - `src/marketing_posts/config/agents.yaml`: Configuration file for defining agents.
-  - `src/marketing_posts/config/tasks.yaml`: Configuration file for defining tasks.
-  - `src/marketing_posts/tools`: Contains tool classes used by the agents.
+```sh
+docker compose up
+```
 
-## License
-This project is released under the MIT License.
+That’s all. The agents will spin up and collaborate through a series of predefined roles and tasks to
+deliver a complete marketing strategy for the input project.
+
+
+## ❓ What Can It Do?
+
+Give it a company and a project description — the agents will collaborate to produce a full marketing strategy:
+
+- “Research the market landscape around CrewAI’s automation tools.”
+- “Understand the target audience for enterprise AI integrations.”
+- “Formulate a high-impact marketing strategy with KPIs and channels.”
+- “Propose 5 creative campaigns tailored to tech decision-makers.”
+- “Write compelling ad copy for each campaign idea.”
+
+From strategy to storytelling, the team handles it all — autonomously.
+
+You can **customize the tasks** to use your own domain and project description — just edit the inputs in `src/config/inputs.yaml`.
+
+
+# 👥 Virtual Team Structure
+
+| **Agent**                      | **Role**                       | **Responsibilities**                                                   |
+| ------------------------------ | ------------------------------ | ---------------------------------------------------------------------- |
+| **Lead Market Analyst**        | 🧠 lead_market_analyst        | Performs in-depth research on the customer, competitors, and audience. |
+| **Chief Marketing Strategist** | 🎯 chief_marketing_strategist | Designs the complete marketing strategy using team insights.           |
+| **Creative Content Creator**   | ✍️ creative_content_creator  | Writes compelling ad copy based on campaign ideas.                     |
+| **Chief Creative Director**    | 👑 chief_creative_director    | Reviews and approves all outputs for alignment and quality.            |
+
+
+# 🧱 Project Structure
+
+| File/Folder    | Purpose                                                |
+| -------------- | ------------------------------------------------------ |
+| `compose.yaml` | Defines service orchestration.                         |
+| `Dockerfile`   | Builds the container environment.                      |
+| `src/config`   | Contains the agent, task definitions, and task inputs. |
+| `src/*.py`     | Main program and crew definition.                      |
+
+
+
+# 🔧 Architecture Overview
+
+```mermaid
+flowchart TD
+    subgraph Input
+      input[(input.yaml<br/>customer & project)]
+    end
+
+    subgraph Agents
+      A1[(🧠 Lead Market Analyst<br/>)]
+      A2[(🎯 Chief Marketing Strategist)]
+      A3[✍️ Creative Content Creator]
+    end
+
+    subgraph Task
+      T1[🔍 Research Task]
+      T2[📘 Project Understanding Task]
+      T3[(📊 Marketing Strategy Task<br/>output: MarketStrategy)]
+      T4[(💡 Campaign Idea Task<br/>output: CampaignIdeas)]
+      T5[(📝 Copy Creation Task<br/>output: Copy)]
+    end
+
+    subgraph AI Tools
+      MCP[(MCP Gateway<br/>DuckDuckGo Search)]
+      LLM[(Docker Model Runner<br/>LLM Inference)]
+    end
+
+    input --> T1
+    input --> T2
+
+    T1 -->|assigned to| A1
+    T2 -->|assigned to| A2
+    T3 -->|assigned to| A2
+    T4 -->|assigned to| A3
+    T5 -->|assigned to| A3
+
+    A1 --> MCP
+    A2 --> MCP
+
+    A1 --> LLM
+    A2 --> LLM
+    A3 --> LLM
+
+    T1 --> T3
+    T2 --> T3
+    T3 --> T4
+    T3 --> T5
+    T4 --> T5
+
+    T5 --> Output[(📄 Final Deliverables<br/>Copy + Strategy + Campaigns)]
+```
+
+- The LangGraph-based agent transforms questions into SQL.
+- PostgreSQL is populated from a SQLite dump at runtime.
+- All components are fully containerized for plug-and-play usage.
+
+
+# 🧹 Cleanup
+
+To stop and remove containers and volumes:
+
+```sh
+docker compose down -v
+```
+
+
+# 📎 Credits
+- [crewAI]
+- [DuckDuckGo]
+- [Docker Compose]
+
+
+[crewAI]: https://github.com/crewAIInc/crewAI
+[DuckDuckGo]: https://duckduckgo.com
+[Docker Compose]: https://github.com/docker/compose
+[Docker Desktop]: https://www.docker.com/products/docker-desktop/
