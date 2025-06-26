@@ -28,5 +28,5 @@ critic_agent = Agent(
     model=LiteLlm(model=f"openai/{os.environ.get('DOCKER-MODEL-RUNNER_MODEL')}"),
     name="critic_agent",
     instruction=prompt.CRITIC_PROMPT,
-    tools=tools, # type: ignore
+    tools=tools,  # type: ignore
 )

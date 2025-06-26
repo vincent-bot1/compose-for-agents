@@ -57,4 +57,3 @@ def create_mcp_toolsets(
         result.append(toolset)
 
     return result
-
