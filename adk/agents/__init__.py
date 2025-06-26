@@ -14,23 +14,29 @@
 
 """LLM Auditor for verifying & refining LLM-generated answers using the web."""
 
-from . import agent
+import logging
 import os
-import logging, litellm
+
+import litellm
+
+from . import agent
+
 # Set the base URL for the OpenAI API to the Docker Model Runner URL
-os.environ.setdefault("OPENAI_BASE_URL", os.getenv("DOCKER-MODEL-RUNNER_URL"))
+os.environ.setdefault("OPENAI_BASE_URL", os.getenv("DOCKER-MODEL-RUNNER_URL", ""))
 # Set the API key to a dummy value since it's not used
-os.environ.setdefault("OPENAI_API_KEY","not-used")
+os.environ.setdefault("OPENAI_API_KEY", "not-used")
 
 # Enable logging with reduced verbosity
 logging.basicConfig(
-    level=logging.INFO,                          # Less verbose than DEBUG
+    level=logging.INFO,  # Less verbose than DEBUG
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    force=True,                                  # override ADK defaults
+    force=True,  # override ADK defaults
 )
 logging.getLogger("google.adk").setLevel(logging.INFO)
 logging.getLogger("LiteLLM").setLevel(logging.WARNING)  # Much less verbose
 logging.getLogger("litellm").setLevel(logging.WARNING)  # Also reduce this
-logging.getLogger("httpx").setLevel(logging.WARNING)    # Reduce HTTP logs
-logging.getLogger("httpcore").setLevel(logging.WARNING) # Reduce HTTP core logs
-litellm.set_verbose = False                      # Disable raw HTTP logs
+logging.getLogger("httpx").setLevel(logging.WARNING)  # Reduce HTTP logs
+logging.getLogger("httpcore").setLevel(logging.WARNING)  # Reduce HTTP core logs
+litellm.set_verbose = False  # Disable raw HTTP logs # type: ignore
+
+__all__ = ["agent"]
