@@ -1,4 +1,4 @@
-name: CI
+name: LangGraph CI
 
 on:
   push:
@@ -34,6 +34,9 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH  # Make uv available
 
       - name: Check format
+        run: uv run ruff format --check
+
+      - name: Check lint
         run: uv run ruff check
 
       - name: Check types
