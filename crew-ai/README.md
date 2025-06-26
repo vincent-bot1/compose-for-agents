@@ -75,7 +75,7 @@ flowchart TD
     end
 
     subgraph Agents
-      A1[(🧠 Lead Market Analyst<br/>)]
+      A1[(🧠 Lead Market Analyst)]
       A2[(🎯 Chief Marketing Strategist)]
       A3[✍️ Creative Content Creator]
     end
@@ -83,9 +83,9 @@ flowchart TD
     subgraph Task
       T1[🔍 Research Task]
       T2[📘 Project Understanding Task]
-      T3[(📊 Marketing Strategy Task<br/>output: MarketStrategy)]
-      T4[(💡 Campaign Idea Task<br/>output: CampaignIdeas)]
-      T5[(📝 Copy Creation Task<br/>output: Copy)]
+      T3[(📊 Marketing Strategy Task)]
+      T4[(💡 Campaign Idea Task)]
+      T5[(📝 Copy Creation Task)]
     end
 
     subgraph AI Tools
