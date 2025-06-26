@@ -73,8 +73,7 @@ flowchart TD
 - MCP is used as a tool in the LLM pipeline.
 - The response is enriched with real-time DuckDuckGo Search results.
 
-
-# 📎 Credits
+# 📎 Credits
 
 - [Spring AI]
 - [DuckDuckGo]
