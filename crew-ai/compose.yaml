@@ -25,3 +25,4 @@ services:
       options:
         model: ai/qwen3
         runtime-flags: "--no-prefill-assistant"
+        context-size: 8192

@@ -8,7 +8,7 @@ This project showcases an autonomous, multi-agent **virtual marketing team** bui
 
 
 <p align="center">
-  <img src="path/to/demo.gif"
+  <img src="demo.gif"
        alt="CrewAI marketing agent demo"
        width="500"
        style="border: 1px solid #ccc; border-radius: 8px;" />
