@@ -1,28 +1,17 @@
 # Use Python 3.11 slim image as base
-FROM python:3.11-slim
+FROM python:3.13-slim
+ENV PYTHONUNBUFFERED=1
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN pip install uv
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set work directory
 WORKDIR /app
-
-# Copy requirements and install Python dependencies
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
-
+# Install system dependencies
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    UV_COMPILE_BYTECODE=1 uv pip install --system .
 # Copy application code
 COPY agents/ ./agents/
+RUN python -m compileall -q .
 
 # Create entrypoint script
 COPY docker/entrypoint.sh /entrypoint.sh

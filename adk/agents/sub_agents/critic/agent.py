@@ -14,9 +14,10 @@
 
 """Critic agent for identifying and verifying statements using search tools."""
 
+import os
+
 from google.adk import Agent
 from google.adk.models.lite_llm import LiteLlm
-import os
 
 from . import prompt
 from .tools import create_mcp_toolsets
@@ -25,7 +26,7 @@ tools = create_mcp_toolsets(tools_cfg=["mcp/duckduckgo:search"])
 
 critic_agent = Agent(
     model=LiteLlm(model=f"openai/{os.environ.get('DOCKER-MODEL-RUNNER_MODEL')}"),
-    name='critic_agent',
+    name="critic_agent",
     instruction=prompt.CRITIC_PROMPT,
-    tools=tools,
+    tools=tools,  # type: ignore
 )
