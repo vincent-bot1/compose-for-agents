@@ -50,7 +50,7 @@ Choose one of the two local models loaded by compose.yaml, and request that it d
 docker mcp secret export brave > .mcp.env
 
 # compose.cloud.yaml still has one small diff from the local one.
-docker compose -f compose.cloud.yaml up
+docker compose up --build
 ```
 
 # Project Structure
