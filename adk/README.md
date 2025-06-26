@@ -1,0 +1,122 @@
+# 🧠 ADK Multi-Agent Fact Checker
+
+This project demonstrates a **collaborative multi-agent system** built with the **Agent Development Kit** ([ADK]),
+where a top-level Auditor agent coordinates the workflow to verify facts. The Critic agent gathers evidence
+via live internet searches using **DuckDuckGo** through the Model Context Protocol (**MCP**), while the Reviser
+agent analyzes and refines the conclusion using internal reasoning alone. The system showcases how agents
+with distinct roles and tools can **collaborate under orchestration**.
+
+> [!Tip]
+> ✨ No configuration needed — run it with a single command.
+
+
+<p align="center">
+  <img src="demo.gif"
+       alt="ADK Multi-Agent Fact Check Demo"
+       width="500"
+       style="border: 1px solid #ccc; border-radius: 8px;" />
+</p>
+
+# 🚀 Getting Started
+
+### Requirements
+
+- 🐳 [Docker Desktop] **v4.43.0+**
+
+### Run the project
+
+
+```sh
+docker compose up
+```
+
+No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to
+chat with the agents.
+
+
+# ❓ What Can It Do?
+
+This system performs multi-agent fact verification, coordinated by an **Auditor**:
+
+- 🧑‍⚖️ **Auditor**:
+  - Orchestrates the process from input to verdict.
+  - Delegates tasks to Critic and Reviser agents.
+- 🧠 **Critic**:
+	- Uses DuckDuckGo via MCP to gather real-time external evidence.
+-	✍️ **Reviser**:
+	- Refines and verifies the Critic’s conclusions using only reasoning.
+
+**🧠 All agents use the Docker Model Runner for LLM-based inference.**
+
+Example question:
+
+> “Is the universe infinite?"
+
+# 🧱 Project Structure
+
+| **File/Folder**      | **Purpose**                                                   |
+| -------------------- | ------------------------------------------------------------- |
+| `compose.yaml`       | Launches app and MCP DuckDuckGo Gateway                       |
+| `Dockerfile`         | Builds the agent container                                    |
+| `agents/agent.py`    | Auditor agent coordinating between the critic and the reviser |
+| `agents/`            | Contains core logic for critic and reviser agents             |
+| `agents/sub_agents/` | Submodules for critic and reviser roles                       |
+
+
+# 🔧 Architecture Overview
+
+```mermaid
+
+flowchart TD
+    input[📝 User Question] --> auditor[🧑‍⚖️ Auditor Agent]
+    auditor --> critic[🧠 Critic Agent]
+    critic -->|uses| mcp[MCP Gateway<br/>DuckDuckGo Search]
+    mcp --> duck[🌐 DuckDuckGo API]
+    duck --> mcp --> critic
+    critic --> reviser[(✍️ Reviser Agent<br/>No tools)]
+    reviser --> auditor
+    auditor --> result[✅ Final Answer]
+
+    critic -->|inference| model[(🧠 Docker Model Runner<br/>LLM)]
+    reviser -->|inference| model
+    auditor -->|inference| model
+
+    subgraph Infra
+      mcp
+      model
+    end
+
+```
+
+- The Auditor agent coordinates Critic and Reviser agents to verify user-provided claims.
+- The Critic agent performs live web searches through DuckDuckGo using an MCP-compatible gateway.
+- All agents run inference through a Docker-hosted Model Runner, enabling fully containerized LLM reasoning.
+
+# 🤝 Agent Roles
+
+| **Agent**   | **Tools Used**        | **Role Description**                                                         |
+| ----------- | --------------------- | ---------------------------------------------------------------------------- |
+| **Auditor** | ❌ None               | Coordinates the entire fact-checking workflow and delivers the final answer. |
+| **Critic**  | ✅ DuckDuckGo via MCP | Gathers evidence to support or refute the claim                              |
+| **Reviser** | ❌ None               | Refines and finalizes the answer without external input                      |
+
+
+# 🧹 Cleanup
+
+To stop and remove containers and volumes:
+
+```sh
+docker compose down -v
+```
+
+
+# 📎 Credits
+- [ADK]
+- [DuckDuckGo]
+- [Docker Compose]
+
+
+[ADK]: https://google.github.io/adk-docs/
+[DuckDuckGo]: https://duckduckgo.com
+[Docker Compose]: https://github.com/docker/compose
+[Docker Desktop]: https://www.docker.com/products/docker-desktop/
