@@ -1,12 +1,11 @@
 import asyncio
 import os
 
-
-from mcp import ClientSession
-from mcp.client.sse import sse_client
 from langchain.chat_models import init_chat_model
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langgraph.prebuilt import create_react_agent
+from mcp import ClientSession
+from mcp.client.sse import sse_client
 
 base_url = os.getenv("MODEL_RUNNER_URL")
 model = os.getenv("MODEL_RUNNER_MODEL", "gpt-4.1")
@@ -47,14 +46,19 @@ SELECT column_name, data_type FROM information_schema.columns WHERE table_name =
     top_k=5,
 )
 
-async def main():
-    llm = init_chat_model(model, model_provider="openai", api_key=api_key, base_url=base_url)
-    async with sse_client(
-                    url=mcp_server_url,
-                    timeout=60,
-                ) as (read, write):
 
-         async with ClientSession(read, write) as session:
+async def main():
+    if mcp_server_url is None:
+        raise ValueError("Please set the MCP_SERVER_URL environment variable.")
+
+    llm = init_chat_model(
+        model, model_provider="openai", api_key=api_key, base_url=base_url
+    )
+    async with sse_client(
+        url=mcp_server_url,
+        timeout=60,
+    ) as (read, write):
+        async with ClientSession(read, write) as session:
             await session.initialize()
 
             tools = await load_mcp_tools(session)
@@ -65,12 +69,17 @@ async def main():
                 prompt=system_prompt,
             )
 
-            question = "Which sales agent made the most in sales in 2009?"
+            question = os.getenv("QUESTION")
+            if not question:
+                raise ValueError(
+                    "Please set the QUESTION environment variable with your question."
+                )
 
             async for step in agent.astream(
                 {"messages": [{"role": "user", "content": question}]},
                 stream_mode="values",
             ):
                 step["messages"][-1].pretty_print()
+
 
 asyncio.run(main())

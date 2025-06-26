@@ -5,8 +5,6 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d database"]
       interval: 1s
@@ -30,17 +28,15 @@ services:
     build:
       target: agent
     environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
       - MCP_SERVER_URL=http://mcp_gateway:8811/sse
       - DATABASE_DIALECT=PostgreSQL
+      - QUESTION="Which sales agent made the most in sales in 2009?"
     depends_on:
       - database
-      - model_runner # Comment this out and provide an API key to use OpenAI
+      - model_runner
 
   mcp_gateway:
     image: docker/agents_gateway:v2
-    ports:
-      - 9911:8811
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     command:

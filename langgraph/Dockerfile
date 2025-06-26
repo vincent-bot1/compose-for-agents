@@ -8,9 +8,14 @@ EOF
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-FROM python:3.12-slim AS agent
+FROM python:3.13-slim AS agent
+ENV PYTHONUNBUFFERED=1
+RUN pip install uv
+
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    UV_COMPILE_BYTECODE=1 uv pip install --system .
 COPY agent.py .
-CMD [ "python", "agent.py" ]
+RUN python -m compileall -q .
+ENTRYPOINT [ "python", "agent.py" ]
