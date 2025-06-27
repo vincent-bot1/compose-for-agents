@@ -27,7 +27,7 @@ with distinct roles and tools can **collaborate under orchestration**.
 
 
 ```sh
-docker compose up
+docker compose up --build
 ```
 
 No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to
@@ -68,18 +68,18 @@ Example question:
 ```mermaid
 
 flowchart TD
-    input[📝 User Question] --> auditor[🧑‍⚖️ Auditor Agent]
+    input[📝 User Question] --> auditor[🧑‍⚖️ Auditor Sequential Agent]
     auditor --> critic[🧠 Critic Agent]
     critic -->|uses| mcp[MCP Gateway<br/>DuckDuckGo Search]
     mcp --> duck[🌐 DuckDuckGo API]
     duck --> mcp --> critic
     critic --> reviser[(✍️ Reviser Agent<br/>No tools)]
+    auditor --> reviser
     reviser --> auditor
     auditor --> result[✅ Final Answer]
 
     critic -->|inference| model[(🧠 Docker Model Runner<br/>LLM)]
     reviser -->|inference| model
-    auditor -->|inference| model
 
     subgraph Infra
       mcp
@@ -88,8 +88,9 @@ flowchart TD
 
 ```
 
-- The Auditor agent coordinates Critic and Reviser agents to verify user-provided claims.
+- The Auditor is a Sequential Agent, it coordinates Critic and Reviser agents to verify user-provided claims.
 - The Critic agent performs live web searches through DuckDuckGo using an MCP-compatible gateway.
+- The Reviser agent refines the Critic’s conclusions using internal reasoning alone.
 - All agents run inference through a Docker-hosted Model Runner, enabling fully containerized LLM reasoning.
 
 # 🤝 Agent Roles

@@ -13,20 +13,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY agents/ ./agents/
 RUN python -m compileall -q .
 
-# Create entrypoint script
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
 USER app
 
-# Expose port for web interface
-EXPOSE 8080
-
-# Set entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Default command (can be overridden)
-CMD ["web"]
+CMD [ "adk", "web", "--host", "0.0.0.0", "--port", "8080", "--log_level", "DEBUG" ]
