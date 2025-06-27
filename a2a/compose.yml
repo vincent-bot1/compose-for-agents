@@ -33,7 +33,7 @@ services:
         context-size: 20000
 
   mcp-gateway:
-    image: docker/agents_gateway:v2
+    image: docker/mcp-gateway:latest
     ports:
       - "8811:8811"
     command:
