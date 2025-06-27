@@ -10,6 +10,8 @@ dependencies = [
     "crewai[tools]>=0.85.0",
     "crewai-tools[mcp]>=0.4.6",
     "setuptools (>=80.9.0,<81.0.0)",
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "types-pyyaml (>=6.0.12.20250516,<7.0.0.0)",
 ]
 
 [project.scripts]
@@ -22,3 +24,7 @@ requires = [
     "hatchling",
 ]
 build-backend = "hatchling.build"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.0"
+pyright = "^1.1.402"
