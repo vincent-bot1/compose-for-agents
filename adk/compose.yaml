@@ -9,7 +9,7 @@ services:
       # point adk at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     depends_on:
-      # model_runner provider starts firsth then injects environment variables
+      # model_runner provider starts first then injects environment variables
       # MODEL_RUNNER_MODEL name
       # MODEL_RUNNER_URL OpenAI compatible API endpoint
       - model_runner

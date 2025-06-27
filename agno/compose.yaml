@@ -1,30 +1,4 @@
 services:
-  mcp-gateway:
-    image: docker/agents_gateway:v2
-    ports:
-      - "8811:8811"
-    command:
-      - --block-secrets=true
-      - --log-calls=true
-      - --verify-signatures=true
-      - --secrets=/run/secrets/mcp_secret
-      - --verbose
-      - --servers=github-official
-      - --servers=notion
-      - --servers=fetch
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /run/host-services/backend.sock:/run/host-services/backend.sock
-    secrets:
-      - mcp_secret
-  
-  llm:
-    provider:
-      type: model
-      options:
-        model: ai/qwen3:14B-Q6_K
-    environment:
-      - LLAMA_ARGS=--ctx-size 8000 --jinja -ngl 100
 
   agents:
     image: demo/agents
@@ -34,14 +8,16 @@ services:
       - "7777:7777"
     environment:
       - OPENAI_API_KEY=$OPENAI_API_KEY
+      # point agents at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-    extra_hosts:
-      - host.docker.internal:host-gateway
     volumes:
+      # mount the agents file
       - ./agents.yaml:/agents.yaml
     depends_on:
-      - llm
-      - mcp-gateway
+      # model_runner provider starts first then injects environment variables
+      # MODEL_RUNNER_MODEL name
+      # MODEL_RUNNER_URL OpenAI compatible API endpoint
+      - model_runner
 
   agents-ui:
     image: demo/ui
@@ -54,6 +30,32 @@ services:
     depends_on:
       - agents
 
+  model_runner:
+    provider:
+      type: model
+      options:
+        # pre-pull the model when starting Docker Model Runner
+        model: ai/qwen3:30B-A3B-Q4_K_M
+        # increase context size to handle more github issues
+        context-size: 41000
+
+  mcp-gateway:
+    # agents_gateway secures your MCP servers
+    image: docker/agents_gateway:v2
+    ports:
+      - "8811:8811"
+    command:
+      # securely embed secrets into the gateway
+      - --secrets=/run/secrets/mcp_secret
+      # add any MCP servers you want to use
+      - --servers=github-official
+    volumes:
+      # mount docker socket to run MCP containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - mcp_secret
+
+# mount the secrets file for MCP servers
 secrets:
   mcp_secret:
     file: ./.mcp.env
