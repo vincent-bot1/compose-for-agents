@@ -23,7 +23,7 @@ This project showcases an autonomous, multi-agent **virtual marketing team** bui
 ### Run the Project
 
 ```sh
-docker compose up
+docker compose up --build
 ```
 
 That’s all. The agents will spin up and collaborate through a series of predefined roles and tasks to

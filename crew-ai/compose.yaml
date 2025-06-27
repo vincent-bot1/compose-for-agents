@@ -16,8 +16,7 @@ services:
     command:
       - --transport=sse
       - --servers=duckduckgo
-      - --tools=search
-      - --tools=fetch_content
+      - --tools=search,fetch_content
 
   model_runner:
     provider:
