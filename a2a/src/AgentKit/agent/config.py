@@ -32,10 +32,10 @@ class AgentConfig(BaseModel):
     type: Optional[AgentType] = AgentType.LLM
     description: Optional[str] = None
     instructions: Optional[str] = None
-    model: Optional[
-        Union[str, ModelSpec]
-    ]  # Model can be a string or a ModelSpec object
-    skills: Optional[list[AgentSkill]]
+    model: Optional[Union[str, ModelSpec]] = (
+        None  # Model can be a string or a ModelSpec object
+    )
+    skills: Optional[list[AgentSkill]] = None
     tools: Optional[list[str]] = None
     sub_agents: Optional[list[str]] = None  # URLs for sub-agents
 

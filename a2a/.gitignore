@@ -1,7 +1,7 @@
 /.vscode
 /.venv
-/.ruff_cache
 /.mypy_cache
-/build
+/.ruff_cache
+/.python-version
 __pycache__
-.python-version
+*.pyc
