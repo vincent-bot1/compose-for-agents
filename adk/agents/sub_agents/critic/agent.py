@@ -25,7 +25,8 @@ from .tools import create_mcp_toolsets
 tools = create_mcp_toolsets(tools_cfg=["mcp/duckduckgo:search"])
 
 critic_agent = Agent(
-    model=LiteLlm(model=f"openai/{os.environ.get('DOCKER-MODEL-RUNNER_MODEL')}"),
+    # MODEL_RUNNER_MODEL is set by model_runner provider with the model name
+    model=LiteLlm(model=f"openai/{os.environ.get('MODEL_RUNNER_MODEL')}"),
     name="critic_agent",
     instruction=prompt.CRITIC_PROMPT,
     tools=tools,  # type: ignore

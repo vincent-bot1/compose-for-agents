@@ -22,7 +22,7 @@ import litellm
 from . import agent
 
 # Set the base URL for the OpenAI API to the Docker Model Runner URL
-os.environ.setdefault("OPENAI_BASE_URL", os.getenv("DOCKER-MODEL-RUNNER_URL", ""))
+os.environ.setdefault("OPENAI_BASE_URL", os.getenv("MODEL_RUNNER_URL", ""))
 # Set the API key to a dummy value since it's not used
 os.environ.setdefault("OPENAI_API_KEY", "not-used")
 

@@ -58,14 +58,14 @@ def force_string_content(
     new_contents: list[types.Content] = []
 
     for content in llm_request.contents:
-        # 1️⃣  If it is already plain text, keep it
+        # If it is already plain text, keep it
         if isinstance(content, str):
             new_contents.append(
                 types.Content(role="user", parts=[types.Part(text=content)])
             )
             continue
 
-        # 2️⃣  Merge multiple Parts into a single string
+        # Merge multiple Parts into a single string
         if isinstance(content, types.Content):
             merged_text = "\n".join((p.text or "") for p in content.parts or [])
             new_contents.append(
@@ -75,7 +75,7 @@ def force_string_content(
             )
             continue
 
-        # 3️⃣  Fallback: JSON-encode any dict / list / None
+        # Fallback: JSON-encode any dict / list / None
         new_contents.append(
             types.Content(
                 role="user",
@@ -95,7 +95,8 @@ def force_string_content(
 
 
 reviser_agent = Agent(
-    model=LiteLlm(model=f"openai/{os.environ.get('DOCKER-MODEL-RUNNER_MODEL')}"),
+    # MODEL_RUNNER_MODEL is set by model_runner provider with the model name
+    model=LiteLlm(model=f"openai/{os.environ.get('MODEL_RUNNER_MODEL')}"),
     name="reviser_agent",
     instruction=prompt.REVISER_PROMPT,
     before_model_callback=force_string_content,
