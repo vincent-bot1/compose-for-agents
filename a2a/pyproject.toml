@@ -25,15 +25,3 @@ dev = [
     "ruff>=0.12.0",
     "types-pyyaml>=6.0.12.20250516",
 ]
-
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-typeCheckingMode = "strict"
-reportMissingImports = true
-
-[tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "I", "RUF022"]
-
-[tool.ruff.lint.isort]
-force-sort-within-sections = true

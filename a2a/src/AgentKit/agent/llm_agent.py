@@ -49,6 +49,8 @@ class LlmAgent(Agent):
         else:
             raise ValueError(f"unknown model provider {provider}")
         if not name:
-            raise ValueError(f"LLM agent {self._config.name} does not specify a model name")
+            raise ValueError(
+                f"LLM agent {self._config.name} does not specify a model name"
+            )
         print("LLMPARAMS", name, base_url)
         return LiteLlm(model="openai/" + name, api_key=api_key, base_url=base_url)

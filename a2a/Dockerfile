@@ -1,15 +1,13 @@
 ##### Base image
 FROM python:3.13-slim AS base
 
-ENV PYTHONUNBUFFERED=1 \
-    UV_COMPILE_BYTECODE=1 \
-    UV_NO_CACHE=1
-
+ENV PYTHONUNBUFFERED=1
 RUN pip install uv
 
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
-RUN uv pip install --system .
+RUN --mount=type=cache,target=/root/.cache/uv \
+    UV_COMPILE_BYTECODE=1 uv pip install --system .
 COPY main.py src ./
 RUN python -m compileall -q .
 
@@ -41,5 +39,6 @@ FROM base AS auditor-agent
 
 COPY --chown=app:app agents/auditor.yaml /app/agent.yaml
 EXPOSE 8002
-CMD ["./entrypoint.sh", "adk", "web", ".", "--host", "0.0.0.0", "--port", "8002"]
+CMD ["./entrypoint.sh", "adk", "web", ".", "--host", "0.0.0.0", "--port", "8080"]
+# Use this to expose the agent as a web service instead of a UI
 #CMD ["python", "main.py", "--host", "0.0.0.0", "--port", "8002"]
