@@ -14,28 +14,6 @@ agents:
       If you don't know the value for a parameter when calling a tool, just omit it.
     tools:
       - mcp/github-mcp-server:list_issues
-    model: olegselajev241/qwen3:14B-Q6_K
-    temperature: 0
-
-  notion:
-    name: Notion Page Creator
-    description: An agent that can create a Notion page given a title and its contents
-    instructions: |
-      You are calling a tool named Notion. You generate only valid json.
-      When asked to create a Notion page, always create it under the "Updates" page.
-
-      - Use the search to find the "Updates" page_id. sort parameter must bet set to {"direction":"ascending","timestamp":"last_edited_time"}.
-      - You can omit the values for direction and start_cursor when looking for that page.
-      - When creating the page, the "children" argument must be an array. The items in this array MUST be objects, not a string.
-        This is how it looks like for a page with a single block of text
-        [{"paragraph":{"rich_text":[{"text":{"content":"bar"},"type":"text"}]},"type":"paragraph"}]
-        You must not put quotes around this object.
-
-    tools:
-      - mcp/notion:API-post-page
-      - mcp/notion:API-post-search
-    model: olegselajev241/qwen3:14B-Q6_K
-    temperature: 0
 
   writer:
     name: Writer
@@ -45,34 +23,18 @@ agents:
       their titles, and a brief description of each issue. The summary should be in markdown format.
 
       Additionally, classify the issues into categories such as "bug", "feature request",
-      or "documentation". If you create a Notion page, give me the link to it.
-
-    # This seems to produce better results, but it takes a very long time
-    # model: gemma3-qat:12B-Q4_K_M
-    model: olegselajev241/qwen3:14B-Q6_K
-
-  githubcontentreader:
-    name: GitHub Content Reader
-    instructions: |
-      Fetch the content of a GitHub file using the url with the format
-        `https://raw.githubusercontent.com/<owner>/<repo>/refs/heads/main/<path>`
-      Then summarize the content
-    tools:
-      - mcp/fetch:fetch
-    model: olegselajev241/qwen3:14B-Q6_K
-    temperature: 0
+      or "documentation". Always include the issue links referenced in the summary, as markdown.
 
 teams:
   coordinator:
     name: Coordinator
     mode: coordinate
-    members: [notion, github, writer]
+    members: [github, writer]
     instructions: |
       When given a GitHub repository, which will look like <owner>/<repo>:
 
       - Ask your team mate to find the issues that are open
-      - Tell the writer the summarize them
-      - Create a Notion page with the current date and an emoji represent the sentiment as title.
+      - Tell the writer the summarize them as Markdown
 
       When communicating with the writer, be very explicit about the criteria for its output,
       including length, structure, formatting, and other constraints. Remind the
@@ -82,13 +44,3 @@ teams:
       even if it is imperfect. If it needs correction, do it yourself.
 
       Use your team mates to perform all the required tasks, coordinate between them.
-    model_provider: openai
-    model: o3
-  githubteam:
-    name: GitHub Team
-    mode: coordinate
-    members: [githubcontentreader]
-    instructions: |
-      When given a github repository and a path to a file, fetch the content and summarize it.
-    model_provider: openai
-    model: o3

@@ -50,7 +50,7 @@ def create_model_from_config(entity_data: dict, entity_id: str) -> tuple[OpenAIC
     """Create a model instance from entity configuration data."""
     model_name = entity_data.get("model")
     if not model_name:
-        raise ValueError(f"Model name not specified for {entity_id}")
+        model_name = os.getenv("MODEL_RUNNER_MODEL")
     temperature = entity_data.get("temperature", None)
     provider = entity_data.get("model_provider", "docker")
     model = create_model(model_name, provider, temperature)
@@ -61,7 +61,7 @@ def create_model(model_name: str, provider: str, temperature: float) -> OpenAICh
     """Create a model instance based on the model name and provider."""
     print(f"creating model {model_name} with provider {provider} and temperature {temperature}")
     if provider == DOCKER_MODEL_PROVIDER:
-        base_url = os.getenv("LLM_URL")
+        base_url = os.getenv("MODEL_RUNNER_URL")
         if base_url is None:
             base_url = "http://model-runner.docker.internal/engines/llama.cpp/v1"
         model = OpenAIChat(id=model_name, base_url=base_url, temperature=temperature)
@@ -160,7 +160,7 @@ async def run_server(config) -> None:
             role=agent_data.get("role", ""),
             description=agent_data.get("description"),
             instructions=agent_data.get("instructions"),
-            tools=tools,  # type: ignore,
+            tools=tools,
             model=model,
             show_tool_calls=True,
             stream=should_stream(provider, tools),
