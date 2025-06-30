@@ -38,10 +38,9 @@ services:
       type: model
       options:
         # pre-pull the model on Docker Model Runner
-        model: ai/gemma3-qat:27B-Q4_K_M	
-        context-size: 41000 # 23 GB VRAM
-        # context-size: 80000 # 28 GB VRAM
-        # context-size: 131000 # 36 GB VRAM
+        model: ai/gemma3:4B-Q4_0
+        context-size: 10000 # 3.5 GB VRAM
+        # context-size: 131000 # 7.6 GB VRAM
 
   mcp-gateway:
     image: docker/agents_gateway:v2
