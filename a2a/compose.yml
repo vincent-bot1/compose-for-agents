@@ -1,16 +1,5 @@
 services:
-  critic-agent-a2a:
-    build:
-      target: critic-agent
-    ports:
-      - "8001:8001"
-    environment:
-      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-    depends_on:
-      # compose docker-model-runner provider injects environment variables
-      - docker_model_runner
-      - mcp-gateway
-
+  # Auditor Agent coordinates the entire fact-checking workflow
   auditor-agent-a2a:
     build:
       target: auditor-agent
@@ -18,18 +7,41 @@ services:
       - "8080:8080"
     environment:
       - CRITIC_AGENT_URL=http://critic-agent-a2a:8001
+      - REVISER_AGENT_URL=http://reviser-agent-a2a:8001
     depends_on:
       # compose docker-model-runner provider injects environment variables
-      - docker_model_runner
+      - critic-agent-a2a
+      - reviser-agent-a2a
+
+  critic-agent-a2a:
+    build:
+      target: critic-agent
+    environment:
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+    depends_on:
+      # compose docker-model-runner provider injects environment variables
+      - model_runner
       - mcp-gateway
 
-  docker_model_runner:
+  reviser-agent-a2a:
+    build:
+      target: reviser-agent
+    environment:
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+    depends_on:
+      # compose docker-model-runner provider injects environment variables
+      - model_runner
+      - mcp-gateway
+
+  model_runner:
     provider:
       type: model
       options:
         # pre-pull the model on Docker Model Runner
         model: ai/gemma3-qat:27B-Q4_K_M	
-        context-size: 20000
+        context-size: 41000 # 23 GB VRAM
+        # context-size: 80000 # 28 GB VRAM
+        # context-size: 131000 # 36 GB VRAM
 
   mcp-gateway:
     image: docker/agents_gateway:v2
