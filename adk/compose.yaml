@@ -13,6 +13,7 @@ services:
       # MODEL_RUNNER_MODEL name
       # MODEL_RUNNER_URL OpenAI compatible API endpoint
       - model_runner
+      - mcp-gateway
 
   model_runner:
     provider:
@@ -21,13 +22,11 @@ services:
         # pre-pull the model when starting Docker Model Runner
         model: ai/gemma3-qat:27B-Q4_K_M	
         # increase context size to handle search results
-        context-size: 20000
+        # context-size: 20000
 
   mcp-gateway:
     # agents_gateway secures your MCP servers
     image: docker/agents_gateway:v2
-    ports:
-      - "8811:8811"
     command:
       - --transport=sse
       # add any MCP servers you want to use
