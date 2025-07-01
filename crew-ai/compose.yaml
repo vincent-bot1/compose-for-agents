@@ -13,7 +13,7 @@ services:
         model_var: MODEL_RUNNER_MODEL
 
   mcp-gateway:
-    image: docker/agents_gateway:v2
+    image: docker/mcp-gateway:latest
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     command:

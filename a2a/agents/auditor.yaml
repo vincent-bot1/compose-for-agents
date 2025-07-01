@@ -5,3 +5,4 @@ description: |
   and refines the response to ensure alignment with real-world knowledge.
 sub_agents:
   - ${CRITIC_AGENT_URL}
+  - ${REVISER_AGENT_URL}
