@@ -9,9 +9,12 @@ services:
       - CRITIC_AGENT_URL=http://critic-agent-a2a:8001
       - REVISER_AGENT_URL=http://reviser-agent-a2a:8001
     depends_on:
-      # compose docker-model-runner provider injects environment variables
       - critic-agent-a2a
       - reviser-agent-a2a
+    models:
+       agents:
+         endpoint_var: MODEL_RUNNER_URL
+         model_var: MODEL_RUNNER_MODEL
 
   critic-agent-a2a:
     build:
@@ -19,9 +22,11 @@ services:
     environment:
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     depends_on:
-      # compose docker-model-runner provider injects environment variables
-      - model_runner
       - mcp-gateway
+    models:
+       agents:
+         endpoint_var: MODEL_RUNNER_URL
+         model_var: MODEL_RUNNER_MODEL
 
   reviser-agent-a2a:
     build:
@@ -29,23 +34,22 @@ services:
     environment:
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     depends_on:
-      # compose docker-model-runner provider injects environment variables
-      - model_runner
       - mcp-gateway
-
-  model_runner:
-    provider:
-      type: model
-      options:
-        # pre-pull the model on Docker Model Runner
-        model: ai/gemma3:4B-Q4_0
-        context-size: 10000 # 3.5 GB VRAM
-        # context-size: 131000 # 7.6 GB VRAM
+    models:
+       agents:
+         endpoint_var: MODEL_RUNNER_URL
+         model_var: MODEL_RUNNER_MODEL
 
   mcp-gateway:
+    # mcp-gateway secures your MCP servers
     image: docker/mcp-gateway:latest
+    use_api_socket: true
     command:
       - --transport=sse
       - --servers=duckduckgo
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+
+models:
+  agents:
+    model: ai/gemma3:4B-Q4_0
+    context_size: 10000 # 3.5 GB VRAM
+    #context_size: 131000 # 7.6 GB VRAM
