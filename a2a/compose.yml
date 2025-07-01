@@ -43,9 +43,9 @@ services:
         # context-size: 131000 # 7.6 GB VRAM
 
   mcp-gateway:
+    # mcp-gateway secures your MCP servers
     image: docker/mcp-gateway:latest
+    use_api_socket: true
     command:
       - --transport=sse
       - --servers=duckduckgo
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock

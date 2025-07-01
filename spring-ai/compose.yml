@@ -13,16 +13,16 @@ services:
       - mcp-gateway
       - model_runner
   mcp-gateway:
+    # mcp-gateway secures your MCP servers
     image: docker/mcp-gateway:latest
+    use_api_socket: true
     ports:
       - 8811:8811
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
     command:
       - --transport=sse
+      # add any MCP servers you want to use
       - --servers=duckduckgo
-      - --tools=search
-      - --tools=fetch_content
+      - --tools=search,fetch_content
 
   model_runner:
     provider:
