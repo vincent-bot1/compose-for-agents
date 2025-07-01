@@ -34,10 +34,10 @@ No configuration needed — everything runs from the container. Open `http://loc
 the agents.
 
 Using Docker Offload with GPU support, you can run the same demo with a larger model that takes advantage of a more powerful GPU on the remote instance:
-```sh
-docker compose -f compose.yml -f compose.offload.yml up --build
-```
 
+```sh
+docker compose -f compose.yaml -f compose.offload.yaml up --build
+```
 
 # ❓ What Can It Do?
 
