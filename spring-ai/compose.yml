@@ -1,4 +1,17 @@
 services:
+  app:
+    build:
+      target: app
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      - MCP_GATEWAY_URL=http://mcp-gateway:8811
+      - QUESTION="Does Spring AI supports the Model Context Protocol? Please provide some references."
+    depends_on:
+      - mcp-gateway
+      - model_runner
   mcp-gateway:
     image: docker/mcp-gateway:latest
     ports:
@@ -7,12 +20,12 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     command:
       - --transport=sse
-      - --secrets=/run/secrets/mcp_secret
-      - --servers=brave
-      - --tools=*
-    secrets:
-      - mcp_secret
-    
-secrets:
-  mcp_secret:
-    file: .env
+      - --servers=duckduckgo
+      - --tools=search
+      - --tools=fetch_content
+
+  model_runner:
+    provider:
+      type: model
+      options:
+        model: ai/gemma3-qat
