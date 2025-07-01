@@ -30,7 +30,7 @@ with distinct roles and tools can **collaborate under orchestration**.
 docker compose up --build
 ```
 
-No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to and select `AgentKit` in the selector at the top right, then chat with
+No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to and select `AgentKit` in the selector at the top left, then chat with
 the agents.
 
 Using Docker Offload with GPU support, you can run the same demo with a larger model that takes advantage of a more powerful GPU on the remote instance:

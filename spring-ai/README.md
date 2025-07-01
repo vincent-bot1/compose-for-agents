@@ -36,17 +36,17 @@ Ask natural language questions and let Spring AI + Brave Search provide intellig
 - “Give me examples of Spring Boot AI integrations.”
 
 The application uses:
-- 	An MCP-compatible gateway to route queries to DuckDuckGo Search
+- A MCP-compatible gateway to route queries to DuckDuckGo Search
 - Spring AI’s LLM client to embed results into answers
 - Auto-configuration via Spring Boot to bind everything
 
-You can **customize the question** asked to the agent — just edit the question in `compose.yaml`.
+To **customize the question** asked to the agent, edit the `QUESTION` environment variable in `compose.yaml`.
 
 # 🧱 Project Structure
 
 | **File/Folder**          | **Purpose**                                      |
 | ------------------------ | ------------------------------------------------ |
-| `compose.yml`            | launches the Brave MCP gateway and Spring AI app |
+| `compose.yaml`           | launches the Brave MCP gateway and Spring AI app |
 | `Dockerfile`             | Builds the Spring Boot container                 |
 | `application.properties` | Sets the MCP gateway URL used by Spring AI       |
 | `Application.java`       | Configures the ChatClient with MCP and runs it   |
@@ -69,7 +69,7 @@ flowchart TD
 
 ```
 
-- The application loads a a question via the `QUESTION` environment variable.
+- The application loads a question via the `QUESTION` environment variable.
 - MCP is used as a tool in the LLM pipeline.
 - The response is enriched with real-time DuckDuckGo Search results.
 
