@@ -1,0 +1,127 @@
+# 🧠 A2A Multi-Agent Fact Checker
+
+This project demonstrates a **collaborative multi-agent system** built with the **Agent2Agent SDK** ([A2A]),
+where a top-level Auditor agent coordinates the workflow to verify facts. The Critic agent gathers evidence
+via live internet searches using **DuckDuckGo** through the Model Context Protocol (**MCP**), while the Reviser
+agent analyzes and refines the conclusion using internal reasoning alone. The system showcases how agents
+with distinct roles and tools can **collaborate under orchestration**.
+
+> [!Tip]
+> ✨ No configuration needed — run it with a single command.
+
+
+<p align="center">
+  <img src="demo.gif"
+       alt="A2A Multi-Agent Fact Check Demo"
+       width="500"
+       style="border: 1px solid #ccc; border-radius: 8px;" />
+</p>
+
+# 🚀 Getting Started
+
+### Requirements
+
+- 🐳 [Docker Desktop] **v4.43.0+**
+
+### Run the project
+
+
+```sh
+docker compose up --build
+```
+
+No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to and select `AgentKit` in the selector at the top right, then chat with
+the agents.
+
+Using Docker Offload with GPU support, you can run the same demo with a larger model that takes advantage of a more powerful GPU on the remote instance:
+```sh
+docker compose -f compose.yml -f compose.offload.yml up --build
+```
+
+
+# ❓ What Can It Do?
+
+This system performs multi-agent fact verification, coordinated by an **Auditor**:
+
+- 🧑‍⚖️ **Auditor**:
+  - Orchestrates the process from input to verdict.
+  - Delegates tasks to Critic and Reviser agents.
+- 🧠 **Critic**:
+	- Uses DuckDuckGo via MCP to gather real-time external evidence.
+-	✍️ **Reviser**:
+	- Refines and verifies the Critic’s conclusions using only reasoning.
+
+**🧠 All agents use the Docker Model Runner for LLM-based inference.**
+
+Example question:
+
+> “Is the universe infinite?"
+
+# 🧱 Project Structure
+
+| **File/Folder** | **Purpose**                             |
+| --------------- | --------------------------------------- |
+| `compose.yaml`  | Launches app and MCP DuckDuckGo Gateway |
+| `Dockerfile`    | Builds the agent container              |
+| `src/AgentKit`  | Agent runtime                           |
+| `agents/*.yaml` | Agent definitions                       |
+
+
+# 🔧 Architecture Overview
+
+```mermaid
+
+flowchart TD
+    input[📝 User Question] --> auditor[🧑‍⚖️ Auditor Sequential Agent]
+    auditor --> critic[🧠 Critic Agent]
+    critic -->|uses| mcp[MCP Gateway<br/>DuckDuckGo Search]
+    mcp --> duck[🌐 DuckDuckGo API]
+    duck --> mcp --> critic
+    critic --> reviser[(✍️ Reviser Agent<br/>No tools)]
+    auditor --> reviser
+    reviser --> auditor
+    auditor --> result[✅ Final Answer]
+
+    critic -->|inference| model[(🧠 Docker Model Runner<br/>LLM)]
+    reviser -->|inference| model
+
+    subgraph Infra
+      mcp
+      model
+    end
+
+```
+
+- The Auditor is a Sequential Agent, it coordinates Critic and Reviser agents to verify user-provided claims.
+- The Critic agent performs live web searches through DuckDuckGo using an MCP-compatible gateway.
+- The Reviser agent refines the Critic’s conclusions using internal reasoning alone.
+- All agents run inference through a Docker-hosted Model Runner, enabling fully containerized LLM reasoning.
+
+# 🤝 Agent Roles
+
+| **Agent**   | **Tools Used**        | **Role Description**                                                         |
+| ----------- | --------------------- | ---------------------------------------------------------------------------- |
+| **Auditor** | ❌ None               | Coordinates the entire fact-checking workflow and delivers the final answer. |
+| **Critic**  | ✅ DuckDuckGo via MCP | Gathers evidence to support or refute the claim                              |
+| **Reviser** | ❌ None               | Refines and finalizes the answer without external input                      |
+
+
+# 🧹 Cleanup
+
+To stop and remove containers and volumes:
+
+```sh
+docker compose down -v
+```
+
+
+# 📎 Credits
+- [A2A]
+- [DuckDuckGo]
+- [Docker Compose]
+
+
+[A2A]: https://github.com/a2aproject/a2a-python
+[DuckDuckGo]: https://duckduckgo.com
+[Docker Compose]: https://github.com/docker/compose
+[Docker Desktop]: https://www.docker.com/products/docker-desktop/

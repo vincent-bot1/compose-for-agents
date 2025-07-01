@@ -1,16 +1,19 @@
-name: CI
+name: A2A CI
 
 on:
   push:
     paths:
-      - '.github/workflows/ci.yaml'
+      - '.github/workflows/a2a.yaml'
       - 'a2a/**'
     branches:
       - main
   pull_request:
     paths:
-      - '.github/workflows/ci.yaml'
+      - '.github/workflows/a2a.yaml'
       - 'a2a/**'
+
+permissions:
+  contents: read
 
 jobs:
   check:
@@ -30,11 +33,11 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH  # Make uv available
 
-      - name: Install task
-        uses: arduino/setup-task@v1
-
       - name: Check format
-        run: task check-format
+        run: uv run ruff format --check
+
+      - name: Check lint
+        run: uv run ruff check
 
       - name: Check types
-        run: task check-types
+        run: uv run pyright
