@@ -41,9 +41,7 @@ services:
 
   mcp-gateway:
     # agents_gateway secures your MCP servers
-    image: docker/agents_gateway:v2
-    ports:
-      - "8811:8811"
+    image: docker/mcp-gateway:latest
     command:
       # securely embed secrets into the gateway
       - --secrets=/run/secrets/mcp_secret

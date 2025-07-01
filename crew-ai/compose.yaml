@@ -10,7 +10,7 @@ services:
       - mcp_gateway
 
   mcp_gateway:
-    image: docker/agents_gateway:v2
+    image: docker/mcp-gateway:latest
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     command:

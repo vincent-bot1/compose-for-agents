@@ -26,7 +26,7 @@ services:
 
   mcp-gateway:
     # agents_gateway secures your MCP servers
-    image: docker/agents_gateway:v2
+    image: docker/mcp-gateway:latest
     command:
       - --transport=sse
       # add any MCP servers you want to use
