@@ -3,13 +3,16 @@ services:
     build:
         context: .
     environment:
-      - MCP_SERVER_URL=http://mcp_gateway:8811/sse
+      - MCP_SERVER_URL=http://mcp-gateway:8811/sse
     restart: no
     depends_on:
-      - model_runner
-      - mcp_gateway
+      - mcp-gateway
+    models:
+      agent:
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
 
-  mcp_gateway:
+  mcp-gateway:
     image: docker/mcp-gateway:latest
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -18,10 +21,9 @@ services:
       - --servers=duckduckgo
       - --tools=search,fetch_content
 
-  model_runner:
-    provider:
-      type: model
-      options:
-        model: ai/qwen3
-        runtime-flags: "--no-prefill-assistant"
-        context-size: 8192
+models:
+  agent:
+    model: ai/qwen3
+    context_size: 8192
+    runtime_flags:
+      - --no-prefill-assistant
