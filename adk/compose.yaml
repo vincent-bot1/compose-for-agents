@@ -25,12 +25,10 @@ services:
         # context-size: 20000
 
   mcp-gateway:
-    # agents_gateway secures your MCP servers
+    # mcp-gateway secures your MCP servers
     image: docker/mcp-gateway:latest
+    use_api_socket: true
     command:
       - --transport=sse
       # add any MCP servers you want to use
       - --servers=duckduckgo
-    volumes:
-      # mount docker socket to run MCP containers
-      - /var/run/docker.sock:/var/run/docker.sock
