@@ -9,20 +9,11 @@ services:
       # point adk at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
     depends_on:
-      # model_runner provider starts first then injects environment variables
-      # MODEL_RUNNER_MODEL name
-      # MODEL_RUNNER_URL OpenAI compatible API endpoint
-      - model_runner
       - mcp-gateway
-
-  model_runner:
-    provider:
-      type: model
-      options:
-        # pre-pull the model when starting Docker Model Runner
-        model: ai/gemma3-qat:27B-Q4_K_M	
-        # increase context size to handle search results
-        # context-size: 20000
+    models:
+      gemma3 :
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
 
   mcp-gateway:
     # mcp-gateway secures your MCP servers
@@ -32,3 +23,11 @@ services:
       - --transport=sse
       # add any MCP servers you want to use
       - --servers=duckduckgo
+
+models:
+  gemma3:
+    # pre-pull the model when starting Docker Model Runner
+    model: ai/gemma3:4B-Q4_0
+    context_size: 10000 # 3.5 GB VRAM
+    # increase context size to handle search results
+    # context_size: 131000 # 7.6 GB VRAM
