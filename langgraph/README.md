@@ -31,7 +31,9 @@ That’s all. The agent spins up automatically, sets up PostgreSQL, loads a pre-
 
 # ❓ What Can It Do?
 
-Ask natural language questions and let the agent handle SQL for you:
+The project lets you explore the [Chinkook database](https://github.com/lerocha/chinook-database) using natural language. This database represents a digital media store with information regarding artists, albums, media tracks, invoices, and customers.
+
+The agent will write the SQL for your natural language questions:
 - “Who was the best-selling sales agent in 2010?”
 - “List the top 3 albums by sales.”
 - “How many customers are from Brazil?”
