@@ -12,7 +12,7 @@ services:
       - critic-agent-a2a
       - reviser-agent-a2a
     models:
-       agents:
+      gemma3:
          endpoint_var: MODEL_RUNNER_URL
          model_var: MODEL_RUNNER_MODEL
 
