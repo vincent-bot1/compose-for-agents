@@ -39,6 +39,30 @@ docker compose -f compose.yaml -f compose.offload.yaml up --build
 No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to
 chat with the agents.
 
+# 🧠 Inference Options
+
+By default, this project uses [Docker Model Runner] to handle LLM inference locally — no internet connection or external API key is required.
+
+If you’d prefer to use OpenAI instead:
+
+1. Copy the example environment file:
+
+```sh
+cp .env.example .env
+```
+
+2. Edit `.env` and set your OpenAI API key:
+
+```
+OPENAI_API_KEY=sk-...
+```
+
+3. Restart the project:
+
+```
+docker compose down -v
+docker compose up
+```
 
 # ❓ What Can It Do?
 

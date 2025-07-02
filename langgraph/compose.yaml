@@ -28,6 +28,8 @@ services:
     build:
       target: agent
     environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - MODEL_NAME=gpt-4.1-mini
       - MCP_SERVER_URL=http://mcp-gateway:8811/sse
       - DATABASE_DIALECT=PostgreSQL
       - QUESTION="Which sales agent made the most in sales in 2009?"

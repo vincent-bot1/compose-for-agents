@@ -10,9 +10,15 @@ COPY . .
 RUN poetry install
 COPY <<EOF /entrypoint.sh
 #!/bin/sh
-export OPENAI_BASE_URL=\${MODEL_RUNNER_URL}
-export OPENAI_MODEL_NAME=openai/\${MODEL_RUNNER_MODEL}
-export OPENAI_API_KEY=does_not_matter_but_cannot_be_empty
+if test -n "\${OPENAI_API_KEY}"; then
+    echo "OPENAI_API_KEY is set, using OpenAI with \${MODEL_NAME}"
+    export OPENAI_MODEL_NAME=\${MODEL_NAME}
+else
+    echo "OPENAI_API_KEY is not set, using Docker Model Runner with \${MODEL_RUNNER_MODEL}"
+    export OPENAI_BASE_URL=\${MODEL_RUNNER_URL}
+    export OPENAI_MODEL_NAME=\${MODEL_RUNNER_MODEL}
+    export OPENAI_API_KEY=cannot_be_empty
+fi
 exec poetry run marketing_posts
 EOF
 RUN chmod +x /entrypoint.sh

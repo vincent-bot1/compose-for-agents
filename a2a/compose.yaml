@@ -8,6 +8,8 @@ services:
     environment:
       - CRITIC_AGENT_URL=http://critic-agent-a2a:8001
       - REVISER_AGENT_URL=http://reviser-agent-a2a:8001
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - OPENAI_MODEL_NAME=o3
     depends_on:
       - critic-agent-a2a
       - reviser-agent-a2a
@@ -21,6 +23,8 @@ services:
       target: critic-agent
     environment:
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - OPENAI_MODEL_NAME=o3
     depends_on:
       - mcp-gateway
     models:
@@ -34,6 +38,8 @@ services:
       target: reviser-agent
     environment:
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - OPENAI_MODEL_NAME=o3
     depends_on:
       - mcp-gateway
     models:

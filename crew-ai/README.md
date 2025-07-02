@@ -29,6 +29,30 @@ docker compose up --build
 That’s all. The agents will spin up and collaborate through a series of predefined roles and tasks to
 deliver a complete marketing strategy for the input project.
 
+# 🧠 Inference Options
+
+By default, this project uses [Docker Model Runner] to handle LLM inference locally — no internet connection or external API key is required.
+
+If you’d prefer to use OpenAI instead:
+
+1. Copy the example environment file:
+
+```sh
+cp .env.example .env
+```
+
+2. Edit `.env` and set your OpenAI API key:
+
+```
+OPENAI_API_KEY=sk-...
+```
+
+3. Restart the project:
+
+```
+docker compose down -v
+docker compose up
+```
 
 ## ❓ What Can It Do?
 
