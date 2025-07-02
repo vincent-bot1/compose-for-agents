@@ -55,11 +55,13 @@ models:
     context_size: 15000 # 15 GB VRAM
     # increase context size to handle larger results
     # context_size: 41000 # 21 GB VRAM
-  qwen3-large:
-    model: ai/qwen3:30B-A3B-Q4_K_M # 17.28 GB
-    context_size: 15000 # 20 GB VRAM
-    # increase context size to handle larger results
-    # context_size: 41000 # 24 GB VRAM
+
+  # The qwen3-large model is defined in compose.offload.yaml
+  # because it requires more resources and is intended to run with Docker Offload.
+  # A recommended practice with Docker Compose is to isolate specialized configurations
+  # in override files. These files modify the base setup when applied,
+  # in our case:
+  # docker compose -f compose.yaml -f compose.offload.yaml up --build
 
 # mount the secrets file for MCP servers
 secrets:
