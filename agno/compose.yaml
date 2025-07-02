@@ -39,6 +39,10 @@ services:
       - --secrets=/run/secrets/mcp_secret
       # add any MCP servers you want to use
       - --servers=github-official
+      # add an interceptor to format and simplify the output of the GitHub issues tool
+      # this interceptor will convert the JSON output of the tool into a CSV format
+      - --interceptor
+      - after:exec:cat | jq '.content[0].text = (.content[0].text | fromjson | map(select(. != null) | [(.number // ""), (.state // ""), (.title // ""), (.user.login // ""), ((.labels // []) | map(.name) | join(";")), (.created_at // "")] | @csv) | join("\n"))'
     secrets:
       - mcp_secret
 
