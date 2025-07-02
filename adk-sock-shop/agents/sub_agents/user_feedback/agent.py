@@ -95,7 +95,7 @@ def force_string_content(
 
 from ...tools import create_mcp_toolsets
 
-tools = create_mcp_toolsets(tools_cfg=["mcp/brave:brave_web_search"])
+tools = create_mcp_toolsets(tools_cfg=["mcp/mongodb:find" "mcp/mongodb:count"])
 
 user_feedback_agent = Agent(
     # MODEL_RUNNER_MODEL is set by model_runner provider with the model name

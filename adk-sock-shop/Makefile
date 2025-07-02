@@ -7,5 +7,5 @@ gateway-secrets:
 dev-start:
 	MCPGATEWAY_ENDPOINT=http://localhost:8811/sse \
 	MODEL_RUNNER_URL=http://localhost:12434/engines/llama.cpp/v1 \
-	MODEL_RUNNER_MODEL=ai/gemma3:4B-Q4_0 \
+	MODEL_RUNNER_MODEL=ai/qwen3:14B-Q6_K \
 	uv run adk web --port 8080 --log_level DEBUG

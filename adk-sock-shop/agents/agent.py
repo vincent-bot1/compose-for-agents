@@ -22,9 +22,12 @@ from .sub_agents.user_feedback import user_feedback_agent
 new_supplier_agent = SequentialAgent(
     name="new_supplier_agent",
     description=(
-        "Evaluates LLM-generated answers, verifies actual accuracy using the"
-        " web, and refines the response to ensure alignment with real-world"
-        " knowledge."
+        """
+        You are reviewing new suppliers for whether they should be added to the store or not.
+        If you are unsure, ask for more information.
+        If you don't think the supplier will be a good fit for the store, then reject them.
+        However, if you think that the supplier will be a good fit, then go ahead and approve them.
+        """
     ),
     sub_agents=[reddit_researcher_agent, user_feedback_agent],
 )
