@@ -24,7 +24,8 @@ COPY --from=builder /build/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
 COPY <<EOF entrypoint.sh
 #!/bin/sh
-# spring.ai expects the base URL to omit the /v1 suffix
+# spring.ai expects the base URL to omit the /v1/? suffix
+export MODEL_RUNNER_URL=\${MODEL_RUNNER_URL%/}
 export MODEL_RUNNER_URL=\${MODEL_RUNNER_URL%/v1}
 exec java -jar app.jar
 EOF
