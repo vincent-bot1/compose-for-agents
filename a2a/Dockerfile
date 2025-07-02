@@ -7,7 +7,8 @@ RUN pip install uv
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
-    UV_COMPILE_BYTECODE=1 uv pip install --system .
+    UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy \
+    uv pip install --system .
 COPY main.py src ./
 RUN python -m compileall -q .
 
