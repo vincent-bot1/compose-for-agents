@@ -1,0 +1,80 @@
+services:
+  adk:
+    build:
+      context: .
+    ports:
+      # expose port for web interface
+      - 8080:8080
+    environment:
+      # point adk at the MCP gateway
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+    depends_on:
+      - mcp-gateway
+    profiles: [prod]
+    models:
+      gemma3 :
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
+
+  mcp-gateway:
+    # mcp-gateway secures your MCP servers
+    image: docker/mcp-gateway:latest
+    ports:
+      - 8811:8811
+    use_api_socket: true
+    volumes:
+      - /Users/slim/.docker/mcp/catalogs:/app/catalogs
+      - /Users/slim/.docker/mcp/config.yaml:/app/config.yaml
+    command:
+      - --transport=sse
+      - --servers=fetch,brave,mongodb,mysql,resend
+      - --catalog=/app/catalogs/docker-mcp.yaml
+      - --config=/app/config.yaml
+    depends_on:
+      - mongodb
+      - mysql
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=app_db
+      - MYSQL_USER=app_user
+      - MYSQL_PASSWORD=app_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+models:
+  gemma3:
+    # pre-pull the model when starting Docker Model Runner
+    model: ai/gemma3:4B-Q4_0
+    context_size: 10000 # 3.5 GB VRAM
+    # increase context size to handle search results
+    # context_size: 131000 # 7.6 GB VRAM
+
+volumes:
+  mongodb_data:
+  mysql_data:
