@@ -33,6 +33,11 @@ This project demonstrates a **collaborative multi-agent system** built with [Agn
 docker compose up --build
 ```
 
+Using Docker Offload with GPU support, you can run the same demo with a larger model that takes advantage of a more powerful GPU on the remote instance:
+```sh
+docker compose -f compose.yaml -f compose.offload.yaml up --build
+```
+
 That's all! The agents will spin up automatically. Open **http://localhost:3000** in your browser to interact with the multi-agent system.
 
 # ❓ What Can It Do?

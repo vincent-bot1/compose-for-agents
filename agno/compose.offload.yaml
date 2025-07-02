@@ -1,0 +1,7 @@
+services:
+  agents:
+    # overrides model with a larger model
+    models: !override
+      qwen3-large:
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
