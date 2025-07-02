@@ -13,11 +13,10 @@ services:
     volumes:
       # mount the agents file
       - ./agents.yaml:/agents.yaml
-    depends_on:
-      # model_runner provider starts first then injects environment variables
-      # MODEL_RUNNER_MODEL name
-      # MODEL_RUNNER_URL OpenAI compatible API endpoint
-      - model_runner
+    models:
+      qwen3-small:
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
 
   agents-ui:
     image: demo/ui
@@ -30,27 +29,37 @@ services:
     depends_on:
       - agents
 
-  model_runner:
-    provider:
-      type: model
-      options:
-        # pre-pull the model when starting Docker Model Runner
-        model: ai/qwen3:30B-A3B-Q4_K_M
-        # increase context size to handle more github issues
-        context-size: 41000
-
   mcp-gateway:
     # mcp-gateway secures your MCP servers
     image: docker/mcp-gateway:latest
+    # use docker API socket to start MCP servers
     use_api_socket: true
     command:
-      - --transport=sse
       # securely embed secrets into the gateway
       - --secrets=/run/secrets/mcp_secret
       # add any MCP servers you want to use
       - --servers=github-official
     secrets:
       - mcp_secret
+
+models:
+  qwen3-small:
+    # pre-pull the model when starting Docker Model Runner
+    #model: ai/qwen3:30B-A3B-Q4_K_M
+    model: ai/qwen3:8B-Q4_0 # 4.44 GB
+    context_size: 15000 # 7 GB VRAM
+    # increase context size to handle larger results
+    # context_size: 41000 # 13 GB VRAM
+  qwen3-medium:
+    model: ai/qwen3:14B-Q6_K # 11.28 GB
+    context_size: 15000 # 15 GB VRAM
+    # increase context size to handle larger results
+    # context_size: 41000 # 21 GB VRAM
+  qwen3-large:
+    model: ai/qwen3:30B-A3B-Q4_K_M # 17.28 GB
+    context_size: 15000 # 20 GB VRAM
+    # increase context size to handle larger results
+    # context_size: 41000 # 24 GB VRAM
 
 # mount the secrets file for MCP servers
 secrets:

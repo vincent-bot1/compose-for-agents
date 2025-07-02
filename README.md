@@ -16,7 +16,7 @@ Each of these demos is self-contained and can be run either locally or using a c
 
 | Demo | Models | MCPs | project | compose |
 | ---- | ---- | ---- | ---- | ---- |
-| [Agno](https://github.com/agno-agi/agno) agent that summarizes GitHub issues | deepseek(local), qwen3(local), o3(openai) | github-official, notion, fetch | [./agno](./agno) | [compose.yaml](./agno/compose.yaml) |
+| [Agno](https://github.com/agno-agi/agno) agent that summarizes GitHub issues | qwen3(local) | github-official | [./agno](./agno) | [compose.yaml](./agno/compose.yaml) |
 | [Vercel AI-SDK](https://github.com/vercel/ai) Chat-UI for mixing MCPs and Model | llama3.2(local), qwen3(local) | wikipedia-mcp, brave, resend(email) | [./vercel](./vercel) | [compose.yaml](https://github.com/slimslenderslacks/scira-mcp-chat/blob/main/compose.yaml) |
 | [CrewAI](https://github.com/crewAIInc/crewAI) Marketing Strategy Agent | qwen3(local) | duckduckgo | [./crew-ai](./crew-ai) | [compose.yaml](https://github.com/docker/compose-agents-demo/blob/main/crew-ai/compose.yaml) |
 | [ADK](https://github.com/google/adk-python) academic_research agent | gemma3-qat(local) | duckduckgo | [./adk](./adk) | [compose.yaml](./adk/compose.yaml) | 
