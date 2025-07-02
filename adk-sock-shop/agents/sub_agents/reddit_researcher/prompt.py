@@ -1,6 +1,6 @@
 """Prompt for the critic agent."""
 
-CRITIC_PROMPT = """
+PROMPT = """
 You are the owner of a sock store trying to decide whether to sell socks from a new supplier. You have asked an expert to research the supplier and provide you with a recommendation.
 
 # Your task

@@ -1,4 +1,5 @@
 services:
+
   adk:
     build:
       context: .
@@ -27,9 +28,12 @@ services:
       - /Users/slim/.docker/mcp/config.yaml:/app/config.yaml
     command:
       - --transport=sse
-      - --servers=fetch,brave,mongodb,mysql,resend
+      - --servers=fetch,brave,mongodb,mysql,resend,curl
       - --catalog=/app/catalogs/docker-mcp.yaml
-      - --config=/app/config.yaml
+      - --config=/mcp_config
+      - --verbose
+    configs:
+      - mcp_config
     depends_on:
       - mongodb
       - mysql
@@ -43,12 +47,14 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - mongodb_data:/data/db
+    command: ["mongod", "--quiet", "--logpath", "/var/log/mongodb/mongod.log", "--logappend", "--setParameter", "logComponentVerbosity={network:{verbosity:0}}"]
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # do we need a mysql service?
   mysql:
     image: mysql:8.0
     ports:
@@ -78,3 +84,15 @@ models:
 volumes:
   mongodb_data:
   mysql_data:
+
+configs:
+  mcp_config:
+    content: |
+      resend:
+        reply_to: slimslenderslacks@gmail.com
+        sender: slimslenderslacks@slimslenderslacks.com
+      mysql:
+        host: mysql
+        port: 3306
+        user: app_user
+        database: app_db
