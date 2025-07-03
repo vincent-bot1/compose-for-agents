@@ -57,6 +57,7 @@ sk-...
 ```
 docker compose down -v
 docker compose -f compose.yaml -f compose.openai.yaml up
+```
 
 # ❓ What Can It Do?
 
