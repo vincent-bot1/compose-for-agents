@@ -15,3 +15,6 @@ api-server-start:
 
 ui-start:
 	uv run streamlit run apps/vendor_app.py --server.port 3000
+
+compose-local:
+	docker compose up mongodb mcp-gateway

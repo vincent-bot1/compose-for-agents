@@ -8,7 +8,6 @@ services:
       - 3000:3000
     depends_on:
       - adk
-    profiles: [dev]
 
   adk:
     build:
@@ -22,13 +21,12 @@ services:
       # - OPENAI_MODEL_NAME=gpt4
     depends_on:
       - mcp-gateway
-    # secrets:
-    #   - openai-api-key
+    secrets:
+      - openai-api-key
     models:
       gemma3 :
         endpoint_var: MODEL_RUNNER_URL
         model_var: MODEL_RUNNER_MODEL
-    profiles: [dev]
 
   mcp-gateway:
     # mcp-gateway secures your MCP servers
@@ -40,11 +38,12 @@ services:
       - --transport=sse
       - --servers=fetch,brave,resend,curl,mongodb
       - --config=/mcp_config
+      - --secrets=docker-desktop:/mcp_secret
       - --verbose
     configs:
       - mcp_config
     #secrets:
-      #- mcp_secret
+    #  - mcp_secret
     depends_on:
       - mongodb
 
