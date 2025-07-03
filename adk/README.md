@@ -45,23 +45,17 @@ By default, this project uses [Docker Model Runner] to handle LLM inference loca
 
 If you’d prefer to use OpenAI instead:
 
-1. Copy the example environment file:
-
-```sh
-cp .env.example .env
-```
-
-2. Edit `.env` and set your OpenAI API key:
+1. Create a `secret.openai-api-key` file with your OpenAI API key:
 
 ```
-OPENAI_API_KEY=sk-...
+sk-...
 ```
 
-3. Restart the project:
+2. Restart the project with the OpenAI configuration:
 
 ```
 docker compose down -v
-docker compose up
+docker compose -f compose.yaml -f compose.openai.yaml up
 ```
 
 # ❓ What Can It Do?
@@ -151,3 +145,4 @@ docker compose down -v
 [DuckDuckGo]: https://duckduckgo.com
 [Docker Compose]: https://github.com/docker/compose
 [Docker Desktop]: https://www.docker.com/products/docker-desktop/
+[Docker Model Runner]: https://docs.docker.com/ai/model-runner/

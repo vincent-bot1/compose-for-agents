@@ -14,17 +14,19 @@ RUN python -m compileall -q .
 ENV AGENT_CONFIG=/app/agent.yaml
 
 COPY <<EOF ./entrypoint.sh
-#!/bin/bash
-set -e
-
 #!/bin/sh
 set -e
+
+if test -f /run/secrets/openai-api-key; then
+    export OPENAI_API_KEY=$(cat /run/secrets/openai-api-key)
+fi
+
 if test -n "\${OPENAI_API_KEY}"; then
-    echo "OPENAI_API_KEY is set, using OpenAI with \${MODEL_NAME}"
+    echo "Using OpenAI with \${MODEL_NAME}"
     export LLM_AGENT_MODEL_PROVIDER=openai
     export LLM_AGENT_MODEL_NAME=\${OPENAI_MODEL_NAME}
 else
-    echo "OPENAI_API_KEY is not set, using Docker Model Runner with \${MODEL_RUNNER_MODEL}"
+    echo "Using Docker Model Runner with \${MODEL_RUNNER_MODEL}"
     export LLM_AGENT_MODEL_PROVIDER=docker
     export LLM_AGENT_MODEL_NAME=\${MODEL_RUNNER_MODEL}
 fi
