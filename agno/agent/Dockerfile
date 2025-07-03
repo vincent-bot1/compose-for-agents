@@ -10,12 +10,17 @@ COPY playground.py .
 RUN python -m compileall -q .
 COPY <<EOF entrypoint.sh
 #!/bin/sh
+
+if test -f /run/secrets/openai-api-key; then
+    export OPENAI_API_KEY=$(cat /run/secrets/openai-api-key)
+fi
+
 if test -n "\${OPENAI_API_KEY}"; then
-    echo "OPENAI_API_KEY is set, using OpenAI with \${OPENAI_MODEL_NAME}"
+    echo "Using OpenAI with \${OPENAI_MODEL_NAME}"
     export MODEL_PROVIDER=openai
     export MODEL_NAME=\${OPENAI_MODEL_NAME}
 else
-    echo "OPENAI_API_KEY is not set, using Docker Model Runner with \${MODEL_RUNNER_MODEL}"
+    echo "Using Docker Model Runner with \${MODEL_RUNNER_MODEL}"
     export MODEL_PROVIDER=docker
     export MODEL_NAME=\${MODEL_RUNNER_MODEL}
     export OPENAI_API_KEY=cannot_be_empty

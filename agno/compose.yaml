@@ -9,8 +9,6 @@ services:
     environment:
       # point agents at the MCP gateway
       - MCPGATEWAY_URL=http://mcp-gateway:8811/sse
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - OPENAI_MODEL_NAME=gpt-4.1
     volumes:
       # mount the agents file
       - ./agents.yaml:/agents.yaml

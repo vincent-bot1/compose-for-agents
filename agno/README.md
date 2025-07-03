@@ -42,28 +42,21 @@ That's all! The agents will spin up automatically. Open **http://localhost:3000*
 
 # 🧠 Inference Options
 
- By default, this project uses [Docker Model Runner] to handle LLM inference locally — no internet connection or external API key is required.
+By default, this project uses [Docker Model Runner] to handle LLM inference locally — no internet connection or external API key is required.
 
- If you’d prefer to use OpenAI instead:
+If you’d prefer to use OpenAI instead:
 
- 1. Copy the example environment file:
+1. Create a `secret.openai-api-key` file with your OpenAI API key:
 
- ```sh
- cp .env.example .env
- ```
+```
+sk-...
+```
 
- 2. Edit `.env` and set your OpenAI API key:
+2. Restart the project with the OpenAI configuration:
 
- ```
- OPENAI_API_KEY=sk-...
- ```
-
- 3. Restart the project:
-
- ```
- docker compose down -v
- docker compose up
- ```
+```
+docker compose down -v
+docker compose -f compose.yaml -f compose.openai.yaml up
 
 # ❓ What Can It Do?
 
@@ -159,3 +152,4 @@ docker compose down -v
 [GitHub MCP Server]: https://github.com/modelcontextprotocol/servers
 [Docker Compose]: https://github.com/docker/compose
 [Docker Desktop]: https://www.docker.com/products/docker-desktop/
+[Docker Model Runner]: https://docs.docker.com/ai/model-runner/
