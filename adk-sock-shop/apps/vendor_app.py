@@ -1,8 +1,10 @@
 import streamlit as st
 import requests
 import json
+import os
 import uuid
 import time
+import sseclient
 
 st.set_page_config(
     page_title="Vendor Portal",
@@ -33,6 +35,7 @@ def create_adk_session():
         if response.status_code == 200:
             st.session_state.session_id = session_id
             st.session_state.messages = []
+            st.rerun()
             return True
         else:
             st.error(f"Failed to create session: {response.text}")
@@ -42,13 +45,13 @@ def create_adk_session():
 
 def send_message(message):
     """
-    Send a message to the speaker agent and process the response.
+    Send a message to the speaker agent and process the SSE response stream.
     
     This function:
     1. Adds the user message to the chat history
-    2. Sends the message to the ADK API
-    3. Processes the response to extract text and audio information
-    4. Updates the chat history with the assistant's response
+    2. Sends the message to the ADK SSE API
+    3. Processes the SSE event stream
+    4. Adds each event to the messages list
     
     Args:
         message (str): The user's message to send to the agent
@@ -57,12 +60,11 @@ def send_message(message):
         bool: True if message was sent and processed successfully, False otherwise
     
     API Endpoint:
-        POST /run
+        POST /run_sse
         
     Response Processing:
-        - Parses the ADK event structure to extract text responses
-        - Looks for text_to_speech function responses to find audio file paths
-        - Adds both text and audio information to the chat history
+        - Streams SSE events from the ADK API
+        - Adds each event to the messages list for display
     """
     if not st.session_state.session_id:
         st.error("No active session. Please create a session first.")
@@ -71,53 +73,47 @@ def send_message(message):
     # Add user message to chat
     st.session_state.messages.append({"role": "user", "content": message})
     
-    # Send message to API
-    response = requests.post(
-        f"{API_BASE_URL}/run",
-        headers={"Content-Type": "application/json"},
-        data=json.dumps({
-            "app_name": APP_NAME,
-            "user_id": st.session_state.user_id,
-            "session_id": st.session_state.session_id,
-            "new_message": {
-                "role": "user",
-                "parts": [{"text": message}]
-            }
-        })
-    )
-    
-    if response.status_code != 200:
-        st.error(f"Error: {response.text}")
-        return False
-    
-    # Process the response
-    events = response.json()
-    
-    # Extract assistant's text response
-    assistant_message = None
-    audio_file_path = None
-    
-    for event in events:
-        # Look for the final text response from the model
-        if event.get("content", {}).get("role") == "model" and "text" in event.get("content", {}).get("parts", [{}])[0]:
-            assistant_message = event["content"]["parts"][0]["text"]
+    try:
+        # Send message to SSE API
+        response = requests.post(
+            f"{API_BASE_URL}/run_sse",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps({
+                "app_name": APP_NAME,
+                "user_id": st.session_state.user_id,
+                "session_id": st.session_state.session_id,
+                "new_message": {
+                    "role": "user",
+                    "parts": [{"text": message}]
+                }
+            }),
+            stream=True
+        )
         
-        # Look for text_to_speech function response to extract audio file path
-        if "functionResponse" in event.get("content", {}).get("parts", [{}])[0]:
-            func_response = event["content"]["parts"][0]["functionResponse"]
-            if func_response.get("name") == "text_to_speech":
-                response_text = func_response.get("response", {}).get("result", {}).get("content", [{}])[0].get("text", "")
-                # Extract file path using simple string parsing
-                if "File saved as:" in response_text:
-                    parts = response_text.split("File saved as:")[1].strip().split()
-                    if parts:
-                        audio_file_path = parts[0].strip(".")
-    
-    # Add assistant response to chat
-    if assistant_message:
-        st.session_state.messages.append({"role": "assistant", "content": assistant_message, "audio_path": audio_file_path})
-    
-    return True
+        if response.status_code != 200:
+            st.error(f"Error: {response.text}")
+            return False
+        
+        # Process SSE events with real-time updates
+        client = sseclient.SSEClient(response)
+        for event in client.events():
+            if event.data:
+                try:
+                    event_data = json.loads(event.data)
+                    # Add each SSE event to messages
+                    st.session_state.messages.append({"role": "event", "content": event_data})
+                    # Trigger UI update for each event
+                    #st.rerun()
+                except json.JSONDecodeError:
+                    # Handle non-JSON events
+                    st.session_state.messages.append({"role": "event", "content": event.data})
+                    #st.rerun()
+        
+        return True
+        
+    except Exception as e:
+        st.error(f"Error processing SSE stream: {str(e)}")
+        return False
 
 st.title("🧦 Sock Shop Vendor Portal")
 
@@ -137,8 +133,13 @@ st.subheader("Conversation")
 st.markdown("Welcome! Chat with our agent to learn how to add your socks to our store.")
 
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    if message["role"] == "event":
+        # Display SSE events in an expandable section
+        with st.expander(f"Event: {message['content'].get('type', 'Unknown')}"):
+            st.json(message["content"])
+    else:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
 if st.session_state.session_id:  # Only show input if session exists
     user_input = st.chat_input("Type your message...")
