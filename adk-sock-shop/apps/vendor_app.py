@@ -43,7 +43,19 @@ def create_adk_session():
     except Exception as e:
         return False
 
-def send_message(message):
+def display_messages(container):
+    """Display messages in the provided container"""
+    with container.container():
+        for message in st.session_state.messages:
+            if message["role"] == "event":
+                # Display SSE events in an expandable section
+                with st.expander(f"Event: {message['content'].get('type', 'Unknown')}"):
+                    st.json(message["content"])
+            else:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
+def send_message(message, messages_container):
     """
     Send a message to the speaker agent and process the SSE response stream.
     
@@ -51,10 +63,11 @@ def send_message(message):
     1. Adds the user message to the chat history
     2. Sends the message to the ADK SSE API
     3. Processes the SSE event stream
-    4. Adds each event to the messages list
+    4. Updates only the messages container for each event
     
     Args:
         message (str): The user's message to send to the agent
+        messages_container: Streamlit container for messages
         
     Returns:
         bool: True if message was sent and processed successfully, False otherwise
@@ -64,7 +77,7 @@ def send_message(message):
         
     Response Processing:
         - Streams SSE events from the ADK API
-        - Adds each event to the messages list for display
+        - Updates only the messages container for each event
     """
     if not st.session_state.session_id:
         st.error("No active session. Please create a session first.")
@@ -72,6 +85,9 @@ def send_message(message):
     
     # Add user message to chat
     st.session_state.messages.append({"role": "user", "content": message})
+    
+    # Update messages display immediately
+    display_messages(messages_container)
     
     try:
         # Send message to SSE API
@@ -102,12 +118,12 @@ def send_message(message):
                     event_data = json.loads(event.data)
                     # Add each SSE event to messages
                     st.session_state.messages.append({"role": "event", "content": event_data})
-                    # Trigger UI update for each event
-                    #st.rerun()
+                    # Update only the messages container
+                    display_messages(messages_container)
                 except json.JSONDecodeError:
                     # Handle non-JSON events
                     st.session_state.messages.append({"role": "event", "content": event.data})
-                    #st.rerun()
+                    display_messages(messages_container)
         
         return True
         
@@ -132,20 +148,16 @@ with st.sidebar:
 st.subheader("Conversation")
 st.markdown("Welcome! Chat with our agent to learn how to add your socks to our store.")
 
-for message in st.session_state.messages:
-    if message["role"] == "event":
-        # Display SSE events in an expandable section
-        with st.expander(f"Event: {message['content'].get('type', 'Unknown')}"):
-            st.json(message["content"])
-    else:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+# Create a container for messages that can be updated
+messages_container = st.empty()
+
+# Initial display of messages
+display_messages(messages_container)
 
 if st.session_state.session_id:  # Only show input if session exists
     user_input = st.chat_input("Type your message...")
     if user_input:
-        send_message(user_input)
-        st.rerun()  # Rerun to update the UI with new messages
+        send_message(user_input, messages_container)
 else:
     st.info("👈 Create a session to start chatting")
 

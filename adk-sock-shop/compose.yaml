@@ -36,13 +36,9 @@ services:
     ports:
       - 8811:8811
     use_api_socket: true
-    volumes:
-      - ~/.docker/mcp/catalogs:/app/catalogs
-      - ~/.docker/mcp/config.yaml:/app/config.yaml
     command:
       - --transport=sse
       - --servers=fetch,brave,resend,curl,mongodb
-      - --catalog=/app/catalogs/docker-mcp.yaml
       - --config=/mcp_config
       - --verbose
     configs:
