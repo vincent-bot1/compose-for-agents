@@ -2,10 +2,10 @@ agents:
 
   github:
     name: Github Issue Retriever
-    description: An agent that can retrieve GitHub issues given a repository like <owner>/<name>
+    description: An agent that can retrieve GitHub issues given a repository like <owner>/<repo>
     instructions: |
-      Given a GitHub repository in the form of <owner>/<name>, retrieve the list of open issues including
-      all their attributes like title, number, labels.
+      Given a GitHub repository in the form of <owner>/<repo> or http://github.com/<owner>/<repo>,
+      retrieve the list of open issues including all their attributes like title, number, labels.
       Make sure to not confuse issues with pull requests, omit pull requests entirely.
       When listing issues, call your tools no more than once.
 
@@ -14,6 +14,9 @@ agents:
       If you don't know the value for a parameter when calling a tool, just omit it.
     tools:
       - mcp/github-mcp-server:list_issues
+    model:
+      name: ${MODEL_NAME}
+      provider: ${MODEL_PROVIDER}
 
   writer:
     name: Writer
@@ -25,6 +28,9 @@ agents:
       Additionally, classify the issues into categories such as "bug", "feature request",
       or "documentation". Always include the issue links referenced in the summary, as markdown.
       Add an executive summary at the top of the output, which should be a brief overview of the issues, with a sentiment analysis of the issues.
+    model:
+      name: ${MODEL_NAME}
+      provider: ${MODEL_PROVIDER}
 
 teams:
   coordinator:
@@ -32,7 +38,7 @@ teams:
     mode: coordinate
     members: [github, writer]
     instructions: |
-      When given a GitHub repository, which will look like <owner>/<repo>:
+      When given a GitHub repository, which will look like <owner>/<repo> or http://github.com/<owner>/<repo>:
 
       - Ask your team mate to find the issues that are open
       - Tell the writer the summarize them as Markdown
@@ -46,3 +52,6 @@ teams:
 
       Use your team mates to perform all the required tasks, coordinate between them.
       Always include the github tool whole output in your messages to the writer.
+    model:
+      name: ${MODEL_NAME}
+      provider: ${MODEL_PROVIDER}

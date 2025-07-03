@@ -40,6 +40,31 @@ docker compose -f compose.yaml -f compose.offload.yaml up --build
 
 That's all! The agents will spin up automatically. Open **http://localhost:3000** in your browser to interact with the multi-agent system.
 
+# 🧠 Inference Options
+
+ By default, this project uses [Docker Model Runner] to handle LLM inference locally — no internet connection or external API key is required.
+
+ If you’d prefer to use OpenAI instead:
+
+ 1. Copy the example environment file:
+
+ ```sh
+ cp .env.example .env
+ ```
+
+ 2. Edit `.env` and set your OpenAI API key:
+
+ ```
+ OPENAI_API_KEY=sk-...
+ ```
+
+ 3. Restart the project:
+
+ ```
+ docker compose down -v
+ docker compose up
+ ```
+
 # ❓ What Can It Do?
 
 Give it any public GitHub repository and watch the agents collaborate to deliver a comprehensive analysis:
