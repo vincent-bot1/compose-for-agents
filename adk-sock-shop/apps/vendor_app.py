@@ -48,9 +48,16 @@ def display_messages(container):
     with container.container():
         for message in st.session_state.messages:
             if message["role"] == "event":
-                # Display SSE events in an expandable section
-                with st.expander(f"Event: {message['content'].get('type', 'Unknown')}"):
-                    st.json(message["content"])
+                # Display SSE events in a bordered container
+                with st.container(border=True):
+                    # Title with content message
+                    author = message['content'].get("author", "Unknown")
+                    role = message["content"]["content"].get("role", "Unknown") if isinstance(message["content"], dict) else "Unknown"
+                    st.markdown(f"**{author}: {role}**")
+                    
+                    # Expander with JSON content
+                    with st.expander("View Details"):
+                        st.json(message["content"])
             else:
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
