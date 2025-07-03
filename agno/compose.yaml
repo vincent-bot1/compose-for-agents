@@ -7,9 +7,8 @@ services:
     ports:
       - "7777:7777"
     environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
       # point agents at the MCP gateway
-      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - MCPGATEWAY_URL=http://mcp-gateway:8811/sse
     volumes:
       # mount the agents file
       - ./agents.yaml:/agents.yaml
@@ -35,6 +34,7 @@ services:
     # use docker API socket to start MCP servers
     use_api_socket: true
     command:
+      - --transport=sse
       # securely embed secrets into the gateway
       - --secrets=/run/secrets/mcp_secret
       # add any MCP servers you want to use
