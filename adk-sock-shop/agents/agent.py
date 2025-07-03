@@ -12,7 +12,8 @@ from .tools import create_mcp_toolsets
 
 catalog_agent = Agent(
         name="catalog_agent",
-        model=LiteLlm(model=f"openai/{os.environ.get('MODEL_RUNNER_MODEL')}", api_base=f"{os.environ.get('MODEL_RUNNER_URL')}"),
+        model=LiteLlm(model="openai/gpt-4", api_base="https://api.openai.com/v1", api_key=os.environ.get('OPENAI_API_KEY')),
+        #model=LiteLlm(model=f"openai/{os.environ.get('MODEL_RUNNER_MODEL')}", api_base=f"{os.environ.get('MODEL_RUNNER_URL')}"),
         instruction = """
         You are reviewing new suppliers for whether they should be added to the store or not.
         If you don't think that supplier will be a good fit, then reject them but if you know their email address, then send them an email to let them know they've been rejected and why.

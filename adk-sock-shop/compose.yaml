@@ -8,6 +8,7 @@ services:
       - 3000:3000
     depends_on:
       - adk
+    profiles: [dev]
 
   adk:
     build:
@@ -27,6 +28,7 @@ services:
       gemma3 :
         endpoint_var: MODEL_RUNNER_URL
         model_var: MODEL_RUNNER_MODEL
+    profiles: [dev]
 
   mcp-gateway:
     # mcp-gateway secures your MCP servers
@@ -39,16 +41,16 @@ services:
       - ~/.docker/mcp/config.yaml:/app/config.yaml
     command:
       - --transport=sse
-      - --servers=fetch,brave,resend,curl #,mongodb
+      - --servers=fetch,brave,resend,curl,mongodb
       - --catalog=/app/catalogs/docker-mcp.yaml
       - --config=/mcp_config
       - --verbose
     configs:
       - mcp_config
-    secrets:
-      - mcp_secret
-    # depends_on:
-    #   - mongodb
+    #secrets:
+      #- mcp_secret
+    depends_on:
+      - mongodb
 
   mongodb:
     image: mongo:latest

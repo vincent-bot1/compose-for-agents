@@ -4,7 +4,8 @@ build-image:
 gateway-secrets:
 	docker mcp secret set 'mongodb.connection_string=mongodb://admin:password@host.docker.internal:27017/' && \
 	docker mcp secret set 'resend.api_key=$(RESEND_API_KEY)' && \
-	docker mcp secret set 'brave.api_key=$(BRAVE_API_KEY)' 
+	docker mcp secret set 'brave.api_key=$(BRAVE_API_KEY)' && \
+	docker mcp secret export brave resend mongodb > ./.mcp.env
 
 api-server-start:
 	MCPGATEWAY_ENDPOINT=http://localhost:8811/sse \
