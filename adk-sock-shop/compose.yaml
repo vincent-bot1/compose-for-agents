@@ -1,5 +1,15 @@
 services:
 
+  adk-ui:
+    build:
+      context: .
+      file: Dockerfile.adk-ui
+    ports:
+      - 3000:3000
+    depends_on:
+      - adk
+    profiles: [prod]
+
   adk:
     build:
       context: .

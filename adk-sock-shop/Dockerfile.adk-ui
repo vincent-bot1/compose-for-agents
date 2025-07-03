@@ -1,3 +1,4 @@
+
 # Use Python 3.11 slim image as base
 FROM python:3.13-slim
 ENV PYTHONUNBUFFERED=1
@@ -10,7 +11,7 @@ COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     UV_COMPILE_BYTECODE=1 uv pip install --system .
 # Copy application code
-COPY agents/ ./agents/
+COPY apps/ ./apps/
 RUN python -m compileall -q .
 
 # Create non-root user
@@ -18,4 +19,4 @@ RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
 USER app
 
-CMD [ "adk", "api_server", "--host", "0.0.0.0", "--port", "8080", "--log_level", "DEBUG" ]
+CMD ["streamlit", "run", "apps/vendor_app.py", "--server.port=3000"]
