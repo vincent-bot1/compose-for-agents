@@ -28,7 +28,7 @@ services:
       - /Users/slim/.docker/mcp/config.yaml:/app/config.yaml
     command:
       - --transport=sse
-      - --servers=fetch,brave,mongodb,mysql,resend,curl
+      - --servers=fetch,brave,mongodb,resend,curl
       - --catalog=/app/catalogs/docker-mcp.yaml
       - --config=/mcp_config
       - --verbose
@@ -36,7 +36,6 @@ services:
       - mcp_config
     depends_on:
       - mongodb
-      - mysql
 
   mongodb:
     image: mongo:latest
@@ -54,25 +53,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # do we need a mysql service?
-  mysql:
-    image: mysql:8.0
-    ports:
-      - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=app_db
-      - MYSQL_USER=app_user
-      - MYSQL_PASSWORD=app_password
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
 models:
   gemma3:
     # pre-pull the model when starting Docker Model Runner
@@ -83,7 +63,6 @@ models:
 
 volumes:
   mongodb_data:
-  mysql_data:
 
 configs:
   mcp_config:
@@ -91,8 +70,3 @@ configs:
       resend:
         reply_to: slimslenderslacks@gmail.com
         sender: slimslenderslacks@slimslenderslacks.com
-      mysql:
-        host: mysql
-        port: 3306
-        user: app_user
-        database: app_db
