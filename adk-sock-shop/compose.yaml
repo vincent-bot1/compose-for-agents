@@ -3,12 +3,11 @@ services:
   adk-ui:
     build:
       context: .
-      file: Dockerfile.adk-ui
+      dockerfile: Dockerfile.adk-ui
     ports:
       - 3000:3000
     depends_on:
       - adk
-    profiles: [prod]
 
   adk:
     build:
@@ -19,9 +18,11 @@ services:
     environment:
       # point adk at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      # - OPENAI_MODEL_NAME=gpt4
     depends_on:
       - mcp-gateway
-    profiles: [prod]
+    # secrets:
+    #   - openai-api-key
     models:
       gemma3 :
         endpoint_var: MODEL_RUNNER_URL
@@ -34,18 +35,20 @@ services:
       - 8811:8811
     use_api_socket: true
     volumes:
-      - /Users/slim/.docker/mcp/catalogs:/app/catalogs
-      - /Users/slim/.docker/mcp/config.yaml:/app/config.yaml
+      - ~/.docker/mcp/catalogs:/app/catalogs
+      - ~/.docker/mcp/config.yaml:/app/config.yaml
     command:
       - --transport=sse
-      - --servers=fetch,brave,mongodb,resend,curl
+      - --servers=fetch,brave,resend,curl #,mongodb
       - --catalog=/app/catalogs/docker-mcp.yaml
       - --config=/mcp_config
       - --verbose
     configs:
       - mcp_config
-    depends_on:
-      - mongodb
+    secrets:
+      - mcp_secret
+    # depends_on:
+    #   - mongodb
 
   mongodb:
     image: mongo:latest
@@ -66,10 +69,10 @@ services:
 models:
   gemma3:
     # pre-pull the model when starting Docker Model Runner
-    model: ai/gemma3:4B-Q4_0
-    context_size: 10000 # 3.5 GB VRAM
-    # increase context size to handle search results
-    # context_size: 131000 # 7.6 GB VRAM
+    model: ai/gemma3-qat:27B-Q4_K_M	
+    context_size: 131000 # 35.5 GB VRAM
+    runtime_flags:
+      - --no-prefill-assistant
 
 volumes:
   mongodb_data:
@@ -80,3 +83,9 @@ configs:
       resend:
         reply_to: slimslenderslacks@gmail.com
         sender: slimslenderslacks@slimslenderslacks.com
+
+secrets:
+  openai-api-key:
+    file: secret.openai-api-key
+  mcp_secret:
+    file: ./.mcp.env
