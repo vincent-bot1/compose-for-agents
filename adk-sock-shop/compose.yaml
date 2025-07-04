@@ -236,7 +236,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
       - MONGO_INITDB_DATABASE=sockstore
     volumes:
-      - ./data/mongo-init:/docker-entrypoint-initdb.d
+      - ./data/mongodb:/docker-entrypoint-initdb.d:ro
       - mongodb_data:/data/db
     command: ["mongod", "--quiet", "--logpath", "/var/log/mongodb/mongod.log", "--logappend", "--setParameter", "logComponentVerbosity={network:{verbosity:0}}"]
     healthcheck:
