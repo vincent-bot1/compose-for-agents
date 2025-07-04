@@ -26,24 +26,22 @@ If you're running with an arm64 macos machine, then initialize the environment w
 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker pull roberthouse224/catalogue
 ```
 
+To start up the Sock Store and the Agent portal, run:
+
 ```sh
 docker compose --build
 ```
 
-Using Docker Offload with GPU support, you can run the same demo with a larger model that takes advantage of a more powerful GPU on the remote instance:
-```sh
-docker compose -f compose.yaml -f compose.offload.yaml up --build
-```
+Open [*http://localhost*](http://localhost) to see the sock store.
 
-No configuration needed — everything runs from the container. Open `http://localhost:8080` in your browser to
-chat with the agents.
+Open [*http://localhost:3000*](http://localhost:3000) to see the Sock Vendor Agent Portal.
 
 
 # ❓ What Can It Do?
 
 Example question:
 
-> “"
+> “I am a vendor called FishSock.  We create beautiful socks, made from recycled salmons.  They are both beautiful and sustainable.  Please consider our socks for inclusion in your store."
 
 
 # 🔧 Architecture Overview
@@ -63,10 +61,10 @@ flowchart TD
 
 | **Agent**   | **Tools Used**        | **Role Description**                                                         |
 | ----------- | --------------------- | ---------------------------------------------------------------------------- |
-| **Supplier Intake**  | ❌ None                | Resesarches a new sock vendor and decides whether to onboard them to the store |
-| **Reddit Research**  | ✅ BraveSearch via MCP | Searches for reviews on the vendor                             |
-| **Customer Review**  | ❌ MongoDB             | Match styles against historical buyer data to see if it's a match for the store |
-| **Catalog**          | ❌ curl                | Adds the product sku to the catalog if we like the product |
+| **Supplier Intake**  |  None                | Resesarches a new sock vendor and decides whether to onboard them to the store |
+| **Reddit Research**  |  BraveSearch via MCP | Searches for reviews on the vendor                             |
+| **Customer Review**  |  MongoDB via MCP     | Match styles against historical buyer data to see if it's a match for the store |
+| **Catalog**          |  curl via MCP        | Adds the product sku to the catalog if we like the product |
 
 # 🧹 Cleanup
 
