@@ -18,6 +18,7 @@ services:
     environment:
       # point adk at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       # - OPENAI_MODEL_NAME=gpt4
     depends_on:
       - mcp-gateway
@@ -42,8 +43,8 @@ services:
       - --verbose
     configs:
       - mcp_config
-    #secrets:
-    #  - mcp_secret
+    secrets:
+      - mcp_secret
     depends_on:
       - mongodb
 

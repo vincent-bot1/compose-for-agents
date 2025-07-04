@@ -27,7 +27,6 @@ set -e
     echo "Using Docker Model Runner with \${MODEL_RUNNER_MODEL}"
     export OPENAI_BASE_URL=\${MODEL_RUNNER_URL}
     export OPENAI_MODEL_NAME=openai/\${MODEL_RUNNER_MODEL}
-    export OPENAI_API_KEY=cannot_be_empty
 # fi
 exec adk api_server --host 0.0.0.0 --port 8080 --log_level DEBUG
 EOF

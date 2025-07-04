@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-API_BASE_URL = "http://localhost:8080"
+API_BASE_URL = "http://adk:8080"
 APP_NAME = "agents"
 
 if "user_id" not in st.session_state:

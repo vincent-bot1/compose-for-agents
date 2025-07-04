@@ -7,6 +7,21 @@ import litellm
 
 from . import agent
 
+# Set default OPENAI_API_KEY if not already set
+if "OPENAI_API_KEY" not in os.environ:
+    api_key_file = "/run/secrets/openai-api-key"
+    if os.path.exists(api_key_file):
+        try:
+            with open(api_key_file, 'r') as f:
+                api_key = f.read().strip()
+                if api_key:
+                    os.environ["OPENAI_API_KEY"] = api_key
+                    logging.info(f"OPENAI_API_KEY set from file: {api_key}")
+        except Exception as e:
+            pass  # Silently ignore file read errors
+else:
+    logging.info(f"OPENAI_API_KEY already set in environment: {os.environ['OPENAI_API_KEY']}")
+
 # Set the base URL for the OpenAI API to the Docker Model Runner URL
 os.environ.setdefault("OPENAI_BASE_URL", os.getenv("MODEL_RUNNER_URL", ""))
 os.environ["OTEL_SDK_DISABLED"] = "true"
