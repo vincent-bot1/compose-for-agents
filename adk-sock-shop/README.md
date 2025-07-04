@@ -20,9 +20,14 @@ export BRAVE_API_KEY=<your_brave_api_key>
 export RESEND_API_KEY=<resend_api_key>
 make gateway-secrets
 ```
+If you're running with an arm64 macos machine, then initialize the environment with one additional command:
 
 ```sh
-docker compose up --build
+DOCKER_DEFAULT_PLATFORM=linux/amd64 docker pull roberthouse224/catalogue
+```
+
+```sh
+docker compose --build
 ```
 
 Using Docker Offload with GPU support, you can run the same demo with a larger model that takes advantage of a more powerful GPU on the remote instance:

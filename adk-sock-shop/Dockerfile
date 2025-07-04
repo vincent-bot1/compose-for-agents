@@ -28,7 +28,7 @@ set -e
     export OPENAI_BASE_URL=\${MODEL_RUNNER_URL}
     export OPENAI_MODEL_NAME=openai/\${MODEL_RUNNER_MODEL}
 # fi
-exec adk api_server --host 0.0.0.0 --port 8080 --log_level DEBUG
+exec adk api_server --host 0.0.0.0 --port 8000 --log_level DEBUG
 EOF
 RUN chmod +x /entrypoint.sh
 
