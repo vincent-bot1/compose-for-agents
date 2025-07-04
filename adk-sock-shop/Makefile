@@ -1,5 +1,8 @@
-build-image:
+build-adk-image:
 	docker buildx build --builder hydrobuild --platform linux/amd64,linux/arm64 --tag jimclark106/supplier_agent:latest --push --file Dockerfile .
+
+build-adk-ui-image:
+	docker buildx build --builder hydrobuild --platform linux/amd64,linux/arm64 --tag jimclark106/supplier_agent_ui:latest --push --file Dockerfile.adk-ui .
 
 gateway-secrets:
 	docker mcp secret set 'mongodb.connection_string=mongodb://admin:password@host.docker.internal:27017/' && \
