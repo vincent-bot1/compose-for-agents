@@ -20,5 +20,5 @@ PROMPT = """
         }
         ```
 
-        Fill out the values of this payload with data from the supplier.
+        Fill out the values of this payload with data from the supplier.  Always choose a name that is shorter than 12 characters.
         """
