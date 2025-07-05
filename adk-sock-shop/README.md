@@ -3,8 +3,6 @@
 > [!Tip]
 > ✨ No configuration needed — run it with a single command.
 
-
-
 # 🚀 Getting Started
 
 ### Requirements
@@ -18,6 +16,7 @@ Some of the MCP servers used here require Secrets. Set the Brave and Reset api k
 ```sh
 export BRAVE_API_KEY=<your_brave_api_key>
 export RESEND_API_KEY=<resend_api_key>
+export OPENAI_API_KEY=<openai_api_key>
 make gateway-secrets
 ```
 If you're running with an arm64 macos machine, then initialize the environment with one additional command:
@@ -29,20 +28,19 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64 docker pull roberthouse224/catalogue
 To start up the Sock Store and the Agent portal, run:
 
 ```sh
-docker compose --build
+docker compose up --build
 ```
 
-Open [*http://localhost:9090*](http://localhost:9090) to see the sock store.
-
-Open [*http://localhost:3000*](http://localhost:3000) to see the Sock Vendor Agent Portal.
+* Open [*http://localhost:9090*](http://localhost:9090) to see the sock store.
+* Open [*http://localhost:3000*](http://localhost:3000) to see the Sock Vendor Agent Portal.
 
 
 # ❓ What Can It Do?
 
-Example question:
+Example input to the portal:
 
-> “I am a vendor called FishSock.  We create beautiful socks, made from recycled salmons.  They are both beautiful and sustainable.  Please consider our socks for inclusion in your store."
-
+> “I am a sock vendor named Nike. Perhaps you've heard of us. We provide colorful compressions socks, that are elegant and affordable.  Our Nike compression socks are 12.99 each.  
+   Here are some urls to images of the socks https://tinyurl.com/5n6spnvu and https://tinyurl.com/mv8ebjnh"
 
 # 🔧 Architecture Overview
 
@@ -74,13 +72,10 @@ To stop and remove containers and volumes:
 docker compose down -v
 ```
 
-
 # 📎 Credits
 - [ADK]
-- [DuckDuckGo]
 - [Docker Compose]
 
 [ADK]: https://google.github.io/adk-docs/
-[DuckDuckGo]: https://duckduckgo.com
 [Docker Compose]: https://github.com/docker/compose
 [Docker Desktop]: https://www.docker.com/products/docker-desktop/
