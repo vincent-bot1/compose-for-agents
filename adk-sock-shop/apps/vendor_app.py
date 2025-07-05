@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-API_BASE_URL = "http://adk:8000"
+API_BASE_URL = os.environ.get('API_BASE_URL', "http://adk:8000")
 APP_NAME = "agents"
 
 if "user_id" not in st.session_state:
@@ -43,6 +43,39 @@ def create_adk_session():
     except Exception as e:
         return False
 
+
+def summarize(part):
+    """
+    parts can be Dictionaries with keys like functionCall, functionResponse, or text.
+    we will summarize each message differently depending on whether it contains a functionCall,
+    a functionResponse, text, or none of these.
+    If there is a functionCall key, then value will be a dictionary with the key name.
+    If there is a functionResponse key, then the value will be a dictionary that has a name key
+    If there is a text key, then the value will be a string.
+    """
+    if isinstance(part, dict):
+        if "functionCall" in part:
+            function_name = part["functionCall"].get("name", "Unknown Function")
+            return f"🔧 **Function Call**: {function_name}"
+        elif "functionResponse" in part:
+            function_name = part["functionResponse"].get("name", "Unknown Function")
+            return f"📋 **Function Response**: {function_name}"
+        elif "text" in part:
+            text_content = part["text"]
+            # Truncate long text for summary
+            if len(text_content) > 100:
+                return f"💬 **Text**: {text_content[:100]}..."
+            else:
+                return f"💬 **Text**: {text_content}"
+        else:
+            return f"📄 **Unknown Content**: {list(part.keys())}"
+    else:
+        return f"📄 **Raw Content**: {str(part)}"
+
+def summarize_content(parts):
+    return "\n".join([summarize(part) for part in parts])
+
+
 def display_messages(container):
     """Display messages in the provided container"""
     with container.container():
@@ -53,7 +86,10 @@ def display_messages(container):
                     # Title with content message
                     author = message['content'].get("author", "Unknown")
                     role = message["content"]["content"].get("role", "Unknown") if isinstance(message["content"], dict) else "Unknown"
-                    st.markdown(f"**{author}: {role}**")
+                    st.markdown(f"<h4 style='text-decoration: underline;'>{role}: {author}</h4>", unsafe_allow_html=True)
+                    
+                    # Additional markdown section
+                    st.markdown(summarize_content(message['content']['content']['parts']))
                     
                     # Expander with JSON content
                     with st.expander("View Details"):

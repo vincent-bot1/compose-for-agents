@@ -34,8 +34,8 @@ logging.basicConfig(
 )
 logging.getLogger("opentelemetry").setLevel(logging.ERROR)
 logging.getLogger("google.adk").setLevel(logging.INFO)
-logging.getLogger("LiteLLM").setLevel(logging.WARNING)  # Much less verbose
-logging.getLogger("litellm").setLevel(logging.WARNING)  # Also reduce this
+logging.getLogger("LiteLLM").setLevel(logging.INFO)  # Much less verbose
+logging.getLogger("litellm").setLevel(logging.INFO)  # Also reduce this
 logging.getLogger("httpx").setLevel(logging.WARNING)  # Reduce HTTP logs
 logging.getLogger("httpcore").setLevel(logging.WARNING)  # Reduce HTTP core logs
 litellm.set_verbose = False  # Disable raw HTTP logs # type: ignore

@@ -32,7 +32,7 @@ To start up the Sock Store and the Agent portal, run:
 docker compose --build
 ```
 
-Open [*http://localhost*](http://localhost) to see the sock store.
+Open [*http://localhost:9090*](http://localhost:9090) to see the sock store.
 
 Open [*http://localhost:3000*](http://localhost:3000) to see the Sock Vendor Agent Portal.
 

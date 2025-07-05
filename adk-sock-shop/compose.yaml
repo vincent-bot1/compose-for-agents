@@ -12,7 +12,7 @@ services:
   edge-router:
     image: weaveworksdemos/edge-router:0.1.1
     ports:
-      - '80:80'
+      - '9090:80'
       - '8080:8080'
     cap_drop:
       - all
@@ -185,6 +185,8 @@ services:
       dockerfile: Dockerfile.adk-ui
     ports:
       - 3000:3000
+    environment:
+      - API_BASE_URL=http://adk:8000
     depends_on:
       - adk
 
@@ -198,6 +200,7 @@ services:
       # point adk at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CATALOGUE_URL=http://catalogue:8081
       # - OPENAI_MODEL_NAME=gpt4
     depends_on:
       - mcp-gateway
@@ -218,7 +221,7 @@ services:
       - --transport=sse
       - --servers=fetch,brave,resend,curl,mongodb
       - --config=/mcp_config
-      - --secrets=/run/secrets/mcp_secret
+      - --secrets=docker-desktop:/run/secrets/mcp_secret
       - --verbose
     configs:
       - mcp_config
