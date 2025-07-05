@@ -86,14 +86,14 @@ def display_messages(container):
                     # Title with content message
                     author = message['content'].get("author", "Unknown")
                     role = message["content"]["content"].get("role", "Unknown") if isinstance(message["content"], dict) else "Unknown"
-                    st.markdown(f"<h4 style='text-decoration: underline;'>{role}: {author}</h4>", unsafe_allow_html=True)
+                    st.markdown(f"<h5 style='text-decoration: underline;'>{author}</h4>", unsafe_allow_html=True)
                     
                     # Additional markdown section
                     st.markdown(summarize_content(message['content']['content']['parts']))
                     
                     # Expander with JSON content
                     with st.expander("View Details"):
-                        st.json(message["content"])
+                        st.json(message["content"]["content"]["parts"])
             else:
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
