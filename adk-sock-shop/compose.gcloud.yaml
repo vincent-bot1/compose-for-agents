@@ -22,8 +22,6 @@ services:
     read_only: true
     ports:
       - "8081:80"
-    depends_on:
-      - catalogue-db
   catalogue-db:
     image: weaveworksdemos/catalogue-db:0.3.0
     hostname: catalogue-db
@@ -32,8 +30,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
-
-  # Customer Review Database
 
   mongodb:
     image: mongo:latest
@@ -56,6 +52,7 @@ services:
   # Agent
 
   adk-ui:
+    image: jimclark106/supplier_agent_ui:latest
     build:
       context: .
       dockerfile: Dockerfile.adk-ui
@@ -67,6 +64,7 @@ services:
       - adk
 
   adk:
+    image: jimclark106/supplier_agent:latest
     build:
       context: .
     ports:
@@ -90,10 +88,10 @@ services:
 
   mcp-gateway:
     # mcp-gateway secures your MCP servers
-    image: docker/mcp-gateway:latest
+    image: docker/mcp-gateway:dind
+    privileged: true
     ports:
       - 8811:8811
-    use_api_socket: true
     command:
       - --transport=sse
       - --servers=fetch,brave,resend,curl,mongodb

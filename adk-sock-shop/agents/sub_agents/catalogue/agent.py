@@ -50,10 +50,12 @@ def add_to_catalog(name: str, description: str, imageUrl: List[str], price: floa
             "error": str(e)
         }
 
+api_base_url = os.environ.get('OPENAI_BASE_URL', 'https://api.openai.com/v1')
+api_base_model = os.environ.get('AI_DEFAULT_MODEL', 'openai/gpt-4')
 
 catalog_agent = Agent(
         name="catalog_agent",
-        model=LiteLlm(model="openai/gpt-4", api_base="https://api.openai.com/v1", api_key=os.environ.get('OPENAI_API_KEY')),
+        model=LiteLlm(model=f"{api_base_model}", api_base=f"{api_base_url}", api_key=os.environ.get('OPENAI_API_KEY')),
         #model=LiteLlm(model=f"openai/{os.environ.get('MODEL_RUNNER_MODEL')}", api_base=f"{os.environ.get('MODEL_RUNNER_URL')}"),
         instruction = prompt.PROMPT,
         tools = create_mcp_toolsets(tools_cfg=["mcp/resend:send-email", "mcp/curl:curl"]),  # type: ignore

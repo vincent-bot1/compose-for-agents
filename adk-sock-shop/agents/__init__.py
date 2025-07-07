@@ -20,10 +20,9 @@ if "OPENAI_API_KEY" not in os.environ:
         except Exception as e:
             pass  # Silently ignore file read errors
 else:
-    logging.info(f"OPENAI_API_KEY already set in environment: {os.environ['OPENAI_API_KEY']}")
+    logging.info(f"OPENAI_API_KEY already set in environment")
 
 # Set the base URL for the OpenAI API to the Docker Model Runner URL
-os.environ.setdefault("OPENAI_BASE_URL", os.getenv("MODEL_RUNNER_URL", ""))
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
 # Enable logging with reduced verbosity
