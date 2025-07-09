@@ -69,16 +69,30 @@ async def create_mcp_tools(tools_list: list[str], entity_type: str) -> list[Tool
 
     tool_names = [name.split(":", 1)[1] for name in tools_list]
 
-    url = os.environ.get("MCPGATEWAY_URL")
-    if not url:
+    gateway_url = os.environ.get("MCPGATEWAY_URL")
+    if not gateway_url:
         raise ValueError(
             f"MCPGATEWAY_URL environment variable not set for {entity_type} tools"
         )
-    print(f"DEBUG: {entity_type} connecting to MCP gateway at {url}")
-
+    command: str | None = None
+    url: str | None = None
+    transport: str = ""
+    if gateway_url.startswith("http://") or gateway_url.startswith("https://"):
+        url = gateway_url
+        transport = "sse"
+        print(f"DEBUG: {entity_type} connecting to MCP gateway via SSE {url}")
+    else:
+        # Assume it's a TCP endpoint
+        tcp_endpoint = gateway_url
+        transport = "stdio"
+        command = f"socat STDIO TCP:{tcp_endpoint}"
+        print(
+            f"DEBUG: {entity_type} connecting to MCP gateway via STDIO {tcp_endpoint}"
+        )
     t = MCPTools(
+        command=command,
         url=url,
-        transport="sse",
+        transport=transport,  # type: ignore
         include_tools=tool_names,
     )
     mcp_tools = await t.__aenter__()
