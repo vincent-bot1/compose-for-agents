@@ -51,7 +51,7 @@ docker compose -f compose.yaml -f compose.openai.yaml up
 
 # ❓ What Can It Do?
 
-Ask natural language questions and let Spring AI + Brave Search provide intelligent, real-time answers:
+Ask natural language questions and let Spring AI + DuckDuckGo Search provide intelligent, real-time answers:
 
 - “Does Spring AI support the Model Context Protocol?”
 - “What is the Brave Search API?”
@@ -68,7 +68,7 @@ To **customize the question** asked to the agent, edit the `QUESTION` environmen
 
 | **File/Folder**          | **Purpose**                                      |
 | ------------------------ | ------------------------------------------------ |
-| `compose.yaml`           | launches the Brave MCP gateway and Spring AI app |
+| `compose.yaml`           | launches the DuckDuckGo MCP gateway and Spring AI app |
 | `Dockerfile`             | Builds the Spring Boot container                 |
 | `application.properties` | Sets the MCP gateway URL used by Spring AI       |
 | `Application.java`       | Configures the ChatClient with MCP and runs it   |
