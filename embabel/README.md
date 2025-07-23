@@ -20,19 +20,20 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 ### Clone the project repository
 
 > [!IMPORTANT]
-> The compose.yaml file is in the upstream repository. To try out this project, you'll need to clone the upstream repo.
+> The compose.yaml file is in an [upstream repository](https://github.com/embabel/tripper). To try out this project, you'll have to first clone the repo.
 
 ```sh
-git clone git@github.com:embabel/travel-agent-planner.git
+git clone git@github.com:embabel/tripper.git
 cd travel-agent-planner
 ```
 
 ### Configure MCP secrets
 
+This demo uses two apis (Brave Search and Google Maps), and several different AI models.
+
 ```sh
 docker mcp secret set 'brave.api_key=<insert your Brave Search API key here>'
 docker mcp secret set 'google-maps.api_key=<insert your Google Maps API key here>'
-docker mcp secret set 'github.personal_access_token=<insert your GitHub  PAT>'
 docker mcp secret export brave google-maps github > .mcp.env
 ```
 
@@ -41,7 +42,6 @@ docker mcp secret export brave google-maps github > .mcp.env
 ```sh
 export OPENAI_API_KEY=your_openai_api_key_here
 export ANTHROPIC_API_KEY=your_anthropic_api_key_here
-# Set your Brave API key for image search (not yet moved into MCP)
 export BRAVE_API_KEY=your_brave_api_key_here
 
 docker compose --profile in-docker up
